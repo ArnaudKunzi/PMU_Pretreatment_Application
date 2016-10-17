@@ -32,8 +32,6 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
         
         'table.ListColumns("info_sys").DataBodyRange(counter) = CheckColumnNames(wk.Worksheets(1).Range("A1:S1"))
         
-        'HERE COND. IF NB_SHEET>1???
-        
         'determine the reordering of the columns (in variable "reordering")
         Set VnamesRange = wk.Worksheets(1).Range(wk.Worksheets(1).Cells(1, 1), wk.Worksheets(1).Cells(1, wk.Worksheets(1).Cells(1, wk.Worksheets(1).Columns.Count).End(xlToLeft).column))
         Vnames = Application.Transpose(Application.Transpose(VnamesRange))
@@ -57,21 +55,29 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
                         table.ListColumns("unidentified_fields").DataBodyRange(counter) = table.ListColumns("unidentified_fields").DataBodyRange(counter) & "," & VnamesRange(i).value
                     Else
                         ColumnOrder(i - 1) = CStr(Lookup_colnum(Vnames(i)))
+                        Debug.Print Vnames(i) & " " & ColumnOrder(i - 1)
                         'Selon la valeur de ColumnOrder, on vérifie le type des données de la colonne
                         'Il faut selectionner la plage de donnée et deviser un test.
                     End If
-                    
                 End If
-                
             Next i
             reordering = Join(ColumnOrder, "|")
             
             table.ListColumns("reordering").DataBodyRange(counter).value = Left(reordering, Len(reordering) - 1)
             table.ListColumns("required_fields_ok").DataBodyRange(counter).value = ((InStr(reordering, "1|") > 0) And (InStr(reordering, "2|") > 0) And (InStr(reordering, "3|") > 0))
-        
+            
+            'check columns data type:
+            
+            
+            
+            
         Else
             table.ListColumns("more_than_one_empty_column").DataBodyRange(counter).value = True
         End If
+        
+        
+        
+        
         
         
         wk.Close SaveChanges:=False
@@ -81,9 +87,11 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
         
         ' set ReadOnly=True
         'SetAttr FILE, vbReadOnly
-
+        
+        'calcul de la progression de la tâche:
         pctCompl = (counter + 1) / (UBound(FilesList) + 1)
         Application.StatusBar = "Progression chargement: étape (2/2) " & (counter + 1) & " of " & UBound(FilesList) + 1 & ": " & Format(pctCompl, "percent")
+        
         Application.ScreenUpdating = True
         counter = counter + 1
     Next FILE
