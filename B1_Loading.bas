@@ -10,14 +10,20 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
     Application.DisplayAlerts = False
     Dim VnamesRange As Range
     Dim Vnames As Variant
+    Dim curr_col_num As Double
+    Dim curr_col_nrows As Long
+    Dim Unique_ColumnData As Variant
     Dim Lookup_names As Variant
     Dim Lookup_colnum As Variant
+    Dim Lookup_expectedtype As Variant
     Dim empty_column_count As Integer
     Dim ColumnOrder() As String
     'FilesList = GetFilesList
     
     Lookup_names = Application.Transpose(INTERNALS.ListObjects("attributes").ListColumns("trimmed_raw_name").DataBodyRange)
     Lookup_colnum = Application.Transpose(INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange)
+    Lookup_expectedtype = Application.Transpose(INTERNALS.ListObjects("attributes").ListColumns("type").DataBodyRange)
+    
     counter = 1
     For Each FILE In FilesList
     
@@ -48,16 +54,24 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
                         Exit For
                     End If
                 Else
-                    Vnames(i) = Application.Match(Trim(Vnames(i)), Lookup_names, 0)
+                    curr_col_num = Application.Match(Trim(Vnames(i)), Lookup_names, 0)
                     'Debug.Print Vnames(i)
-                    If VarType(Vnames(i)) = vbError Then
+                    If VarType(curr_col_num) = vbError Then
                         'Debug.Print wk.Name & ": " & VnamesRange(i).value
                         table.ListColumns("unidentified_fields").DataBodyRange(counter) = table.ListColumns("unidentified_fields").DataBodyRange(counter) & "," & VnamesRange(i).value
                     Else
-                        ColumnOrder(i - 1) = CStr(Lookup_colnum(Vnames(i)))
+                        ColumnOrder(i - 1) = CStr(Lookup_colnum(curr_col_num))
                         Debug.Print Vnames(i) & " " & ColumnOrder(i - 1)
-                        'Selon la valeur de ColumnOrder, on vérifie le type des données de la colonne
-                        'Il faut selectionner la plage de donnée et deviser un test.
+                        
+                        'On vérifie le type des données de la colonne
+
+                        curr_col_nrows = wk.Worksheets(1).Cells(wk.Worksheets(1).Rows.Count, VnamesRange(i).column).End(xlUp).Row
+                        Data = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
+                        
+                        Call CheckType(Data, Lookup_expectedtype(curr_col_num))
+                        
+                        
+                        
                     End If
                 End If
             Next i

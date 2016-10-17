@@ -182,3 +182,13 @@ Function IncCol(column As String, IncrementStep As Integer) As String
         IncCol = IncrementColumn & Chr(reminder)
     End If
 End Function
+
+Function GetUniqueValues(ByRef Data)
+    Dim temp As Variant
+    Dim obj As Object
+    Set obj = CreateObject("scripting.dictionary")
+    For i = LBound(Data) To UBound(Data)
+        obj(Data(i) & "") = ""
+    Next
+    GetUniqueValues = obj.keys
+End Function
