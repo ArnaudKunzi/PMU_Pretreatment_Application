@@ -21,18 +21,16 @@ Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
 End Sub
 
 
-
-
 Public Sub ExportAllComponents()
     Dim VBComp As VBIDE.VBComponent
     Dim destDir As String, fName As String, ext As String
     'Create the directory where code will be created.
     'Alternatively, you could change this so that the user is prompted
-    If ActiveWorkbook.path = "" Then
+    If ActiveWorkbook.Path = "" Then
         MsgBox "You must first save this workbook somewhere so that it has a path.", , "Error"
         Exit Sub
     End If
-    destDir = ActiveWorkbook.path & "\" & ActiveWorkbook.Name & " Modules"
+    destDir = ActiveWorkbook.Path & "\" & ActiveWorkbook.Name & " Modules"
     If Dir(destDir, vbDirectory) = vbNullString Then MkDir destDir
     
     'Export all non-blank components to the directory
@@ -56,4 +54,20 @@ Public Sub ExportAllComponents()
             End If
         End If
     Next VBComp
+End Sub
+
+Sub OpenGit()
+'execute with ctrl+g
+'opening git:
+    Dim x As Variant
+    Dim Path As String
+
+    Path = "C:\Users\akunzi\Desktop\PortableGit\git-bash.exe"
+
+    x = Shell(Path, vbNormalFocus)
+    
+    'Application.Wait Now + TimeValue("00:00:03") ' waits 3 seconds
+    'AppActivate x
+    'SendKeys "setdir_p"
+    
 End Sub

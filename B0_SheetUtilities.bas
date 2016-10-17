@@ -1,13 +1,13 @@
 Attribute VB_Name = "B0_SheetUtilities"
 Sub SaveFilesList(ByRef FilesList)
     Dim table As ListObject
-    Dim path As Range
+    Dim Path As Range
     Dim r As Range
     
     Set table = INTERNALS.ListObjects("file_to_load")
-    Set path = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange
+    Set Path = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange
     
-    path(1).value = Left(FilesList(0), InStrRev(FilesList(0), "\"))
+    Path(1).value = Left(FilesList(0), InStrRev(FilesList(0), "\"))
     
     table.DataBodyRange.ClearContents
     Set r = table.Range.Rows(2).Offset(-1, 0).Resize(3)

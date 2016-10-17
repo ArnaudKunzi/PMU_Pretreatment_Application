@@ -24,16 +24,16 @@ Sub Refresh(control As IRibbonControl)
     Dim FilesListString As String
     Dim FilesList As Variant
     Dim table As ListObject
-    Dim path As Range
+    Dim Path As Range
     
     Call DefGlobal
     
     Set table = INTERNALS.ListObjects("file_to_load")
-    Set path = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange
+    Set Path = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange
     
-    FilesListString = path(1).value & table.ListColumns(2).DataBodyRange(1).value
+    FilesListString = Path(1).value & table.ListColumns(2).DataBodyRange(1).value
     For i = 2 To table.ListRows.Count
-        FilesListString = FilesListString & "|" & path(1).value & table.ListColumns(2).DataBodyRange(i).value
+        FilesListString = FilesListString & "|" & Path(1).value & table.ListColumns(2).DataBodyRange(i).value
     Next i
     
     If Len(FilesListString) <> 0 Then
