@@ -75,7 +75,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     
     nb_sheets = HowManySheets(FilesList)
     
-    Call MainLoadingLoop(FilesList)
+    Call MainLoadingLoop(FilesList, nb_sheets)
     
     Application.ScreenUpdating = False
     

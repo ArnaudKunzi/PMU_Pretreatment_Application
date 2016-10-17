@@ -1,5 +1,5 @@
 Attribute VB_Name = "B1_Loading"
-Sub MainLoadingLoop(ByRef FilesList)
+Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
 
     Dim wk As Workbook
     Dim pctCompl As Double
@@ -31,6 +31,8 @@ Sub MainLoadingLoop(ByRef FilesList)
         'detect the type of the system (flawed)
         
         'table.ListColumns("info_sys").DataBodyRange(counter) = CheckColumnNames(wk.Worksheets(1).Range("A1:S1"))
+        
+        'HERE COND. IF NB_SHEET>1???
         
         'determine the reordering of the columns (in variable "reordering")
         Set VnamesRange = wk.Worksheets(1).Range(wk.Worksheets(1).Cells(1, 1), wk.Worksheets(1).Cells(1, wk.Worksheets(1).Cells(1, wk.Worksheets(1).Columns.Count).End(xlToLeft).column))
@@ -64,12 +66,13 @@ Sub MainLoadingLoop(ByRef FilesList)
             Next i
             reordering = Join(ColumnOrder, "|")
             
+            table.ListColumns("reordering").DataBodyRange(counter).value = Left(reordering, Len(reordering) - 1)
+            table.ListColumns("required_fields_ok").DataBodyRange(counter).value = ((InStr(reordering, "1|") > 0) And (InStr(reordering, "2|") > 0) And (InStr(reordering, "3|") > 0))
+        
         Else
             table.ListColumns("more_than_one_empty_column").DataBodyRange(counter).value = True
         End If
         
-        table.ListColumns("reordering").DataBodyRange(counter).value = Left(reordering, Len(reordering) - 1)
-        table.ListColumns("required_fields_ok").DataBodyRange(counter).value = ((InStr(reordering, "1|") > 0) And (InStr(reordering, "2|") > 0) And (InStr(reordering, "3|") > 0))
         
         wk.Close SaveChanges:=False
         Set wk = Nothing
