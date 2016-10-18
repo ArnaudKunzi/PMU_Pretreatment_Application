@@ -119,6 +119,11 @@ Sub TransferColumns()
         
         'copier l'intégralité de la table en mémoire
         InputDataTable = Application.Transpose(input_wb.Worksheets(1).Range("A2:" & IncCol("A", UBound(CurrentFileColumnOrder)) & CStr(InputLastRow)))
+        'Trim la table
+        For k = LBound(InputDataTable) To UBound(InputDataTable)
+            InputDataTable(k) = Trim(InputDataTable(k))
+        Next
+        
         output_wb.Activate
         
         For column = LBound(CurrentFileColumnOrder) To UBound(CurrentFileColumnOrder)

@@ -13,6 +13,8 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
     Dim curr_col_num As Double
     Dim curr_col_nrows As Long
     Dim Unique_ColumnData As Variant
+    Dim TypeViolation As String
+    Dim StrTypeViolation As String
     Dim Lookup_names As Variant
     Dim Lookup_colnum As Variant
     Dim Lookup_expectedtype As Variant
@@ -33,6 +35,10 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
         
         Set wk = Workbooks.Open(Filename:=FILE, corruptload:=xlRepairFile)
         'wk.Windows(1).Visible = False
+        
+        'remove NA's from sheet:
+        On Error Resume Next
+        wk.Worksheets(1).Cells.SpecialCells(xlCellTypeFormulas, xlErrors).Clear
         
         'detect the type of the system (flawed)
         
@@ -61,26 +67,29 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
                         table.ListColumns("unidentified_fields").DataBodyRange(counter) = table.ListColumns("unidentified_fields").DataBodyRange(counter) & "," & VnamesRange(i).value
                     Else
                         ColumnOrder(i - 1) = CStr(Lookup_colnum(curr_col_num))
-                        Debug.Print Vnames(i) & " " & ColumnOrder(i - 1)
+                        
+                        'Debug.Print Vnames(i) & " " & ColumnOrder(i - 1)
                         
                         'On vérifie le type des données de la colonne
 
                         curr_col_nrows = wk.Worksheets(1).Cells(wk.Worksheets(1).Rows.Count, VnamesRange(i).column).End(xlUp).Row
                         Data = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
-                        
-                        Call CheckType(Data, Lookup_expectedtype(curr_col_num))
-                        
-                        
-                        
+                        TypeViolation = CheckType(Data, Lookup_expectedtype, Lookup_expectedtype(curr_col_num))
+                        If Len(TypeViolation) > 0 Then
+                            StrTypeViolation = StrTypeViolation & "Col. " & Vnames(i) & ": l. " & TypeViolation & Chr(10)
+                        End If
                     End If
                 End If
             Next i
             reordering = Join(ColumnOrder, "|")
             
+            'reporting the reordering
             table.ListColumns("reordering").DataBodyRange(counter).value = Left(reordering, Len(reordering) - 1)
+            'reporting missing required fields
             table.ListColumns("required_fields_ok").DataBodyRange(counter).value = ((InStr(reordering, "1|") > 0) And (InStr(reordering, "2|") > 0) And (InStr(reordering, "3|") > 0))
+            'Reporting columns data type errors:
+            table.ListColumns("typing").DataBodyRange(counter).value = StrTypeViolation
             
-            'check columns data type:
             
             
             
@@ -98,6 +107,8 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
         Set wk = Nothing
         Erase ColumnOrder
         reordering = ""
+        TypeViolation = ""
+        StrTypeViolation = ""
         
         ' set ReadOnly=True
         'SetAttr FILE, vbReadOnly

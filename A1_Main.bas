@@ -152,13 +152,10 @@ Sub PrepareOverviewSheet(FilesListSring As String)
                 Call ApplyStyle(.Range(Chr(Asc("G") + HOffset) & counter), "=1", "xlGreater")
             End If
 'H
-            'Name of informatic system producing the data
-            'If InStr(INTERNALS.ListObjects("file_to_load").ListColumns("info_sys").DataBodyRange(counter - VOffset).value, "Error") = 0 Then
-            '    .Range(Chr(Asc("H") + HOffset) & counter).value = INTERNALS.ListObjects("file_to_load").ListColumns("info_sys").DataBodyRange(counter - VOffset).value
-            'Else
-            '    Status(3).Copy
-            '    .Range(Chr(Asc("H") + HOffset) & counter).PasteSpecial Paste:=xlPasteAll
-            'End If
+            'Type problems
+            If (PARAM_TABLE.Columns(1).Find("VerifyColumnsContent").Offset(0, 1).value) Then
+                .Range(Chr(Asc("H") + HOffset) & counter).value = INTERNALS.ListObjects("file_to_load").ListColumns("typing").DataBodyRange(counter - VOffset).value
+            End If
 'H
             
 'I

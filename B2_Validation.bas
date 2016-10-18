@@ -43,35 +43,47 @@ Function CheckColumnNames(Range1 As Range)
     CheckColumnNames = "Error"
 End Function
 
-Function CheckType(ByRef ColumnData, ByVal ExpectedType As String)
+Function CheckType(ByRef ColumnData, ByRef Lookup_expectedtype, ByVal ExpectedType As String)
     Dim Unique_ColumnData As Variant
     Dim TypeViolation As String
     Dim TypeViolationLoc
 
-    Unique_ColumnData = GetUniqueValues(Data)
-    TypeViolation = CheckElementsType(Unique_ColumnData, Lookup_expectedtype(curr_col_num))
+    Unique_ColumnData = GetUniqueValues(ColumnData)
+    TypeViolation = CheckElementsType(Unique_ColumnData, ExpectedType)
     
-    
-    
-    TypeViolationLoc = "line:"
-    
-    If Len(TypeViolation) > 0 Then
-            'substitute a list of violation indexes for a list of violation values
-            For Each Violation In Split(Right(TypeViolation, Len(TypeViolation) - 1), ",")
+    TypeViolationLoc = ""
+      
+    If Len(TypeViolation) > 2 Then
+        'substitute a list of violation indexes for a list of violation values for next step
+        For Each Violation In Split(Right(Left(TypeViolation, Len(TypeViolation) - 1), Len(TypeViolation) - 2), ",")
+            If Len(Trim(Unique_ColumnData(CDbl(Violation)))) > 0 Then
                 TypeViolation = Replace(TypeViolation, Violation & ",", Unique_ColumnData(Violation) & ",")
-            Next Violation
-    
-            For i = LBound(ColumnData) To UBound(ColumnData)
-                If "*" & ColumnData(i) & "*" Like TypeViolation Then
-                    
-                    'check if i-1 also present to not congest the string
-                    
-                    'TypeViolationLoc = TypeViolationLoc & i
+            Else
+                'empty space strings can be ignored because the paste from TransferColumns() trims values by default
+                TypeViolation = Replace(TypeViolation, Violation & ",", "")
+            End If
+        Next Violation
+        
+        'Fill a string with all the lines containing a type violation:
+        If Len(TypeViolation) > 2 Then
+            For i = LBound(ColumnData) - 1 To UBound(ColumnData) - 1
+                If InStr(1, TypeViolation, "," & CStr(ColumnData(i + 1)) & ",", vbTextCompare) <> 0 Then
+                    If StrComp(Right(TypeViolationLoc, 1 + Len(CStr(i))), i & ",") = 0 And Len(TypeViolationLoc) > 2 Then
+                        TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - (2 + Len(CStr(i)))) & "-" & i + 1 & ","
+                    'ElseIf StrComp(Right(TypeViolationLoc, 3), "," & i & ",") = 0 Then
+                    '    TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - 2) & "-" & i + 1 & ","
+                    Else
+                        TypeViolationLoc = TypeViolationLoc & i + 1 & ","
+                    End If
                 End If
             Next i
-        
+            
+            TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - 1)
+            'Debug.Print TypeViolationLoc
+        End If
+            
     Else
-        TypeViolationLoc = "FAUX"
+        TypeViolationLoc = ""
     End If
     
     CheckType = TypeViolationLoc
@@ -85,22 +97,22 @@ Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String) As St
     
     Select Case ExpectedType
         Case "NUM"
-            CheckType = ""
+            CheckElementsType = ""
             For j = LBound(ColumnData) To UBound(ColumnData)
-                If Not IsNumeric(ColumnData(j)) Then CheckType = CheckType & "," & j
+                If Not IsNumeric(ColumnData(j)) Then CheckElementsType = CheckElementsType & "," & j
             Next j
         Case "CHR", "CHR_NON_NUM"
-            CheckType = ""
-            If IsNumeric(ColumnData(j)) Then CheckType = CheckType & "," & j
+            CheckElementsType = ""
+            If IsNumeric(ColumnData(j)) Then CheckElementsType = CheckElementsType & "," & j
         Case "DAT"
-            CheckType = ""
+            CheckElementsType = ""
             For j = LBound(ColumnData) To UBound(ColumnData)
-                If Not IsDate(ColumnData(j)) Then CheckType = CheckType & "," & j
+                If Not IsDate(ColumnData(j)) Then CheckElementsType = CheckElementsType & "," & j
             Next j
         Case "NONE", ""
-            CheckType = ""
+            CheckElementsType = ""
     End Select
-    If Len(CheckType) > 0 Then CheckType = Left(CheckType, Len(CheckType) - 1) & ","
+    If Len(CheckElementsType) > 0 Then CheckElementsType = CheckElementsType & ","
 End Function
 
 
