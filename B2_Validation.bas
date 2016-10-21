@@ -65,18 +65,36 @@ Function CheckType(ByRef ColumnData, ByRef Lookup_expectedtype, ByVal ExpectedTy
         Next Violation
         
         'Fill a string with all the lines containing a type violation:
-        If Len(TypeViolation) > 2 Then
-            For i = LBound(ColumnData) - 1 To UBound(ColumnData) - 1
-                If InStr(1, TypeViolation, "," & CStr(ColumnData(i + 1)) & ",", vbTextCompare) <> 0 Then
-                    If StrComp(Right(TypeViolationLoc, 1 + Len(CStr(i))), i & ",") = 0 And Len(TypeViolationLoc) > 2 Then
-                        TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - (2 + Len(CStr(i)))) & "-" & i + 1 & ","
+        If Len(TypeViolation) > 2 Then ' because we previously removed the empty space strings we have to test again for TypeViolation length
+            For i = LBound(ColumnData) To UBound(ColumnData)
+                If InStr(1, TypeViolation, "," & CStr(ColumnData(i)) & ",", vbTextCompare) <> 0 Then
+                    str_search1 = "-" & i - 1 & ","
+                    str_search2 = i - 2 & "," & i - 1 & ","
+                    
+                    If StrComp(Right(TypeViolationLoc, Len(str_search1)), str_search1) = 0 And Len(TypeViolationLoc) > 2 Then
+                        TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - Len(str_search1) + 1) & i & ","
+                    ElseIf StrComp(Right(TypeViolationLoc, Len(str_search2)), str_search2) = 0 And Len(TypeViolationLoc) > 2 Then
+                        TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - Len(str_search2) + 1) & "-" & i & ","
+                    Else 'If StrComp(Right(TypeViolationLoc, Len(i & ",")), i & ",") = 0 Then
+                        TypeViolationLoc = TypeViolationLoc & i & ","
+                    End If
+                    
+                    'If StrComp(Right(TypeViolationLoc, 1 + Len(CStr(i))), i & ",") = 0 And Len(TypeViolationLoc) > 2 Then
+                    '
+                    '    TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - (2 + Len(CStr(i)))) & "-" & i + 1 & ","
+                    '
                     'ElseIf StrComp(Right(TypeViolationLoc, 3), "," & i & ",") = 0 Then
                     '    TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - 2) & "-" & i + 1 & ","
-                    Else
-                        TypeViolationLoc = TypeViolationLoc & i + 1 & ","
-                    End If
+                    'Else
+                    '    TypeViolationLoc = TypeViolationLoc & i + 1 & ","
+                    'End If
                 End If
             Next i
+            
+            'For i = 1 to Len
+            '
+            'Next i
+            
             
             TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - 1)
             'Debug.Print TypeViolationLoc
@@ -101,7 +119,7 @@ Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String) As St
             For j = LBound(ColumnData) To UBound(ColumnData)
                 If Not IsNumeric(ColumnData(j)) Then CheckElementsType = CheckElementsType & "," & j
             Next j
-        Case "CHR", "CHR_NON_NUM"
+        Case "CHR_NON_NUM"
             CheckElementsType = ""
             If IsNumeric(ColumnData(j)) Then CheckElementsType = CheckElementsType & "," & j
         Case "DAT"
@@ -109,7 +127,11 @@ Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String) As St
             For j = LBound(ColumnData) To UBound(ColumnData)
                 If Not IsDate(ColumnData(j)) Then CheckElementsType = CheckElementsType & "," & j
             Next j
-        Case "NONE", ""
+        Case "PHARMACODE"
+            For j = LBound(ColumnData) To UBound(ColumnData)
+                If Not ColumnData(j) >= 3 And ColumnData(j) <= 131070 Then CheckElementsType = CheckElementsType & "," & j
+            Next j
+        Case "CHR", "NONE", ""
             CheckElementsType = ""
     End Select
     If Len(CheckElementsType) > 0 Then CheckElementsType = CheckElementsType & ","

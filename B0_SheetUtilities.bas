@@ -197,3 +197,25 @@ Function GetUniqueValues(ByRef Data)
     Next
     GetUniqueValues = obj.keys
 End Function
+
+Public Function NumericOnly(ByVal s As String) As String
+    Dim s2 As String
+    Dim replace_hyphen As String
+ 
+    Static re As RegExp
+    If re Is Nothing Then Set re = New RegExp
+    re.IgnoreCase = True
+    re.Global = True
+    re.Pattern = "[^0-9]" 'includes space, if you want to exclude space "[^0-9]"
+    's2 = re.Replace(s, vbNullString)
+
+    NumericOnly = re.Replace(s2, replace_hyphen)
+End Function
+
+Sub test()
+
+    s = "1,2,3,4"
+    
+    Debug.Print NumericOnly(s)
+    
+End Sub
