@@ -13,9 +13,9 @@ Public Sub Store(control_id As String, value As Boolean)
     PARAM_TABLE.Columns(1).Find(control_id).Offset(0, 1).value = value
     
     Select Case control_id
-        'Case Is = "VerifyNbSheets"
+        Case Is = "VerifyNbSheets"
         'Case Is = "VerifyColumnsTitle"
-        'Case Is = "VerifyColumnsContent"
+        Case Is = "VerifyColumnsContent"
         'Case Is = "MergeFiles"
         'Case Is = "DispatchFiles"
         'Case Is = "CheckPharmacodes"

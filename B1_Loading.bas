@@ -69,9 +69,7 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
                         ColumnOrder(i - 1) = CStr(Lookup_colnum(curr_col_num))
                         
                         'Debug.Print Vnames(i) & " " & ColumnOrder(i - 1)
-                        
                         'On vérifie le type des données de la colonne
-
                         curr_col_nrows = wk.Worksheets(1).Cells(wk.Worksheets(1).Rows.Count, VnamesRange(i).column).End(xlUp).Row
                         Data = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
                         TypeViolation = CheckType(Data, Lookup_expectedtype, Lookup_expectedtype(curr_col_num))
@@ -89,17 +87,11 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
             table.ListColumns("required_fields_ok").DataBodyRange(counter).value = ((InStr(reordering, "1|") > 0) And (InStr(reordering, "2|") > 0) And (InStr(reordering, "3|") > 0))
             'Reporting columns data type errors:
             table.ListColumns("typing").DataBodyRange(counter).value = StrTypeViolation
-            
-            
-            
-            
-            
+            'table.ListColumns("typing").Columns.ColumnWidth = 10
+            table.ListColumns("typing").DataBodyRange.WrapText = False
         Else
             table.ListColumns("more_than_one_empty_column").DataBodyRange(counter).value = True
         End If
-        
-        
-        
         
         
         

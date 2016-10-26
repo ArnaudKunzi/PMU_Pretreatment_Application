@@ -74,30 +74,26 @@ Function CheckType(ByRef ColumnData, ByRef Lookup_expectedtype, ByVal ExpectedTy
                     If StrComp(Right(TypeViolationLoc, Len(str_search1)), str_search1) = 0 And Len(TypeViolationLoc) > 2 Then
                         TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - Len(str_search1) + 1) & i & ","
                     ElseIf StrComp(Right(TypeViolationLoc, Len(str_search2)), str_search2) = 0 And Len(TypeViolationLoc) > 2 Then
-                        TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - Len(str_search2) + 1) & "-" & i & ","
+                        TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - Len(str_search2) + Len(CStr(i))) & "-" & i & ","
                     Else 'If StrComp(Right(TypeViolationLoc, Len(i & ",")), i & ",") = 0 Then
                         TypeViolationLoc = TypeViolationLoc & i & ","
                     End If
                     
-                    'If StrComp(Right(TypeViolationLoc, 1 + Len(CStr(i))), i & ",") = 0 And Len(TypeViolationLoc) > 2 Then
-                    '
-                    '    TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - (2 + Len(CStr(i)))) & "-" & i + 1 & ","
-                    '
-                    'ElseIf StrComp(Right(TypeViolationLoc, 3), "," & i & ",") = 0 Then
-                    '    TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - 2) & "-" & i + 1 & ","
-                    'Else
-                    '    TypeViolationLoc = TypeViolationLoc & i + 1 & ","
-                    'End If
                 End If
             Next i
             
-            'For i = 1 to Len
-            '
-            'Next i
-            
-            
+            'increment numbers to take into account the first row which contains the variable's name on the sheet
             TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - 1)
             'Debug.Print TypeViolationLoc
+            s = Split(TypeViolationLoc, ",")
+            For n = LBound(s) To UBound(s)
+                t = Split(s(n), "-")
+                For m = LBound(t) To UBound(t)
+                    t(m) = t(m) + 1
+                Next m
+                s(n) = Join(t, "-")
+            Next n
+            TypeViolationLoc = Join(s, ",")
         End If
             
     Else
