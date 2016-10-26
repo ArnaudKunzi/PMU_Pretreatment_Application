@@ -9,12 +9,12 @@ Public Function Function_Action(control As IRibbonControl, pressed As Boolean)
 End Function
 
 Public Sub Store(control_id As String, value As Boolean)
-    
+    DefGlobal
     PARAM_TABLE.Columns(1).Find(control_id).Offset(0, 1).value = value
     
     Select Case control_id
         Case Is = "VerifyNbSheets"
-        'Case Is = "VerifyColumnsTitle"
+        Case Is = "VerifyColumnsTitle"
         Case Is = "VerifyColumnsContent"
         'Case Is = "MergeFiles"
         'Case Is = "DispatchFiles"
