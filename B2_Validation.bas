@@ -133,7 +133,9 @@ Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String) As St
     If Len(CheckElementsType) > 0 Then CheckElementsType = CheckElementsType & ","
 End Function
 
-
+Function AssertStatus()
+    
+End Function
 
 
 

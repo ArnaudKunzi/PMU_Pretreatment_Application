@@ -10,7 +10,7 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
     Application.DisplayAlerts = False
     Dim VnamesRange As Range
     Dim Vnames As Variant
-    Dim curr_col_num As Double
+    Dim curr_col_num As Variant
     Dim curr_col_nrows As Long
     Dim Unique_ColumnData As Variant
     Dim TypeViolation As String
@@ -98,6 +98,7 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
         wk.Close SaveChanges:=False
         Set wk = Nothing
         Erase ColumnOrder
+        curr_col_num = -1
         reordering = ""
         TypeViolation = ""
         StrTypeViolation = ""

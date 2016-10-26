@@ -32,9 +32,12 @@ Sub Refresh(control As IRibbonControl)
     Set Path = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange
     
     FilesListString = Path(1).value & table.ListColumns(2).DataBodyRange(1).value
-    For i = 2 To table.ListRows.Count
-        FilesListString = FilesListString & "|" & Path(1).value & table.ListColumns(2).DataBodyRange(i).value
-    Next i
+    
+    If table.ListColumns(2).DataBodyRange(2).value <> "" Then
+        For i = 2 To table.ListRows.Count
+            FilesListString = FilesListString & "|" & Path(1).value & table.ListColumns(2).DataBodyRange(i).value
+        Next i
+    End If
     
     If Len(FilesListString) <> 0 Then
         Call PrepareOverviewSheet(FilesListString)
@@ -149,25 +152,30 @@ Sub PrepareOverviewSheet(FilesListSring As String)
             'nb of sheets
             If (PARAM_TABLE.Columns(1).Find("VerifyNbSheets").Offset(0, 1).value) Then
                 .Range(Chr(Asc("G") + HOffset) & counter).value = nb_sheets(counter - VOffset - 1)
-                Call ApplyStyle(.Range(Chr(Asc("G") + HOffset) & counter), "=1", "xlGreater")
+                Call ApplyStyle(.Range(Chr(Asc("G") + HOffset) & counter), "=1", "xlGreater", "bad")
+                Call ApplyStyle(.Range(Chr(Asc("G") + HOffset) & counter), "=1", "xlEqual", "good")
             End If
 'H
             'Type problems
             If (PARAM_TABLE.Columns(1).Find("VerifyColumnsContent").Offset(0, 1).value) Then
                 .Range(Chr(Asc("H") + HOffset) & counter).value = INTERNALS.ListObjects("file_to_load").ListColumns("typing").DataBodyRange(counter - VOffset).value
                 .Range(Chr(Asc("H") + HOffset) & counter).WrapText = False
+                Call ApplyStyle(.Range(Chr(Asc("H") + HOffset) & counter), "=""""", "xlNotEqual", "bad")
             End If
             
             If (PARAM_TABLE.Columns(1).Find("VerifyColumnsTitle").Offset(0, 1).value) Then
 'I
                 .Range(Chr(Asc("I") + HOffset) & counter).value = INTERNALS.ListObjects("file_to_load").ListColumns("required_fields_ok").DataBodyRange(counter - VOffset).value
-                Call ApplyStyle(.Range(Chr(Asc("I") + HOffset) & counter), "FAUX", "xlEqual")
+                Call ApplyStyle(.Range(Chr(Asc("I") + HOffset) & counter), "FAUX", "xlEqual", "bad")
+                Call ApplyStyle(.Range(Chr(Asc("I") + HOffset) & counter), "VRAI", "xlEqual", "good")
 'J
                 .Range(Chr(Asc("J") + HOffset) & counter).value = INTERNALS.ListObjects("file_to_load").ListColumns("more_than_one_empty_column").DataBodyRange(counter - VOffset).value
-                Call ApplyStyle(.Range(Chr(Asc("J") + HOffset) & counter), "VRAI", "xlEqual")
+                Call ApplyStyle(.Range(Chr(Asc("J") + HOffset) & counter), "VRAI", "xlEqual", "bad")
+                Call ApplyStyle(.Range(Chr(Asc("J") + HOffset) & counter), "=""""", "xlEqual", "good")
 'K
                 .Range(Chr(Asc("K") + HOffset) & counter).value = Right(INTERNALS.ListObjects("file_to_load").ListColumns("unidentified_fields").DataBodyRange(counter - VOffset).value, Application.Max(Len(INTERNALS.ListObjects("file_to_load").ListColumns("unidentified_fields").DataBodyRange(counter - VOffset).value) - 1, 0))
-                Call ApplyStyle(.Range(Chr(Asc("K") + HOffset) & counter), "=""""", "xlNotEqual")
+                Call ApplyStyle(.Range(Chr(Asc("K") + HOffset) & counter), "=""""", "xlNotEqual", "bad")
+                Call ApplyStyle(.Range(Chr(Asc("K") + HOffset) & counter), "=""""", "xlEqual", "good")
             End If
             
             counter = counter + 1
