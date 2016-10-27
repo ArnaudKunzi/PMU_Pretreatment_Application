@@ -105,6 +105,8 @@ Sub PrepareOverviewSheet(FilesListSring As String)
             .Range(Chr(Asc("J") + HOffset) & VOffset).AddComment ("Les attributs des colonnes (titres) doivent se" & Chr(10) & "trouver sur la première ligne de la feuille" & Chr(10) & "de calcul de manière contiguë." & Chr(10) & "Assurez-vous que ce soit le cas.")
         .Range(Chr(Asc("K") + HOffset) & VOffset).value = "Champs inconnus"
             .Range(Chr(Asc("K") + HOffset) & VOffset).AddComment ("Les attributs reportés sont inconnus de l'application." & Chr(10) & "Enregistrez-les dans la table [attributes] de la" & Chr(10) & "feuille de calcul cachée [INTERNALS]. Si le type " & Chr(10) & "d'attribut n'existe pas (DBB_name)," & Chr(10) & "créez-en un nouveau dans la table suivante" & Chr(10) & "[AttributeTypeAndPlacement] et renseignez un n°" & Chr(10) & "de colonne (DBB_col) non-utilisé et un type.")
+        .Range(Chr(Asc("L") + HOffset) & VOffset).value = "Pharmacode"
+            .Range(Chr(Asc("L") + HOffset) & VOffset).AddComment ("." & Chr(10) & ".")
         
         Call FitComments
         
