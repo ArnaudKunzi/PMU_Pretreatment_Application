@@ -66,3 +66,21 @@ For Each xComment In Application.ActiveSheet.Comments
     xComment.Shape.TextFrame.AutoSize = True
 Next
 End Sub
+
+Sub test()
+    Call ResizeColumnWidths(8, 4, 3)
+End Sub
+
+Sub ResizeColumnWidths(n, startcolumn As Integer, ignorecolumn As Integer)
+  ignorewidth = Range(IncCol("A", ignorecolumn - 1) & "1").ColumnWidth
+  w = (ActiveWindow.Width - ignorewidth) / n
+  Columns(startcolumn).Resize(, n).ColumnWidth = pointsToChars(w, startcolumn)
+End Sub
+
+Function pointsToChars(x, startcolumn) As Integer
+'source: http://stackoverflow.com/questions/28439773/excel-vba-fit-columns-to-page
+
+  p = Range(IncCol("A", startcolumn - 1 + 1) & "1").Width
+  c = Range(IncCol("A", startcolumn - 1 + 1) & "1").ColumnWidth
+  pointsToChars = x * c / p
+End Function

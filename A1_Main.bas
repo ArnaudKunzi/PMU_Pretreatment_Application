@@ -92,14 +92,14 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         .Range(Chr(Asc("D") + HOffset) & VOffset).value = "Status"
         .Range(Chr(Asc("E") + HOffset) & VOffset).value = "n° EMS"
         .Range(Chr(Asc("F") + HOffset) & VOffset).value = "EMS conforme"
-        .Range(Chr(Asc("G") + HOffset) & VOffset).value = "Nombre d'onglets"
+        .Range(Chr(Asc("G") + HOffset) & VOffset).value = "# onglets"
             .Range(Chr(Asc("G") + HOffset) & VOffset).AddComment ("Seules les données présentes dans le" & Chr(10) & "premier onglet sont pris en compte." & Chr(10) _
                                                                      & "assurez-vous que toutes les données" & Chr(10) & "pertinentes soient dans une" & Chr(10) _
                                                                      & "table dans le premier onglet.")
         .Range(Chr(Asc("H") + HOffset) & VOffset).value = "typage"
             .Range(Chr(Asc("H") + HOffset) & VOffset).AddComment ("Cellules comportant une valeur inattendue (ex: 'chaise'" & Chr(10) & " pour la variable Pharmacode est une valeur de type incorrect).")
             
-        .Range(Chr(Asc("I") + HOffset) & VOffset).value = "Champs requis présents"
+        .Range(Chr(Asc("I") + HOffset) & VOffset).value = "Champs requis"
             .Range(Chr(Asc("I") + HOffset) & VOffset).AddComment ("La feuille manque des attributs indispensables " & Chr(10) & " à son transfert dans la base de donnée" & Chr(10) & "(n°Client, Pharmacode, Désignation).")
         .Range(Chr(Asc("J") + HOffset) & VOffset).value = "attributs manquants"
             .Range(Chr(Asc("J") + HOffset) & VOffset).AddComment ("Les attributs des colonnes (titres) doivent se" & Chr(10) & "trouver sur la première ligne de la feuille" & Chr(10) & "de calcul de manière contiguë." & Chr(10) & "Assurez-vous que ce soit le cas.")
@@ -186,10 +186,12 @@ Sub PrepareOverviewSheet(FilesListSring As String)
             .Columns.AutoFit 'ColumnWidth = 14.5
         End With
         .Range("H:H").Columns.ColumnWidth = 10
-        
+        .Range("A1").CurrentRegion.Borders.LineStyle = xlContinuous
     End With
     
     'RedoRib
+    
+    
     
     Application.ScreenUpdating = True
     
