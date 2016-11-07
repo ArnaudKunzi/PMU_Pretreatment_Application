@@ -35,9 +35,6 @@ End Function
 
 
 
-
-
-
 'Sub LoopThroughFiles(directorypath As String)
 '    Dim MyObj As Object, MySource As Object, FILE As Variant
 '   FILE = Dir(directorypath)

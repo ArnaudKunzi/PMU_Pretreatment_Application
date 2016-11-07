@@ -13,4 +13,26 @@ Sub notasub()
 End Sub
 
 
+Sub chart()
+    Debug.Print Asc("Þ")
+End Sub
 
+
+Public Sub ShowTable()
+'max 27 lines!!!
+Dim myData
+Dim myStr As String
+Dim x As Integer
+Dim myRange As Range
+
+Set myRange = Range("D1:E28")
+
+myData = myRange.value
+
+For x = 1 To UBound(myData, 1)
+    myStr = myStr & myData(x, 1) & vbTab & myData(x, 2) & vbCrLf
+Next x
+
+MsgBox myStr, vbYesNoCancel
+
+End Sub

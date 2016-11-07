@@ -120,9 +120,11 @@ Sub TransferColumns()
         'copier l'intégralité de la table en mémoire
         InputDataTable = Application.Transpose(input_wb.Worksheets(1).Range("A2:" & IncCol("A", UBound(CurrentFileColumnOrder)) & CStr(InputLastRow)))
         'Trim la table
-        For k = LBound(InputDataTable) To UBound(InputDataTable)
-            InputDataTable(k) = Trim(InputDataTable(k))
-        Next
+        For k = LBound(InputDataTable, 1) To UBound(InputDataTable, 1)
+            For p = LBound(InputDataTable, 2) To UBound(InputDataTable, 2)
+                InputDataTable(k, p) = Trim(InputDataTable(k, p))
+            Next p
+        Next k
         
         output_wb.Activate
         
@@ -197,6 +199,56 @@ Function GetUniqueValues(ByRef Data)
     Next
     GetUniqueValues = obj.keys
 End Function
+
+
+
+
+Sub MoveRowsToSheet(ByRef InputSheet As Worksheet, ByRef OutputSheet As Worksheet)
+    Dim FirstRow As Long
+    Dim LastRow As Long
+    Dim LastCol As Long
+    Dim PharmaColNum As Long
+    Dim RowsToMove As Variant
+    'LastRow=
+    'LastCol=
+    'RowsToMovearray size = 1:LastRow
+    'PharmaColNum = InputSheet.Cells(1,1).Find("InvalidPharmacode")
+    'PharmaCol = InputSheet.Range(IncCol("A",PharmaColNum) & "1:" & IncCol("A",PharmaColNum) & LastRow)
+    For Row = LastRow To FirstRow
+        If InputSheet.Cells(Row, Pharmacol) = 1 Then
+            'add to array
+            'delete line from sheet
+        End If
+    Next Row
+    
+    'copy attributes from InputSheet
+    'paste rows in OutputSheet with offset(1,0)
+    
+End Sub
+
+
+Sub MoveRowsToSheet()
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Public Function NumericOnly(ByVal s As String) As String
     Dim s2 As String
