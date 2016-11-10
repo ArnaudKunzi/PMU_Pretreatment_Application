@@ -85,15 +85,20 @@ Sub TransferColumns()
         
         Set input_wb = Workbooks.Open(Filename:=FilePath & files(i + 1), corruptload:=xlRepairFile)
         
+        
         'Last row of the output file
-        OutputLastRow = Application.Max(output_wb.Worksheets("DATA").Cells(output_wb.Worksheets("DATA").Rows.Count, "A").End(xlUp).Row, _
-                                  output_wb.Worksheets("DATA").Cells(output_wb.Worksheets("DATA").Rows.Count, "C").End(xlUp).Row, _
-                                  output_wb.Worksheets("DATA").Cells(output_wb.Worksheets("DATA").Rows.Count, "E").End(xlUp).Row)
+        With output_wb.Worksheets("DATA")
+        OutputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).Row, _
+                                  .Cells(.Rows.Count, "C").End(xlUp).Row, _
+                                  .Cells(.Rows.Count, "E").End(xlUp).Row)
+        End With
         'Last row of the input file
-        InputLastRow = Application.Max(input_wb.Worksheets(1).Cells(input_wb.Worksheets(1).Rows.Count, "A").End(xlUp).Row, _
-                                   input_wb.Worksheets(1).Cells(input_wb.Worksheets(1).Rows.Count, "C").End(xlUp).Row, _
-                                   input_wb.Worksheets(1).Cells(input_wb.Worksheets(1).Rows.Count, "E").End(xlUp).Row)
+        With input_wb.Worksheets(1)
+        InputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).Row, _
+                                   .Cells(.Rows.Count, "C").End(xlUp).Row, _
+                                   .Cells(.Rows.Count, "E").End(xlUp).Row)
                                    
+        End With
         'Il faut maintenant intervertir les index et les valeurs de ColumnOrders
         CurrentFileColumnOrder = Split(ColumnOrders(i + 1), "|")
         
@@ -136,10 +141,12 @@ Sub TransferColumns()
             End If
         Next column
         
-        output_wb.Worksheets("DATA").Range("A1").value = "YEAR_OF_ANALYSIS"
-        output_wb.Worksheets("DATA").Range("B1").value = "EMS_CODE"
-        output_wb.Worksheets("DATA").Range("A" & ROffset + OutputLastRow & ":A" & ROffset + InputLastRow + OutputLastRow - 2) = Year
-        output_wb.Worksheets("DATA").Range("B" & ROffset + OutputLastRow & ":B" & ROffset + InputLastRow + OutputLastRow - 2) = Left(input_wb.Name, InStr(input_wb.Name, "_") - 1)
+        With output_wb.Worksheets("DATA")
+            .Range("A1").value = "YEAR_OF_ANALYSIS"
+            .Range("B1").value = "EMS_CODE"
+            .Range("A" & ROffset + OutputLastRow & ":A" & ROffset + InputLastRow + OutputLastRow - 2) = Year
+            .Range("B" & ROffset + OutputLastRow & ":B" & ROffset + InputLastRow + OutputLastRow - 2) = Left(input_wb.Name, InStr(input_wb.Name, "_") - 1)
+        End With
         
         input_wb.Close SaveChanges:=False
         Set input_wb = Nothing
@@ -169,7 +176,7 @@ End Function
 
 
 
-Function IncCol(column As String, IncrementStep As Integer) As String
+Function IncCol(ByVal column As String, ByVal IncrementStep As Integer) As String
     
     Dim reminder As Double
     Dim nloops As Long
@@ -200,38 +207,43 @@ Function GetUniqueValues(ByRef Data)
     GetUniqueValues = obj.keys
 End Function
 
-
-
-
-Sub MoveRowsToSheet(ByRef InputSheet As Worksheet, ByRef OutputSheet As Worksheet)
-    Dim FirstRow As Long
-    Dim LastRow As Long
-    Dim LastCol As Long
-    Dim PharmaColNum As Long
-    Dim RowsToMove As Variant
-    'LastRow=
-    'LastCol=
-    'RowsToMovearray size = 1:LastRow
-    'PharmaColNum = InputSheet.Cells(1,1).Find("InvalidPharmacode")
-    'PharmaCol = InputSheet.Range(IncCol("A",PharmaColNum) & "1:" & IncCol("A",PharmaColNum) & LastRow)
-    For Row = LastRow To FirstRow
-        If InputSheet.Cells(Row, Pharmacol) = 1 Then
-            'add to array
-            'delete line from sheet
-        End If
-    Next Row
-    
-    'copy attributes from InputSheet
-    'paste rows in OutputSheet with offset(1,0)
-    
+Sub testMoveRowsToSheet()
+    Call MoveRowsToSheet("Move", 1, Worksheets("DATA"), Worksheets("Pharmacheck"))
 End Sub
 
 
-Sub MoveRowsToSheet()
+Sub MoveRowsToSheet(ByVal IndicatorCol As String, ByVal Criterion As Integer, ByRef InputSheet As Worksheet, ByRef OutputSheet As Worksheet)
+    
+    Dim LastRow As Long         'Last row with data in InputSheet
+    Dim LastCol As Long         'Last column with data in InputSheet
+
+    Dim IndCol As Long          'number of the column IndicatorCol
+    
+    Dim DataRange As Range      'Data Range from the input sheet
+    Dim Atributes As Range      'Row of attributes range
+    Dim RowsToMove As Range     'Data to move to the Outputsheet
+    
+    With InputSheet
+        LastRow = .Cells(.Rows.Count, "A").End(xlUp).Row
+        LastCol = .Cells(1, .Columns.Count).End(xlToLeft).column
+        Set Atributes = .Range(.Cells(1, 1), .Cells(1, LastCol))
+        Set DataRange = .Range(.Cells(2, 1), .Cells(LastRow, LastCol))
+        IndCol = .Cells.Rows(1).Find(IndicatorCol).column
+
+        .Range("A:" & IncCol("A", LastCol)).AutoFilter field:=IndCol, Criteria1:=Criterion
+        
+        Set RowsToMove = DataRange.SpecialCells(xlCellTypeVisible)
+        
+        Atributes.Copy OutputSheet.Cells(1, 1).EntireRow
+        RowsToMove.Copy OutputSheet.Cells(2, 1).EntireRow
+        
+        RowsToMove.EntireRow.Delete
+        
+        .Range("A:" & IncCol("A", LastCol)).AutoFilter
+        
+    End With
 
 End Sub
-
-
 
 
 
