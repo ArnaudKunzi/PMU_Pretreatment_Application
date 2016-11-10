@@ -47,8 +47,50 @@ Sub Refresh(control As IRibbonControl)
 End Sub
 
 Sub StartPreTreatment(control As IRibbonControl)
+    Dim colname As String
+    
+    colname = "InvalidPharmacodes"
+    
     Call DefGlobal
     Call TransferColumns
+    
+    If PARAM_TABLE.Columns(1).Find("DispatchFiles").Offset(0, 1).value Then
+
+        If Evaluate("ISREF('" & colname & "'!A1)") Then GoTo Handler
+Continue:
+        Sheets.Add(After:=Sheets(Sheets.Count)).Name = colname
+        Call MoveRowsToSheet("InvalidPharmacodes", 1, Worksheets("DATA"), Worksheets(colname))
+    End If
+
+    
+    
+    'CHECK IF IT WORKS
+    
+    
+Exit Sub
+Handler:
+    Dim Choice As Integer
+    Dim iter As Integer
+    Choice = MsgBox("Il y a déjà une feuille InvalidPharmacodes en traitment." & Chr(10) & _
+           "Écraser la feuille existante?", vbYesNoCancel)
+           
+    Select Case Choice
+        Case vbYes
+            Sheets(colname).Delete
+            GoTo Continue
+        Case vbNo
+            iter = 1
+            Do
+                iter = iter + 1
+            Loop While Evaluate("ISREF('" & colname & iter & "'!A1)") And iter <= 10
+            colname = colname & iter
+            
+            GoTo Continue
+            
+        Case vbCancel
+            Exit Sub
+    End Select
+
 End Sub
 
 
@@ -106,7 +148,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         .Range(Chr(Asc("K") + HOffset) & VOffset).value = "Champs inconnus"
             .Range(Chr(Asc("K") + HOffset) & VOffset).AddComment ("Les attributs reportés sont inconnus de l'application." & Chr(10) & "Enregistrez-les dans la table [attributes] de la" & Chr(10) & "feuille de calcul cachée [INTERNALS]. Si le type " & Chr(10) & "d'attribut n'existe pas (DBB_name)," & Chr(10) & "créez-en un nouveau dans la table suivante" & Chr(10) & "[AttributeTypeAndPlacement] et renseignez un n°" & Chr(10) & "de colonne (DBB_col) non-utilisé et un type.")
         .Range(Chr(Asc("L") + HOffset) & VOffset).value = "Pharmacode"
-            .Range(Chr(Asc("L") + HOffset) & VOffset).AddComment ("." & Chr(10) & ".")
+            .Range(Chr(Asc("L") + HOffset) & VOffset).AddComment ("Number of invalid Pharmacode detected" & Chr(10))
         
         Call FitComments
         
@@ -178,6 +220,13 @@ Sub PrepareOverviewSheet(FilesListSring As String)
                 .Range(Chr(Asc("K") + HOffset) & counter).value = Right(INTERNALS.ListObjects("file_to_load").ListColumns("unidentified_fields").DataBodyRange(counter - VOffset).value, Application.Max(Len(INTERNALS.ListObjects("file_to_load").ListColumns("unidentified_fields").DataBodyRange(counter - VOffset).value) - 1, 0))
                 Call ApplyStyle(.Range(Chr(Asc("K") + HOffset) & counter), "=""""", "xlNotEqual", "bad")
                 Call ApplyStyle(.Range(Chr(Asc("K") + HOffset) & counter), "=""""", "xlEqual", "good")
+            End If
+            
+            If PARAM_TABLE.Columns(1).Find("CheckPharmacodes").Offset(0, 1).value Then
+'L
+                .Range(Chr(Asc("L") + HOffset) & counter).value = INTERNALS.ListObjects("file_to_load").ListColumns("invalid_pharmacodes").DataBodyRange(counter - VOffset).value
+                Call ApplyStyle(.Range(Chr(Asc("L") + HOffset) & counter), "=0", "xlGreater", "bad")
+                Call ApplyStyle(.Range(Chr(Asc("L") + HOffset) & counter), "=0", "xlEqual", "good")
             End If
             
             counter = counter + 1

@@ -88,15 +88,15 @@ Sub TransferColumns()
         
         'Last row of the output file
         With output_wb.Worksheets("DATA")
-        OutputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).Row, _
-                                  .Cells(.Rows.Count, "C").End(xlUp).Row, _
-                                  .Cells(.Rows.Count, "E").End(xlUp).Row)
+        OutputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).row, _
+                                  .Cells(.Rows.Count, "C").End(xlUp).row, _
+                                  .Cells(.Rows.Count, "E").End(xlUp).row)
         End With
         'Last row of the input file
         With input_wb.Worksheets(1)
-        InputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).Row, _
-                                   .Cells(.Rows.Count, "C").End(xlUp).Row, _
-                                   .Cells(.Rows.Count, "E").End(xlUp).Row)
+        InputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).row, _
+                                   .Cells(.Rows.Count, "C").End(xlUp).row, _
+                                   .Cells(.Rows.Count, "E").End(xlUp).row)
                                    
         End With
         'Il faut maintenant intervertir les index et les valeurs de ColumnOrders
@@ -197,12 +197,12 @@ Function IncCol(ByVal column As String, ByVal IncrementStep As Integer) As Strin
     End If
 End Function
 
-Function GetUniqueValues(ByRef Data)
+Function GetUniqueValues(ByRef data)
     Dim temp As Variant
     Dim obj As Object
     Set obj = CreateObject("scripting.dictionary")
-    For i = LBound(Data) To UBound(Data)
-        obj(Data(i) & "") = ""
+    For i = LBound(data) To UBound(data)
+        obj(data(i) & "") = ""
     Next
     GetUniqueValues = obj.keys
 End Function
@@ -224,10 +224,12 @@ Sub MoveRowsToSheet(ByVal IndicatorCol As String, ByVal Criterion As Integer, By
     Dim RowsToMove As Range     'Data to move to the Outputsheet
     
     With InputSheet
-        LastRow = .Cells(.Rows.Count, "A").End(xlUp).Row
+        LastRow = .Cells(.Rows.Count, "A").End(xlUp).row
         LastCol = .Cells(1, .Columns.Count).End(xlToLeft).column
         Set Atributes = .Range(.Cells(1, 1), .Cells(1, LastCol))
         Set DataRange = .Range(.Cells(2, 1), .Cells(LastRow, LastCol))
+        
+        On Error GoTo Handler
         IndCol = .Cells.Rows(1).Find(IndicatorCol).column
 
         .Range("A:" & IncCol("A", LastCol)).AutoFilter field:=IndCol, Criteria1:=Criterion
@@ -242,7 +244,9 @@ Sub MoveRowsToSheet(ByVal IndicatorCol As String, ByVal Criterion As Integer, By
         .Range("A:" & IncCol("A", LastCol)).AutoFilter
         
     End With
-
+    
+Handler:
+        MsgBox "Column " & IndicatorCol & " not found in sheet " & InputSheet.Name
 End Sub
 
 

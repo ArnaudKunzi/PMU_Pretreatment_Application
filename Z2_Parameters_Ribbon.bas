@@ -17,7 +17,7 @@ Public Sub Store(control_id As String, value As Boolean)
         Case Is = "VerifyColumnsTitle"
         Case Is = "VerifyColumnsContent"
         'Case Is = "MergeFiles"
-        'Case Is = "DispatchFiles"
+        Case Is = "DispatchFiles"
         'Case Is = "CheckPharmacodes"
         'Case Is = ""
         'Case Is = "AuthorizeChangesOnOpening"

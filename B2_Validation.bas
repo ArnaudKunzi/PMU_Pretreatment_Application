@@ -23,6 +23,9 @@ Sub MainValidationLoop(ByRef FilesList)
         Application.ScreenUpdating = True
         counter = counter + 1
     Next FILE
+    
+    
+    
 End Sub
 
 Function CheckColumnNames(Range1 As Range)
@@ -43,11 +46,20 @@ Function CheckColumnNames(Range1 As Range)
     CheckColumnNames = "Error"
 End Function
 
-Function CheckType(ByRef ColumnData, ByRef Lookup_expectedtype, ByVal ExpectedType As String)
+Function CheckType(ByRef ColumnData, ByRef Lookup_expectedtype, ByVal ExpectedType As String, ByVal FileNumber As Long)
     Dim Unique_ColumnData As Variant
     Dim TypeViolation As String
-    Dim TypeViolationLoc
+    Dim TypeViolationLoc As String
 
+
+    If ExpectedType = "PHARMACODE" And PARAM_TABLE.Columns(1).Find("CheckPharmacodes").Offset(0, 1).value Then
+        Dim n_violations As Long
+        n_violations = CheckPharmacodes(ColumnData, ExpectedType, FileNumber)
+        
+        CheckType = ""
+        Exit Function
+    End If
+    
     Unique_ColumnData = GetUniqueValues(ColumnData)
     TypeViolation = CheckElementsType(Unique_ColumnData, ExpectedType)
     
@@ -75,7 +87,7 @@ Function CheckType(ByRef ColumnData, ByRef Lookup_expectedtype, ByVal ExpectedTy
                         TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - Len(str_search1) + 1) & i & ","
                     ElseIf StrComp(Right(TypeViolationLoc, Len(str_search2)), str_search2) = 0 And Len(TypeViolationLoc) > 2 Then
                         TypeViolationLoc = Left(TypeViolationLoc, Len(TypeViolationLoc) - Len(str_search2) + Len(CStr(i))) & "-" & i & ","
-                    Else 'If StrComp(Right(TypeViolationLoc, Len(i & ",")), i & ",") = 0 Then
+                    Else
                         TypeViolationLoc = TypeViolationLoc & i & ","
                     End If
                     
@@ -103,11 +115,17 @@ Function CheckType(ByRef ColumnData, ByRef Lookup_expectedtype, ByVal ExpectedTy
     CheckType = TypeViolationLoc
 End Function
 
+Function CheckPharmacodes(ByRef ColumnData, ByVal ExpectedType As String, row As Long) As Long
+    CheckPharmacodes = CLng(CheckElementsType(ColumnData, ExpectedType, True))
+    INTERNALS.ListObjects("file_to_load").ListColumns("invalid_pharmacodes").DataBodyRange(row).value = CheckPharmacodes
+End Function
 
-
-Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String) As String
-    'CheckType returns a string of the indexes of the list that are not of the expected type
+Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String, Optional n_mode As Boolean) As String
+    'CheckElementsType returns a string of the indexes of the list that are not of the expected type
     'we do not return the values because the separator (here we chose ",") could be hidden in one of the values
+    
+    'if n_mode == True , CheckElementsType returns instead the number of times it encountered a type violation,
+    'in a string. it is a bad practice for a function to return different types of value, I have no excuse...
     
     Select Case ExpectedType
         Case "NUM"
@@ -130,7 +148,14 @@ Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String) As St
         Case "CHR", "NONE", ""
             CheckElementsType = ""
     End Select
-    If Len(CheckElementsType) > 0 Then CheckElementsType = CheckElementsType & ","
+    
+    If n_mode Then
+        CheckElementsType = UBound(Split(CheckElementsType, ","))
+        If CheckElementsType = "-1" Then CheckElementsType = "0"
+    Else
+        If Len(CheckElementsType) > 0 Then CheckElementsType = CheckElementsType & ","
+    End If
+        
 End Function
 
 Function AssertStatus()
@@ -145,7 +170,7 @@ Function CheckForSpecialCharacters(sh As Worksheet)
     Dim r As Range
     Dim rangetoscoop As Range
     Set rangetoscoop = sh.Range(sh.Cells(2, 1), _
-                        sh.Cells(sh.Cells(sh.Rows.Count, 1).End(xlUp).Row, _
+                        sh.Cells(sh.Cells(sh.Rows.Count, 1).End(xlUp).row, _
                         sh.Cells(1, sh.Columns.Count).End(xlToLeft).column))
     For Each r In rangetoscoop
         If r.value Like "*[!0-9,a-z,A-Z,.,/]*" Then
