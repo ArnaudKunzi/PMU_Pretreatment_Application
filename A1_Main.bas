@@ -47,19 +47,19 @@ Sub Refresh(control As IRibbonControl)
 End Sub
 
 Sub StartPreTreatment(control As IRibbonControl)
-    Dim colname As String
+    Dim InPh_colname As String
     
-    colname = "InvalidPharmacodes"
+    InPh_colname = "InvalidPharmacodes"
     
     Call DefGlobal
-    Call TransferColumns
+    Call TransferColumns(InPh_colname)
     
     If PARAM_TABLE.Columns(1).Find("DispatchFiles").Offset(0, 1).value Then
 
-        If Evaluate("ISREF('" & colname & "'!A1)") Then GoTo Handler
+        If Evaluate("ISREF('" & InPh_colname & "'!A1)") Then GoTo Handler
 Continue:
-        Sheets.Add(After:=Sheets(Sheets.Count)).Name = colname
-        Call MoveRowsToSheet("InvalidPharmacodes", 1, Worksheets("DATA"), Worksheets(colname))
+        Sheets.Add(After:=Sheets(Sheets.Count)).Name = InPh_colname
+        Call MoveRowsToSheet("InvalidPharmacodes", 1, Worksheets("DATA"), Worksheets(InPh_colname))
     End If
 
     
@@ -76,14 +76,14 @@ Handler:
            
     Select Case Choice
         Case vbYes
-            Sheets(colname).Delete
+            Sheets(InPh_colname).Delete
             GoTo Continue
         Case vbNo
             iter = 1
             Do
                 iter = iter + 1
-            Loop While Evaluate("ISREF('" & colname & iter & "'!A1)") And iter <= 10
-            colname = colname & iter
+            Loop While Evaluate("ISREF('" & InPh_colname & iter & "'!A1)") And iter <= 10
+            InPh_colname = InPh_colname & iter
             
             GoTo Continue
             
@@ -135,7 +135,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         .Range(Chr(Asc("E") + HOffset) & VOffset).value = "n° EMS"
         .Range(Chr(Asc("F") + HOffset) & VOffset).value = "EMS conforme"
         .Range(Chr(Asc("G") + HOffset) & VOffset).value = "# onglets"
-            .Range(Chr(Asc("G") + HOffset) & VOffset).AddComment ("Seules les données présentes dans le" & Chr(10) & "premier onglet sont pris en compte." & Chr(10) _
+            .Range(Chr(Asc("G") + HOffset) & VOffset).AddComment ("Seules les données présentes dans le" & Chr(10) & "premier onglet sont prises en compte." & Chr(10) _
                                                                      & "assurez-vous que toutes les données" & Chr(10) & "pertinentes soient dans une" & Chr(10) _
                                                                      & "table dans le premier onglet.")
         .Range(Chr(Asc("H") + HOffset) & VOffset).value = "typage"
@@ -148,7 +148,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         .Range(Chr(Asc("K") + HOffset) & VOffset).value = "Champs inconnus"
             .Range(Chr(Asc("K") + HOffset) & VOffset).AddComment ("Les attributs reportés sont inconnus de l'application." & Chr(10) & "Enregistrez-les dans la table [attributes] de la" & Chr(10) & "feuille de calcul cachée [INTERNALS]. Si le type " & Chr(10) & "d'attribut n'existe pas (DBB_name)," & Chr(10) & "créez-en un nouveau dans la table suivante" & Chr(10) & "[AttributeTypeAndPlacement] et renseignez un n°" & Chr(10) & "de colonne (DBB_col) non-utilisé et un type.")
         .Range(Chr(Asc("L") + HOffset) & VOffset).value = "Pharmacode"
-            .Range(Chr(Asc("L") + HOffset) & VOffset).AddComment ("Number of invalid Pharmacode detected" & Chr(10))
+            .Range(Chr(Asc("L") + HOffset) & VOffset).AddComment ("Number of invalid" & Chr(10) & "Pharmacodes detected")
         
         Call FitComments
         

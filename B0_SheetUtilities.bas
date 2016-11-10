@@ -33,7 +33,7 @@ End Sub
 'End Function
 
 
-Sub TransferColumns()
+Sub TransferColumns(ByVal InPh_colname As String)
 
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
@@ -55,9 +55,14 @@ Sub TransferColumns()
     Dim FilePath As String
     Dim InputLastRow As Long
     Dim OutputLastRow As Long
+    Dim OutputLastCol As Long
     
     Dim DestinationRange As Range
     Dim DestinationColumn As String
+    
+    Dim PharmacodeColumn As Long
+    Dim PharmacodeDetectionEnabled As Boolean
+    Dim IncorrectPharmacodes As Variant
     
     Set output_wb = ActiveWorkbook
     COffset = 2
@@ -127,17 +132,35 @@ Sub TransferColumns()
         'Trim la table
         For k = LBound(InputDataTable, 1) To UBound(InputDataTable, 1)
             For p = LBound(InputDataTable, 2) To UBound(InputDataTable, 2)
+                On Error Resume Next
                 InputDataTable(k, p) = Trim(InputDataTable(k, p))
             Next p
         Next k
         
         output_wb.Activate
         
+        PharmacodeColumn = INTERNALS.ListObjects("AttributeTypeAndPlacement").ListColumns(1).DataBodyRange.Find("pharmacode").Offset(0, 1).value
+        PharmacodeDetectionEnabled = PARAM_TABLE.Columns(1).Find("CheckPharmacodes").Offset(0, 1).value
+                
         For column = LBound(CurrentFileColumnOrder) To UBound(CurrentFileColumnOrder)
             If OutputColumnOrder(column + 1) <> 0 Then
                 DestinationColumn = IncCol("A", column + COffset)
                 Set DestinationRange = output_wb.Worksheets("DATA").Range(DestinationColumn & OutputLastRow + ROffset & ":" & DestinationColumn & OutputLastRow + ROffset + InputLastRow - 2)
                 DestinationRange = Application.Transpose(Application.index(InputDataTable, OutputColumnOrder(column + 1)))
+            
+           'if column is a PHARMACODE column and pharmacode detection is enabled, flag rows with invalid pharmacodes
+                
+                If (column + 1) = PharmacodeColumn And PharmacodeDetectionEnabled Then
+                    OutputLastCol = COffset + Application.Max(INTERNALS.ListObjects("AttributeTypeAndPlacement").ListColumns("DBB_col").DataBodyRange)
+                    
+                    output_wb.Worksheets("DATA").Cells(1, OutputLastCol + 1).value = InPh_colname
+                    IncorrectPharmacodes = Split(CheckElementsType(Application.index(InputDataTable, OutputColumnOrder(column + 1)), "PHARMACODE"), ",")
+                    For k = LBound(IncorrectPharmacodes) + 1 To UBound(IncorrectPharmacodes) - 1
+                        output_wb.Worksheets("DATA").Cells(OutputLastRow + ROffset, OutputLastCol + 1).Offset(IncorrectPharmacodes(k) - 1, 0) = 1
+                    Next k
+                    output_wb.Worksheets("DATA").Range(IncCol("A", OutputLastCol) & OutputLastRow + ROffset & ":" & IncCol("A", OutputLastCol) & OutputLastRow + ROffset + InputLastRow - 2).SpecialCells(xlCellTypeBlanks).value = 0
+                    Set IncorrectPharmacodes = Nothing
+                End If
             End If
         Next column
         
@@ -146,6 +169,7 @@ Sub TransferColumns()
             .Range("B1").value = "EMS_CODE"
             .Range("A" & ROffset + OutputLastRow & ":A" & ROffset + InputLastRow + OutputLastRow - 2) = Year
             .Range("B" & ROffset + OutputLastRow & ":B" & ROffset + InputLastRow + OutputLastRow - 2) = Left(input_wb.Name, InStr(input_wb.Name, "_") - 1)
+        
         End With
         
         input_wb.Close SaveChanges:=False
@@ -174,20 +198,24 @@ Private Function StringArrayToIntArray(ByRef values()) As Integer()
     StringArrayToIntArray = adRtnVals
 End Function
 
-
+Sub testIncCol()
+    Debug.Print IncCol("A", 26)
+End Sub
 
 Function IncCol(ByVal column As String, ByVal IncrementStep As Integer) As String
     
     Dim reminder As Double
     Dim nloops As Long
+    Dim IncrementColumn As String
     reminder = Asc(column) + IncrementStep
     nloops = 1
     If (Asc(column) + IncrementStep) < Asc("Z") Then
         IncCol = Chr(Asc(column) + IncrementStep)
     Else
+        IncrementColumn = ""
         Do While (reminder > Asc("Z"))
             reminder = reminder - (Asc("Z") - Asc("A"))
-            IncCol = IncrementColumn & "A"
+            IncrementColumn = IncrementColumn & "A"
             nloops = nloops + 1
             If nloops > 10000 Then
                 Exit Do
@@ -245,6 +273,7 @@ Sub MoveRowsToSheet(ByVal IndicatorCol As String, ByVal Criterion As Integer, By
         
     End With
     
+Exit Sub
 Handler:
         MsgBox "Column " & IndicatorCol & " not found in sheet " & InputSheet.Name
 End Sub
