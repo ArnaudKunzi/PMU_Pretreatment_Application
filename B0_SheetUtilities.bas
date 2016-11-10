@@ -158,7 +158,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
                     For k = LBound(IncorrectPharmacodes) + 1 To UBound(IncorrectPharmacodes) - 1
                         output_wb.Worksheets("DATA").Cells(OutputLastRow + ROffset, OutputLastCol + 1).Offset(IncorrectPharmacodes(k) - 1, 0) = 1
                     Next k
-                    output_wb.Worksheets("DATA").Range(IncCol("A", OutputLastCol) & OutputLastRow + ROffset & ":" & IncCol("A", OutputLastCol) & OutputLastRow + ROffset + InputLastRow - 2).SpecialCells(xlCellTypeBlanks).value = 0
+                    output_wb.Worksheets("DATA").Range(IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset & ":" & IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset + InputLastRow - 2).SpecialCells(xlCellTypeBlanks).value = 0
                     Set IncorrectPharmacodes = Nothing
                 End If
             End If
