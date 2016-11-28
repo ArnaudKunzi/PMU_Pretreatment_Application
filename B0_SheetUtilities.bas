@@ -65,7 +65,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
     Dim IncorrectPharmacodes As Variant
     
     Set output_wb = ActiveWorkbook
-    COffset = 2
+    COffset = 3
     ROffset = 1
     On Error Resume Next
     Sheets("DATA").Delete
@@ -167,9 +167,13 @@ Sub TransferColumns(ByVal InPh_colname As String)
         With output_wb.Worksheets("DATA")
             .Range("A1").value = "YEAR_OF_ANALYSIS"
             .Range("B1").value = "EMS_CODE"
+            .Range("C1").value = "PHARMACIST"
             .Range("A" & ROffset + OutputLastRow & ":A" & ROffset + InputLastRow + OutputLastRow - 2) = Year
             .Range("B" & ROffset + OutputLastRow & ":B" & ROffset + InputLastRow + OutputLastRow - 2) = Left(input_wb.Name, InStr(input_wb.Name, "_") - 1)
-        
+            .Range("C" & ROffset + OutputLastRow & ":C" & ROffset + InputLastRow + OutputLastRow - 2) = Mid(input_wb.Name, _
+                                                                    InStr(input_wb.Name, "_") + 1, _
+                                                                        InStr(InStr(input_wb.Name, "_") + 1, _
+                                                                                input_wb.Name, "_") - InStr(input_wb.Name, "_") - 1)
         End With
         
         input_wb.Close SaveChanges:=False

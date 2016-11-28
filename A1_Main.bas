@@ -57,10 +57,10 @@ Sub StartPreTreatment(control As IRibbonControl)
     If Worksheets("RAPPORT") Is Nothing Then Call Refresh(Nothing)
            
     'find the column "Status"
-    StatusColumn = Worksheets("RAPPORT").Range("1:1").Find("Status").column
+    StatusColumn = IncCol("A", Worksheets("RAPPORT").Range("1:1").Find("Status").column - 1)
     
 retry:
-    If Not Worksheets("RAPPORT").Range(StatusColumn & ":" & StatusColumn).Find("Warning") Is Nothing Then
+    If Not Worksheets("RAPPORT").Range(StatusColumn & ":" & StatusColumn).Find("WARNING") Is Nothing Then
         Dim Choice1 As Variant
             Choice1 = MsgBox("les status des fichiers médicaments n'ont pas été résolus. Merci de les résoudres puis d'actualiser le rapport avant de réessayer.", vbAbortRetryIgnore, "Status invalides")
         If Choice1 = 3 Then  'abort
@@ -164,7 +164,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         .Range(Chr(Asc("C") + HOffset) & VOffset).value = "Nom"
         .Range(Chr(Asc("D") + HOffset) & VOffset).value = "Status"
         .Range(Chr(Asc("E") + HOffset) & VOffset).value = "n° EMS"
-        .Range(Chr(Asc("F") + HOffset) & VOffset).value = "EMS conforme"
+        .Range(Chr(Asc("F") + HOffset) & VOffset).value = "Pharmacien"
         .Range(Chr(Asc("G") + HOffset) & VOffset).value = "# onglets"
             .Range(Chr(Asc("G") + HOffset) & VOffset).AddComment ("Seules les données présentes dans le" & Chr(10) & "premier onglet sont prises en compte." & Chr(10) _
                                                                      & "assurez-vous que toutes les données" & Chr(10) & "pertinentes soient dans une" & Chr(10) _
@@ -214,15 +214,26 @@ Sub PrepareOverviewSheet(FilesListSring As String)
 'E
             'n° d'EMS
             .Range(Chr(Asc("E") + HOffset) & counter).value = Left(.Range("C" & counter).value, InStr(.Range("C" & counter).value, "_") - 1)
-'F
-            'n° d'EMS conforme?
             If ConformableFileName(.Range(Chr(Asc("C") + HOffset) & counter).value) Then
                 Status(1).Copy
-                .Range(Chr(Asc("F") + HOffset) & counter).PasteSpecial Paste:=xlPasteAll
+                .Range(Chr(Asc("E") + HOffset) & counter).PasteSpecial Paste:=xlPasteFormats
             Else
                 Status(2).Copy
-                .Range(Chr(Asc("F") + HOffset) & counter).PasteSpecial Paste:=xlPasteAll
+                .Range(Chr(Asc("E") + HOffset) & counter).PasteSpecial Paste:=xlPasteFormats
             End If
+'F
+            'n° d'EMS conforme?
+            .Range(Chr(Asc("F") + HOffset) & counter).value = Mid(.Range("C" & counter).value, _
+                                                                    InStr(.Range("C" & counter).value, "_") + 1, _
+                                                                        InStr(InStr(.Range("C" & counter).value, "_") + 1, _
+                                                                                .Range("C" & counter).value, "_") - InStr(.Range("C" & counter).value, "_") - 1)
+            'If ConformableFileName(.Range(Chr(Asc("C") + HOffset) & counter).value) Then
+            '    Status(1).Copy
+            '    .Range(Chr(Asc("F") + HOffset) & counter).PasteSpecial Paste:=xlPasteFormats
+            'Else
+            '    Status(2).Copy
+            '    .Range(Chr(Asc("F") + HOffset) & counter).PasteSpecial Paste:=xlPasteFormats
+            'End If
 'G
             'nb of sheets
             If (PARAM_TABLE.Columns(1).Find("VerifyNbSheets").Offset(0, 1).value) Then
