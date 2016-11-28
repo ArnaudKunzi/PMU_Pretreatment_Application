@@ -17,7 +17,7 @@ Sub LoadFiles(control As IRibbonControl)
         'FilesList = Split(FilesListString, "|")
 
     End If
-    
+    Call UpdateStage("Load")
 End Sub
 
 Sub Refresh(control As IRibbonControl)
@@ -44,6 +44,9 @@ Sub Refresh(control As IRibbonControl)
         'FilesList = Split(FilesListString, "|")
         
     End If
+    
+    Call UpdateStage("Load")
+    
 End Sub
 
 Sub StartPreTreatment(control As IRibbonControl)
@@ -92,9 +95,9 @@ Continue:
     
     
     
+    Call UpdateStage("Pretreatment")
     
-    
-    
+
 Exit Sub
 Handler:
     Dim choice2 As Integer
@@ -283,3 +286,9 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     Application.StatusBar = "Chargement terminé"
 
 End Sub
+
+Sub UpdateStage(NewStage As String)
+    STAGE.value = NewStage
+    Call GetInstructionLabel(Nothing, NewStage)  '(control As IRibbonControl, ByRef returnedVal)
+End Sub
+

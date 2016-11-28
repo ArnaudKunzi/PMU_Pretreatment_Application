@@ -14,7 +14,19 @@ End Function
 
 'Callback for Instructions getLabel
 Sub GetInstructionLabel(control As IRibbonControl, ByRef returnedVal)
-    returnedVal = "Instructions: lol"
+    returnedVal = INTERNALS.ListObjects("Instructions").ListColumns(1).DataBodyRange.Find(STAGE.value).Offset(0, 1).value '"Instructions: lol"
+    
+    'returnedVal = "uiopg" & vbCrLf & "srgsdths"
+    '"Renseignez le canton et l'année d'analyse des données puis cliquez sur « Charger les fichiers » pour selectionner les fichiers médicaments." & Chr(10) & _
+    '             "Le programme se chargera de produire un rapport sur la conformité des données." & Chr(10) & _
+    '             "Il est possible de choisir quels sont les critères de conformité dans le ruban « Paramètres»"
+    
+    'If PARAM_TABLE.Columns(1).Find("ShowEveryTabs").Offset(0, 1).value Then
+    '    Call RefreshRibbon(Tag:="*")
+    'Else
+    '    Call RefreshRibbon(Tag:="Custom*")
+    'End If
+        
 End Sub
 
 Public Sub Store(control_id As String, value As Boolean)
@@ -102,23 +114,4 @@ Sub ShowOnlyCustomTabs()
 'You can also use "rib*" because all tags start with rib in this file
     Call RefreshRibbon(Tag:="Custom*")
 End Sub
-
-
-'Callback for customUI.onLoad
-'Sub ribbonLoaded(ribbon As IRibbonUI)
-'End Sub
-
-'Callback for MyCustomHomeTab getVisible
-'Sub GetVisible(control As IRibbonControl, ByRef returnedVal)
-'End Sub
-
-'Callback for VerifyNbSheets getPressed
-'Sub Function_Clicked(control As IRibbonControl, ByRef returnedVal)
-'End Sub
-
-'Callback for VerifyNbSheets onAction
-'Sub Function_Action(control As IRibbonControl, pressed As Boolean)
-'End Sub
-
-
 

@@ -143,7 +143,7 @@ Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String, Optio
             Next j
         Case "PHARMACODE"
             For j = LBound(ColumnData) To UBound(ColumnData)
-                If Not ColumnData(j) >= 3 And ColumnData(j) <= 131070 Then CheckElementsType = CheckElementsType & "," & j
+                If Not ColumnData(j) > 0 And ColumnData(j) <= 8999999 And ColumnData(j) <> 8888887 Then CheckElementsType = CheckElementsType & "," & j
             Next j
         Case "CHR", "NONE", ""
             CheckElementsType = ""
