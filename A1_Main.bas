@@ -48,6 +48,28 @@ End Sub
 
 Sub StartPreTreatment(control As IRibbonControl)
     Dim InPh_colname As String
+    Dim StatusColumn As String
+    
+    'Check if RAPPORT sheet exists, if not, create it.
+    If Worksheets("RAPPORT") Is Nothing Then Call Refresh(Nothing)
+           
+    'find the column "Status"
+    StatusColumn = Worksheets("RAPPORT").Range("1:1").Find("Status").column
+    
+retry:
+    If Not Worksheets("RAPPORT").Range(StatusColumn & ":" & StatusColumn).Find("Warning") Is Nothing Then
+        Dim Choice1 As Variant
+            Choice1 = MsgBox("les status des fichiers médicaments n'ont pas été résolus. Merci de les résoudres puis d'actualiser le rapport avant de réessayer.", vbAbortRetryIgnore, "Status invalides")
+        If Choice1 = 3 Then  'abort
+            Exit Sub
+        ElseIf Choice1 = 4 Then
+            Call Refresh(Nothing)
+            GoTo retry 'YES it is a dreaded GoTo!
+        Else 'ignore
+            MsgBox "La conformité des données n'est pas garantie lorsque les status ne sont pas résolus.", vbExclamation
+        End If
+        
+    End If
     
     InPh_colname = "InvalidPharmacodes"
     
@@ -64,17 +86,23 @@ Continue:
 
     
     
-    'CHECK IF IT WORKS
+    'Change the ribbon focus and ribbon configuration?
+    'something like [back][filters][]
+    
+    
+    
+    
+    
     
     
 Exit Sub
 Handler:
-    Dim Choice As Integer
+    Dim choice2 As Integer
     Dim iter As Integer
-    Choice = MsgBox("Il y a déjà une feuille InvalidPharmacodes en traitment." & Chr(10) & _
+    choice2 = MsgBox("Il y a déjà une feuille InvalidPharmacodes en traitment." & Chr(10) & _
            "Écraser la feuille existante?", vbYesNoCancel)
            
-    Select Case Choice
+    Select Case choice2
         Case vbYes
             Sheets(InPh_colname).Delete
             GoTo Continue
@@ -148,7 +176,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         .Range(Chr(Asc("K") + HOffset) & VOffset).value = "Champs inconnus"
             .Range(Chr(Asc("K") + HOffset) & VOffset).AddComment ("Les attributs reportés sont inconnus de l'application." & Chr(10) & "Enregistrez-les dans la table [attributes] de la" & Chr(10) & "feuille de calcul cachée [INTERNALS]. Si le type " & Chr(10) & "d'attribut n'existe pas (DBB_name)," & Chr(10) & "créez-en un nouveau dans la table suivante" & Chr(10) & "[AttributeTypeAndPlacement] et renseignez un n°" & Chr(10) & "de colonne (DBB_col) non-utilisé et un type.")
         .Range(Chr(Asc("L") + HOffset) & VOffset).value = "Pharmacode"
-            .Range(Chr(Asc("L") + HOffset) & VOffset).AddComment ("Number of invalid" & Chr(10) & "Pharmacodes detected")
+            .Range(Chr(Asc("L") + HOffset) & VOffset).AddComment ("Nombre de pharmacodes" & Chr(10) & "invalides détectés")
         
         Call FitComments
         
@@ -238,6 +266,12 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         End With
         .Range("H:H").Columns.ColumnWidth = 10
         .Range("A1").CurrentRegion.Borders.LineStyle = xlContinuous
+        
+        lcol = .Cells(1, .Columns.Count).End(xlToLeft).column
+        lrow = .Cells(.Rows.Count, "A").End(xlUp).row
+        
+        .Range(Cells(1, lcol + 1), Cells(.Rows.Count, .Columns.Count)).EntireColumn.Hidden = True
+        .Range(Cells(lrow + 1, 1), Cells(.Rows.Count, .Columns.Count)).EntireRow.Hidden = True
     End With
     
     'RedoRib

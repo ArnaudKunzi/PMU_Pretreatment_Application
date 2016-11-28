@@ -5,7 +5,7 @@ Option Explicit
 
 
 
-Global rib As IRibbonUI
+Global Rib As IRibbonUI
 Global IndexOfSelectedItem As Integer
 Global ItemCount As Integer
 Global ListItemsRg As Range
@@ -13,12 +13,12 @@ Global ListItemsRg As Range
 ''Excel calls this went it loads our workbook because our RibbonX
 '' specified it:  onLoad="ribbonLoaded"
 Sub ribbonLoaded(ribbon As IRibbonUI)
-    Set rib = ribbon ''We capture the ribbon variable for later use, specifically to invalidate it.  When you invalidate the ribbon Excel recreates it.
+    Set Rib = ribbon ''We capture the ribbon variable for later use, specifically to invalidate it.  When you invalidate the ribbon Excel recreates it.
 End Sub
 
 
 Sub RedoRib()
-    rib.Invalidate
+    Rib.Invalidate
 End Sub
 
 ''=========Drop Down Code =========

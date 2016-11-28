@@ -13,7 +13,7 @@ Sub MainValidationLoop(ByRef FilesList)
         Application.ScreenUpdating = False
 
         Set wk = Workbooks.Open(Filename:=FILE, corruptload:=xlRepairFile)
-        wk.Windows(1).Visible = False
+        wk.Windows(1).visible = False
         
         wk.Close SaveChanges:=False
         Set wk = Nothing
