@@ -124,11 +124,12 @@ End Sub
 
 
 Function ConformableFileName(Filename As String) As Boolean
+                          'Filename Like "#&#_*" Or _
+                          'Filename Like "#&##_*" Or _
+                          'Filename Like "##&##_*" Or _
+
     ConformableFileName = Filename Like "#_*" Or _
                           Filename Like "##_*" Or _
-                          Filename Like "#&#_*" Or _
-                          Filename Like "#&##_*" Or _
-                          Filename Like "##&##_*" Or _
                           Filename Like "[A-Z]_*" Or _
                           Filename Like "[A-Z][A-Z]_*" Or _
                           Filename Like "[A-Z]#_*" Or _

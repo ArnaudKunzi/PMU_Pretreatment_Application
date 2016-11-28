@@ -12,7 +12,7 @@ Private Sub Workbook_Open()
     Year.value = Format(Now, "yyyy") - 1
     Call A_0.SetValidation
     'MsgBox ""
-    Call UpdateStage("Start")
+    'Call UpdateStage("Start")
 End Sub
 
 
