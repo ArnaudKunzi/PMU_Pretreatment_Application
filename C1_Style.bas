@@ -62,7 +62,7 @@ Sub FitComments()
 'source: https://www.extendoffice.com/documents/excel/1572-excel-autosize-comments.html#a1
 'Updateby20140325
 Dim xComment As Comment
-For Each xComment In Application.ActiveSheet.Comments
+For Each xComment In Application.ActiveSheet.comments
     xComment.Shape.TextFrame.AutoSize = True
 Next
 End Sub

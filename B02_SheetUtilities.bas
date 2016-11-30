@@ -1,4 +1,4 @@
-Attribute VB_Name = "B0_SheetUtilities"
+Attribute VB_Name = "B02_SheetUtilities"
 Sub SaveFilesList(ByRef FilesList)
     Dim table As ListObject
     Dim Path As Range
@@ -68,16 +68,17 @@ Sub TransferColumns(ByVal InPh_colname As String)
     COffset = 3
     ROffset = 1
     On Error Resume Next
-    Sheets("DATA").Delete
+    Sheets(DataSheetName).Delete
     On Error GoTo 0
     
-    Sheets.Add(After:=Sheets(Sheets.Count)).Name = "DATA"
+    Sheets.Add(After:=Sheets(Sheets.Count)).Name = DataSheetName
+    Call SetWsName(Worksheets(DataSheetName), DataSheetName)
     
     ColumnOrders = Application.Transpose(INTERNALS.ListObjects("file_to_load").ListColumns("reordering").DataBodyRange)
     
     'Name the columns:
     For i = 1 To INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange.Rows.Count
-        Worksheets("DATA").Cells(1, INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange(i) + COffset).value = INTERNALS.ListObjects("attributes").ListColumns("DBB_name").DataBodyRange(i)
+        Worksheets(DataSheetName).Cells(1, INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange(i) + COffset).value = INTERNALS.ListObjects("attributes").ListColumns("DBB_name").DataBodyRange(i)
     Next i
     
     FilePath = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange(1).value
@@ -92,7 +93,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
         
         
         'Last row of the output file
-        With output_wb.Worksheets("DATA")
+        With output_wb.Worksheets(DataSheetName)
         OutputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).row, _
                                   .Cells(.Rows.Count, "C").End(xlUp).row, _
                                   .Cells(.Rows.Count, "E").End(xlUp).row)
@@ -145,7 +146,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
         For column = LBound(CurrentFileColumnOrder) To UBound(CurrentFileColumnOrder)
             If OutputColumnOrder(column + 1) <> 0 Then
                 DestinationColumn = IncCol("A", column + COffset)
-                Set DestinationRange = output_wb.Worksheets("DATA").Range(DestinationColumn & OutputLastRow + ROffset & ":" & DestinationColumn & OutputLastRow + ROffset + InputLastRow - 2)
+                Set DestinationRange = output_wb.Worksheets(DataSheetName).Range(DestinationColumn & OutputLastRow + ROffset & ":" & DestinationColumn & OutputLastRow + ROffset + InputLastRow - 2)
                 DestinationRange = Application.Transpose(Application.index(InputDataTable, OutputColumnOrder(column + 1)))
             
            'if column is a PHARMACODE column and pharmacode detection is enabled, flag rows with invalid pharmacodes
@@ -153,18 +154,18 @@ Sub TransferColumns(ByVal InPh_colname As String)
                 If (column + 1) = PharmacodeColumn And PharmacodeDetectionEnabled Then
                     OutputLastCol = COffset + Application.Max(INTERNALS.ListObjects("AttributeTypeAndPlacement").ListColumns("DBB_col").DataBodyRange)
                     
-                    output_wb.Worksheets("DATA").Cells(1, OutputLastCol + 1).value = InPh_colname
+                    output_wb.Worksheets(DataSheetName).Cells(1, OutputLastCol + 1).value = InPh_colname
                     IncorrectPharmacodes = Split(CheckElementsType(Application.index(InputDataTable, OutputColumnOrder(column + 1)), "PHARMACODE"), ",")
                     For k = LBound(IncorrectPharmacodes) + 1 To UBound(IncorrectPharmacodes) - 1
-                        output_wb.Worksheets("DATA").Cells(OutputLastRow + ROffset, OutputLastCol + 1).Offset(IncorrectPharmacodes(k) - 1, 0) = 1
+                        output_wb.Worksheets(DataSheetName).Cells(OutputLastRow + ROffset, OutputLastCol + 1).Offset(IncorrectPharmacodes(k) - 1, 0) = 1
                     Next k
-                    output_wb.Worksheets("DATA").Range(IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset & ":" & IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset + InputLastRow - 2).SpecialCells(xlCellTypeBlanks).value = 0
+                    output_wb.Worksheets(DataSheetName).Range(IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset & ":" & IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset + InputLastRow - 2).SpecialCells(xlCellTypeBlanks).value = 0
                     Set IncorrectPharmacodes = Nothing
                 End If
             End If
         Next column
         
-        With output_wb.Worksheets("DATA")
+        With output_wb.Worksheets(DataSheetName)
             .Range("A1").value = "YEAR_OF_ANALYSIS"
             .Range("B1").value = "EMS_CODE"
             .Range("C1").value = "PHARMACIST"
@@ -182,6 +183,8 @@ Sub TransferColumns(ByVal InPh_colname As String)
         
         
     Next
+    
+    Call CreateEventsProcedure(Worksheets(DataSheetName))
     
     Application.DisplayAlerts = True
     Application.ScreenUpdating = True
@@ -229,18 +232,18 @@ Function IncCol(ByVal column As String, ByVal IncrementStep As Integer) As Strin
     End If
 End Function
 
-Function GetUniqueValues(ByRef data)
+Function GetUniqueValues(ByRef Data)
     Dim temp As Variant
     Dim obj As Object
     Set obj = CreateObject("scripting.dictionary")
-    For i = LBound(data) To UBound(data)
-        obj(data(i) & "") = ""
+    For i = LBound(Data) To UBound(Data)
+        obj(Data(i) & "") = ""
     Next
     GetUniqueValues = obj.keys
 End Function
 
 Sub testMoveRowsToSheet()
-    Call MoveRowsToSheet("Move", 1, Worksheets("DATA"), Worksheets("Pharmacheck"))
+    Call MoveRowsToSheet("Move", 1, Worksheets(DataSheetName), Worksheets("Pharmacheck"))
 End Sub
 
 

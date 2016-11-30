@@ -13,21 +13,19 @@ Public Function Function_Action(control As IRibbonControl, pressed As Boolean)
 End Function
 
 'Callback for Instructions getLabel
-Sub GetInstructionLabel(control As IRibbonControl, ByRef returnedVal)
-    returnedVal = INTERNALS.ListObjects("Instructions").ListColumns(1).DataBodyRange.Find(STAGE.value).Offset(0, 1).value '"Instructions: lol"
-    
+'Sub GetInstructionLabel(control As IRibbonControl, ByRef returnedVal)
+    'NOT WORKING SINCE NO MULTILINE COMMENT POSSIBLE
+    'returnedVal = INTERNALS.ListObjects("Instructions").ListColumns(1).DataBodyRange.Find(STAGE.value).Offset(0, 1).value '"Instructions: lol"
     'returnedVal = "uiopg" & vbCrLf & "srgsdths"
     '"Renseignez le canton et l'année d'analyse des données puis cliquez sur « Charger les fichiers » pour selectionner les fichiers médicaments." & Chr(10) & _
     '             "Le programme se chargera de produire un rapport sur la conformité des données." & Chr(10) & _
     '             "Il est possible de choisir quels sont les critères de conformité dans le ruban « Paramètres»"
-    
     'If PARAM_TABLE.Columns(1).Find("ShowEveryTabs").Offset(0, 1).value Then
     '    Call RefreshRibbon(Tag:="*")
     'Else
     '    Call RefreshRibbon(Tag:="Custom*")
     'End If
-        
-End Sub
+'End Sub
 
 Public Sub Store(control_id As String, value As Boolean)
     DefGlobal
@@ -40,10 +38,10 @@ Public Sub Store(control_id As String, value As Boolean)
         'Case Is = "MergeFiles"
         Case Is = "DispatchFiles"
         Case Is = "CheckPharmacodes"
-        'Case Is = ""
+        'Case Is = "TraceChanges"
         'Case Is = "AuthorizeChangesOnOpening"
         'Case Is = "SaveReadOnly"
-        'Case Is = "SaveinSeparateSheets"
+        Case Is = "SaveinSeparateSheets"
         Case Is = "ShowEveryTabs"
             If value Then
                 Call ShowAllTabs

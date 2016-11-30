@@ -1,4 +1,4 @@
-Attribute VB_Name = "B1_Loading"
+Attribute VB_Name = "B11_Loading"
 Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
 
     Dim wk As Workbook
@@ -72,8 +72,8 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
                             'Debug.Print Vnames(i) & " " & ColumnOrder(i - 1)
                             'On vérifie le type des données de la colonne
                             curr_col_nrows = wk.Worksheets(1).Cells(wk.Worksheets(1).Rows.Count, VnamesRange(i).column).End(xlUp).row
-                            data = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
-                            TypeViolation = CheckType(data, Lookup_expectedtype, Lookup_expectedtype(curr_col_num), counter)
+                            Data = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
+                            TypeViolation = CheckType(Data, Lookup_expectedtype, Lookup_expectedtype(curr_col_num), counter)
                             If Len(TypeViolation) > 0 Then
                                 StrTypeViolation = StrTypeViolation & "Col. " & Vnames(i) & ": l. " & TypeViolation & Chr(10)
                             End If

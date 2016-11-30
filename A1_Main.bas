@@ -50,7 +50,7 @@ Sub Refresh(control As IRibbonControl)
 End Sub
 
 Sub StartPreTreatment(control As IRibbonControl)
-    Dim InPh_colname As String
+
     Dim StatusColumn As String
     
     'Check if RAPPORT sheet exists, if not, create it.
@@ -74,17 +74,17 @@ retry:
         
     End If
     
-    InPh_colname = "InvalidPharmacodes"
-    
     Call DefGlobal
     Call TransferColumns(InPh_colname)
     
     If PARAM_TABLE.Columns(1).Find("DispatchFiles").Offset(0, 1).value Then
 
         If Evaluate("ISREF('" & InPh_colname & "'!A1)") Then GoTo Handler
-Continue:
+continue:
         Sheets.Add(After:=Sheets(Sheets.Count)).Name = InPh_colname
-        Call MoveRowsToSheet("InvalidPharmacodes", 1, Worksheets("DATA"), Worksheets(InPh_colname))
+        Call SetWsName(Worksheets(InPh_colname), InPh_colname)
+        Call MoveRowsToSheet("InvalidPharmacodes", 1, Worksheets(DataSheetName), Worksheets(InPh_colname))
+        Call CreateEventsProcedure(Worksheets(InPh_colname))
     End If
 
     
@@ -108,7 +108,7 @@ Handler:
     Select Case choice2
         Case vbYes
             Sheets(InPh_colname).Delete
-            GoTo Continue
+            GoTo continue
         Case vbNo
             iter = 1
             Do
@@ -116,7 +116,7 @@ Handler:
             Loop While Evaluate("ISREF('" & InPh_colname & iter & "'!A1)") And iter <= 10
             InPh_colname = InPh_colname & iter
             
-            GoTo Continue
+            GoTo continue
             
         Case vbCancel
             Exit Sub
@@ -148,6 +148,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     Application.DisplayAlerts = True
     On Error GoTo 0
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = "RAPPORT"
+    Call SetWsName(Worksheets("RAPPORT"), "A_1")
     
     nb_sheets = HowManySheets(FilesList)
     
@@ -300,6 +301,6 @@ End Sub
 
 Sub UpdateStage(NewStage As String)
     STAGE.value = NewStage
-    Call GetInstructionLabel(Nothing, NewStage)  '(control As IRibbonControl, ByRef returnedVal)
+    'Call GetInstructionLabel(Nothing, NewStage)  '(control As IRibbonControl, ByRef returnedVal)
 End Sub
 

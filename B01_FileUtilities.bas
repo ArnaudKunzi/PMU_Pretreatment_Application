@@ -1,4 +1,4 @@
-Attribute VB_Name = "B0_FileUtilities"
+Attribute VB_Name = "B01_FileUtilities"
 Public Function SelectFile(Many As Boolean)
     Dim FileDialog As Office.FileDialog
     Set FileDialog = Application.FileDialog(msoFileDialogOpen)
@@ -31,7 +31,6 @@ Public Function SelectFile(Many As Boolean)
     Set FileDialog = Nothing
     SelectFile = FILE
 End Function
-
 
 
 

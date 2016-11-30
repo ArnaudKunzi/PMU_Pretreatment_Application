@@ -15,7 +15,9 @@ Private Sub Workbook_Open()
     'Call UpdateStage("Start")
 End Sub
 
-
+'Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Source As Range)
+' runs when a sheet is changed
+'End Sub
 
 Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
     Call ExportAllComponents

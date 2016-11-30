@@ -1,4 +1,4 @@
-Attribute VB_Name = "B2_Validation"
+Attribute VB_Name = "B12_Validation"
 Sub MainValidationLoop(ByRef FilesList)
 'unused yet
     Dim wk As Workbook
@@ -161,9 +161,6 @@ End Function
 Function AssertStatus()
     
 End Function
-
-
-
 
 Function CheckForSpecialCharacters(sh As Worksheet)
     'Ne fonctionne pas encore, il faut changer la condition du like
