@@ -3,13 +3,30 @@ Dim Rib As IRibbonUI
 Public MyTag As String
 
 
-Public Function Function_Clicked(control As IRibbonControl, ByRef pressed)
+Public Sub Function_Clicked(control As IRibbonControl, ByRef pressed)
+    
     pressed = GetKey(control.ID)
-End Function
+    MsgBox control.ID & " " & pressed
+End Sub
+
+
+'Callback for TbtnToggleSeparateByPhStatus getPressed
+'Sub Function_Clicked(control As IRibbonControl, ByRef returnedVal)
+
+'End Sub
+
+
 
 Public Function Function_Action(control As IRibbonControl, pressed As Boolean)
     Store control.ID, pressed
-    'MsgBox control.ID & " " & pressed
+    MsgBox control.ID & " " & pressed
+    
+    '    Select Case control.ID
+    'Case Is = "TbtnToggleSeparateByPhStatus"
+    '
+    'Case Else
+    'End Select
+    
 End Function
 
 'Callback for Instructions getLabel
@@ -28,7 +45,7 @@ End Function
 'End Sub
 
 Public Sub Store(control_id As String, value As Boolean)
-    DefGlobal
+    Call DefGlobal
     PARAM_TABLE.Columns(1).Find(control_id).Offset(0, 1).value = value
     
     Select Case control_id
@@ -38,10 +55,12 @@ Public Sub Store(control_id As String, value As Boolean)
         'Case Is = "MergeFiles"
         Case Is = "DispatchFiles"
         Case Is = "CheckPharmacodes"
-        'Case Is = "TraceChanges"
+        'Case Is = "TrackChanges"
         'Case Is = "AuthorizeChangesOnOpening"
         'Case Is = "SaveReadOnly"
         Case Is = "SaveinSeparateSheets"
+        Case Is = "TbtnToggleSeparateByPhStatus"
+            'Call TbtnToggleSeparateByPhStatus(value)
         Case Is = "ShowEveryTabs"
             If value Then
                 Call ShowAllTabs
@@ -113,3 +132,14 @@ Sub ShowOnlyCustomTabs()
     Call RefreshRibbon(Tag:="Custom*")
 End Sub
 
+' Macro ON ACTION
+
+Sub TbtnToggleSeparateByPhStatus(control As IRibbonControl, pressed As Boolean)
+    Store control.ID, pressed
+    Call DefGlobal
+    If Not PARAM_TABLE.Columns(1).Find("TbtnToggleSeparateByPhStatus").Offset(0, 1).value Then
+        Call MergeSheets
+    Else
+        Call SplitSheets
+    End If
+End Sub

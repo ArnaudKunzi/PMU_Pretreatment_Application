@@ -15,16 +15,21 @@ Sub CreateEventsProcedure(WorksheetToInject As Worksheet)
             LineNum = .CreateEventProc("Change", "Worksheet")
             LineNum = LineNum + 1
             .InsertLines LineNum, vbTab & "Call RegisterChange(Target)"
+            
             'OnSelectionChange
             LineNum = .CreateEventProc("SelectionChange", "Worksheet")
+            LineNum = LineNum + 1
+             .InsertLines LineNum, vbTab & "If Target.Count>10000 Then Exit Sub"
             LineNum = LineNum + 1
             .InsertLines LineNum, vbTab & "LastValueSelected = Application.Transpose(Target.value)"
             LineNum = LineNum + 1
             .InsertLines LineNum, vbTab & "LastCommentsSelected = GetComments(Target)"
+            
             'Activate
             LineNum = .CreateEventProc("Activate", "Worksheet")
             LineNum = LineNum + 1
             .InsertLines LineNum, vbTab & "Call AddToCellMenu"
+            
             'Deactivate
             LineNum = .CreateEventProc("Deactivate", "Worksheet")
             LineNum = LineNum + 1

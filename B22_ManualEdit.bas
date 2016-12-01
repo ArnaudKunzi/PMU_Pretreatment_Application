@@ -6,6 +6,8 @@ Sub RegisterChange(ChangeRange As Range)
     Dim OldComments As Variant
     Dim rly As Integer
     
+    If ChangeRange.Count > 10000 Then GoTo HandleTooManyPaste
+    
     OldComments = Split(LastCommentsSelected, "||")
     
     With ChangeRange
@@ -14,7 +16,7 @@ Sub RegisterChange(ChangeRange As Range)
                 
             If .Count > 1 Then
                 'if we replace several cells
-                On Error GoTo Handle
+                On Error GoTo HandleInequalRanges
                 If UBound(NewValues) = UBound(LastValueSelected) Then
                     If Not Join(NewValues, "|") = Join(LastValueSelected, "|") Then
                         On Error GoTo 0
@@ -31,7 +33,7 @@ Sub RegisterChange(ChangeRange As Range)
                         Next i
                     End If
                 Else
-                    GoTo Handle
+                    GoTo HandleInequalRanges
                 End If
             'if we replace a single cell
             Else
@@ -53,7 +55,7 @@ Sub RegisterChange(ChangeRange As Range)
     End With
         
 Exit Sub
-Handle:
+HandleInequalRanges:
     With Application
         .EnableEvents = False
         .Undo
@@ -61,6 +63,16 @@ Handle:
      End With
     MsgBox "Pour raison de sécurité, l'application n'autorise pas les collages sans" & _
     " sélection explicite de la plage de destination. Le collage a été annulé.", vbCritical
+    Exit Sub
+HandleTooManyPaste:
+    With Application
+        .EnableEvents = False
+        .Undo
+        .EnableEvents = True
+     End With
+    MsgBox "Pour raison de sécurité, l'application n'autorise pas les collages de plus" & _
+    " de 10'000 cellules. Le collage a été annulé.", vbCritical
+    Exit Sub
 End Sub
 
 Sub test()
@@ -86,6 +98,7 @@ Sub ProduceLog(control As IRibbonControl)
     
     If Not Evaluate("ISREF('" & "LOG_" & Year & "'!A1)") Then
         Sheets.Add(After:=Sheets(Sheets.Count)).Name = LogSheetName
+        Worksheets(LogSheetName).Tab.ColorIndex = EXPORTCOLOR
         Call SetWsName(Worksheets(LogSheetName), "LOG_EDITS")
     Else
         Worksheets(LogSheetName).Cells.Clear

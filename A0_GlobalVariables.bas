@@ -12,6 +12,7 @@ Global LastValueSelected As Variant
 Global LastCommentsSelected As Variant
 
 Global EDITCOLOR As Integer
+Global EXPORTCOLOR As Integer
 
 Sub DefGlobal()
     Set Year = A_0.Range("E7")
@@ -24,4 +25,8 @@ Sub DefGlobal()
     LogSheetName = "LOG_" & Year
     
     EDITCOLOR = 8
+    EXPORTCOLOR = 23
 End Sub
+
+
+

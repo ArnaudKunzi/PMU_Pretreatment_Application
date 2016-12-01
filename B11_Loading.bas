@@ -1,4 +1,25 @@
 Attribute VB_Name = "B11_Loading"
+Sub LoadFiles(control As IRibbonControl)
+    Dim FilesListString As String
+    Dim FileList As Variant
+    Call DefGlobal
+    
+    If (Len(Year.value) <> 0 And Len(Canton) <> 0) Then
+        FilesListString = SelectFile(True)
+    Else
+        MsgBox "année d'analyse et/ou canton à analyser non renseigné.", vbCritical
+        Exit Sub
+    End If
+    
+    'Overwrite the statistics sheet
+    If Len(FilesListString) <> 0 Then
+        Call PrepareOverviewSheet(FilesListString)
+        'FilesList = Split(FilesListString, "|")
+
+    End If
+    Call UpdateStage("Load")
+End Sub
+
 Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
 
     Dim wk As Workbook
@@ -72,8 +93,8 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
                             'Debug.Print Vnames(i) & " " & ColumnOrder(i - 1)
                             'On vérifie le type des données de la colonne
                             curr_col_nrows = wk.Worksheets(1).Cells(wk.Worksheets(1).Rows.Count, VnamesRange(i).column).End(xlUp).row
-                            DATA = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
-                            TypeViolation = CheckType(DATA, Lookup_expectedtype, Lookup_expectedtype(curr_col_num), counter)
+                            Data = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
+                            TypeViolation = CheckType(Data, Lookup_expectedtype, Lookup_expectedtype(curr_col_num), counter)
                             If Len(TypeViolation) > 0 Then
                                 StrTypeViolation = StrTypeViolation & "Col. " & Vnames(i) & ": l. " & TypeViolation & Chr(10)
                             End If
@@ -123,23 +144,33 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
 End Sub
 
 
-Function ConformableFileName(Filename As String) As Boolean
-                          'Filename Like "#&#_*" Or _
-                          'Filename Like "#&##_*" Or _
-                          'Filename Like "##&##_*" Or _
-
-    ConformableFileName = Filename Like "#_*" Or _
-                          Filename Like "##_*" Or _
-                          Filename Like "[A-Z]_*" Or _
-                          Filename Like "[A-Z][A-Z]_*" Or _
-                          Filename Like "[A-Z]#_*" Or _
-                          Filename Like "[A-Z]##_*"
-    'ConformableFileName = ConformableFileName * Not Filename Like "[!0-9,A-Z]_"
-End Function
-
-
-Sub test()
-    Debug.Print ConformableFileName("1_Barbay_Baud_medicaments_2015_brut.xlsx")
+Sub Refresh(control As IRibbonControl)
+    Dim FilesListString As String
+    Dim FilesList As Variant
+    Dim table As ListObject
+    Dim Path As Range
+    
+    Call DefGlobal
+    
+    Set table = INTERNALS.ListObjects("file_to_load")
+    Set Path = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange
+    
+    FilesListString = Path(1).value & table.ListColumns(2).DataBodyRange(1).value
+    
+    If table.ListColumns(2).DataBodyRange(2).value <> "" Then
+        For i = 2 To table.ListRows.Count
+            FilesListString = FilesListString & "|" & Path(1).value & table.ListColumns(2).DataBodyRange(i).value
+        Next i
+    End If
+    
+    If Len(FilesListString) <> 0 Then
+        Call PrepareOverviewSheet(FilesListString)
+        'FilesList = Split(FilesListString, "|")
+        
+    End If
+    
+    Call UpdateStage("Load")
+    
 End Sub
 
 Function HowManySheets(ByRef FilesList) As Variant

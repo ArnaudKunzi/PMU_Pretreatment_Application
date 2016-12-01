@@ -28,6 +28,28 @@ Sub MainValidationLoop(ByRef FilesList)
     
 End Sub
 
+
+Function ConformableFileName(Filename As String) As Boolean
+                          'Filename Like "#&#_*" Or _
+                          'Filename Like "#&##_*" Or _
+                          'Filename Like "##&##_*" Or _
+
+    ConformableFileName = Filename Like "#_*" Or _
+                          Filename Like "##_*" Or _
+                          Filename Like "[A-Z]_*" Or _
+                          Filename Like "[A-Z][A-Z]_*" Or _
+                          Filename Like "[A-Z]#_*" Or _
+                          Filename Like "[A-Z]##_*"
+    'ConformableFileName = ConformableFileName * Not Filename Like "[!0-9,A-Z]_"
+End Function
+
+
+Sub testConformableFileName()
+    Debug.Print ConformableFileName("1_Barbay_Baud_medicaments_2015_brut.xlsx")
+End Sub
+
+
+
 Function CheckColumnNames(Range1 As Range)
     Dim a As Application
     Set a = Application
