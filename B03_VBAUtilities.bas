@@ -18,17 +18,17 @@ Sub CreateEventsProcedure(WorksheetToInject As Worksheet)
             'OnSelectionChange
             LineNum = .CreateEventProc("SelectionChange", "Worksheet")
             LineNum = LineNum + 1
-            '.InsertLines LineNum, vbTab & "If Target.Cells.Count > 10 Then rly = MsgBox" & DQUOTE & "Éditer " & Target.Cells.Count & " cellules à la fois? " & DQUOTE & ", vbyesno"
-            'LineNum = LineNum + 1
-            '.InsertLines LineNum, vbTab & "LastValueSelected = CStr(Target(1).value)"
-            'LineNum = LineNum + 1
-            '.InsertLines LineNum, vbTab & "LastValueSelected = CStr(Target(1).value)"
-            ' LineNum = LineNum + 1
-            '.InsertLines LineNum, vbTab & "Else"
-            'LineNum = LineNum + 1
             .InsertLines LineNum, vbTab & "LastValueSelected = Application.Transpose(Target.value)"
             LineNum = LineNum + 1
             .InsertLines LineNum, vbTab & "LastCommentsSelected = GetComments(Target)"
+            'Activate
+            LineNum = .CreateEventProc("Activate", "Worksheet")
+            LineNum = LineNum + 1
+            .InsertLines LineNum, vbTab & "Call AddToCellMenu"
+            'Deactivate
+            LineNum = .CreateEventProc("Deactivate", "Worksheet")
+            LineNum = LineNum + 1
+            .InsertLines LineNum, vbTab & "Call DeleteFromCellMenu"
         End With
 End Sub
 

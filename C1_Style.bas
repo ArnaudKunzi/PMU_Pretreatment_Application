@@ -81,6 +81,6 @@ Function pointsToChars(x, startcolumn) As Integer
 'source: http://stackoverflow.com/questions/28439773/excel-vba-fit-columns-to-page
 
   p = Range(IncCol("A", startcolumn - 1 + 1) & "1").Width
-  c = Range(IncCol("A", startcolumn - 1 + 1) & "1").ColumnWidth
-  pointsToChars = x * c / p
+  C = Range(IncCol("A", startcolumn - 1 + 1) & "1").ColumnWidth
+  pointsToChars = x * C / p
 End Function

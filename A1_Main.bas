@@ -93,7 +93,7 @@ continue:
     'something like [back][filters][]
     
     
-    
+    Call AddToCellMenu
     
     Call UpdateStage("Pretreatment")
     

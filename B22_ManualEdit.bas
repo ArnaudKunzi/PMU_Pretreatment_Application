@@ -44,7 +44,8 @@ Sub RegisterChange(ChangeRange As Range)
                     Else
                         .AddComment OldComments(1) & vbNewLine & Format(Now(), "yyyy.mm.dd hh:mm") & "|" & Application.UserName & ": " & .value
                     End If
-                    .Comment.Shape.TextFrame.AutoSize = True
+                    'already in: Call CommentStyle(ChangeRange)
+                    '.Comment.Shape.TextFrame.AutoSize = True
                 End If
             End If
             .Interior.ColorIndex = EDITCOLOR
@@ -75,19 +76,23 @@ Sub ProduceLog(control As IRibbonControl)
     
 
     Set ws = ActiveSheet
+    
     If Not (InStr(ws.CodeName, DataSheetName) <> 0 Or ws.CodeName = InPh_colname) Then Exit Sub
+    
+    If ws.comments.Count = 0 Then
+        MsgBox "Rien à journaliser", vbExclamation
+        Exit Sub
+    End If
     
     If Not Evaluate("ISREF('" & "LOG_" & Year & "'!A1)") Then
         Sheets.Add(After:=Sheets(Sheets.Count)).Name = LogSheetName
-        'Worksheets(LogSheetName).Activate
         Call SetWsName(Worksheets(LogSheetName), "LOG_EDITS")
-        'LOG_EDITS.Range("A1").value = "HAHA" 'Array("Activity", "2")
     Else
         Worksheets(LogSheetName).Cells.Clear
     End If
-
-    Worksheets(LogSheetName).Range("A1:C1") = Split("Date|Éditeur|Édition", "|")
-
+    
+    Worksheets(LogSheetName).Range("A1").value = "LOG FEUILLE " & ws.Name
+    
     ReDim CommentsTexts(ws.comments.Count - 1)
     i = 0
     For Each CellComment In ws.comments
@@ -134,21 +139,22 @@ End Sub
 Sub CommentStyle(ByRef rangewithcomment As Range) 'ByRef ws As Worksheet)
     
     Dim CommentsToStyle As Comment
-    'CommentsToStyle = rangewithcomment.Comment
-    
     For Each cellwithcomment In rangewithcomment 'ws.comments
         Set CommentsToStyle = cellwithcomment.Cells.Comment
-        With CommentsToStyle
-            .Shape.AutoShapeType = msoShapeRoundedRectangle
-            .Shape.TextFrame.Characters.Font.Name = "Tahoma"
-            .Shape.TextFrame.Characters.Font.Size = 8
-            .Shape.TextFrame.Characters.Font.ColorIndex = 1
-            .Shape.Line.ForeColor.RGB = RGB(0, 0, 0)
-            .Shape.Line.BackColor.RGB = RGB(255, 255, 255)
-            .Shape.Fill.visible = msoTrue
-            .Shape.Fill.ForeColor.RGB = RGB(153, 255, 255)
-            '.Shape.Fill.OneColorGradient msoGradientDiagonalUp, 1, 0.5
-        End With
+        If CommentsToStyle Is Nothing Then GoTo NextIteration
+            With CommentsToStyle
+                .Shape.TextFrame.AutoSize = True
+                .Shape.AutoShapeType = msoShapeRoundedRectangle
+                .Shape.TextFrame.Characters.Font.Name = "Tahoma"
+                .Shape.TextFrame.Characters.Font.Size = 8
+                .Shape.TextFrame.Characters.Font.ColorIndex = 1
+                .Shape.Line.ForeColor.RGB = RGB(0, 0, 0)
+                .Shape.Line.BackColor.RGB = RGB(255, 255, 255)
+                .Shape.Fill.visible = msoTrue
+                .Shape.Fill.ForeColor.RGB = RGB(153, 255, 255)
+                '.Shape.Fill.OneColorGradient msoGradientDiagonalUp, 1, 0.5
+            End With
+NextIteration:
     Next cellwithcomment
 
 End Sub
@@ -169,4 +175,57 @@ Function GetComments(Target As Range)
     Next i
     GetComments = Join(comments, "||")
 End Function
+
+Sub RestoreFirstValue()
+    Call DefGlobal
+    Dim commentcontent As String
+    Dim FirstValue As Variant
+    On Error GoTo Abort
+    Application.EnableEvents = False
+     For Each C In Selection
+        With C
+            If .Interior.ColorIndex = EDITCOLOR Then
+                commentcontent = .Comment.Text
+                commentcontent = Left(commentcontent, InStr(commentcontent, vbNewLine) - 1)
+                FirstValue = Right(commentcontent, Len(commentcontent) - InStrRev(commentcontent, ": ") - 1)
+                .value = FirstValue
+                .ClearComments
+                .Interior.ColorIndex = xlNone
+            End If
+        End With
+    Next C
+Abort:
+     Application.EnableEvents = True
+End Sub
+
+Sub RevertToLastValue()
+    Call DefGlobal
+    Dim LastValue As Variant
+    Dim commentcontent As String
+    Dim temparray As Variant
+    'On Error GoTo Abort
+    Application.EnableEvents = False
+    For Each C In Selection
+        With C
+            If .Interior.ColorIndex = EDITCOLOR Then
+                commentcontent = .Comment.Text
+                temparray = Split(commentcontent, vbNewLine)
+                commentcontent = temparray(UBound(temparray) - 1)
+                LastValue = Right(commentcontent, Len(commentcontent) - InStrRev(commentcontent, ": ") - 1)
+                .value = LastValue
+                .ClearComments
+                If UBound(temparray) > 1 Then
+                    ReDim Preserve temparray(UBound(temparray) - 1)
+                    commentcontent = Join(temparray, vbNewLine)
+                    .AddComment commentcontent
+                    Call CommentStyle(Range(C.Address))
+                Else
+                    .Interior.ColorIndex = xlNone
+                End If
+            End If
+        End With
+    Next C
+Abort:
+     Application.EnableEvents = True
+End Sub
 
