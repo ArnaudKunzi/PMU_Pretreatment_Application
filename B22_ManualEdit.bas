@@ -96,7 +96,7 @@ Sub ProduceLog(control As IRibbonControl)
         Exit Sub
     End If
     
-    If Not Evaluate("ISREF('" & "LOG_" & Year & "'!A1)") Then
+    If Not SheetExists("LOG_" & Year) Then
         Sheets.Add(After:=Sheets(Sheets.Count)).Name = LogSheetName
         Worksheets(LogSheetName).Tab.ColorIndex = EXPORTCOLOR
         Call SetWsName(Worksheets(LogSheetName), "LOG_EDITS")

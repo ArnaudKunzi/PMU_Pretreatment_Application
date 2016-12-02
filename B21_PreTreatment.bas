@@ -27,15 +27,21 @@ retry:
     Call DefGlobal
     Call TransferColumns(InPh_colname)
     
-    If PARAM_TABLE.Columns(1).Find("DispatchFiles").Offset(0, 1).value Then
-
-        If Evaluate("ISREF('" & InPh_colname & "'!A1)") Then GoTo Handler
-continue:
-        Sheets.Add(After:=Sheets(Sheets.Count)).Name = InPh_colname
-        Worksheets(InPh_colname).Tab.ColorIndex = EXPORTCOLOR
-        Call SetWsName(Worksheets(InPh_colname), InPh_colname)
-        Call SplitSheets
-    End If
+'   DEPRECATED
+'    If PARAM_TABLE.Columns(1).Find("DispatchFiles").Offset(0, 1).value Then
+'
+'        If SheetExists(InPh_colname) Then GoTo Handler
+'continue:
+'        Sheets.Add(After:=Sheets(Sheets.Count)).Name = InPh_colname
+'        Worksheets(InPh_colname).Tab.ColorIndex = EXPORTCOLOR
+'        Call SetWsName(Worksheets(InPh_colname), InPh_colname)
+'
+'        PARAM_TABLE.Columns(1).Find("TbtnToggleSeparateByPhStatus").Offset(0, 1).value = True
+'        Call SplitSheets
+'        Call ShowOnlyCustomTabs
+'
+'
+'    End If
 
     
     
@@ -47,31 +53,30 @@ continue:
     
     Call UpdateStage("Pretreatment")
     
-
-Exit Sub
-Handler:
-    Dim choice2 As Integer
-    Dim iter As Integer
-    choice2 = MsgBox("Il y a déjà une feuille InvalidPharmacodes en traitment." & Chr(10) & _
-           "Écraser la feuille existante?", vbYesNoCancel)
-           
-    Select Case choice2
-        Case vbYes
-            Sheets(InPh_colname).Delete
-            GoTo continue
-        Case vbNo
-            iter = 1
-            Do
-                iter = iter + 1
-            Loop While Evaluate("ISREF('" & InPh_colname & iter & "'!A1)") And iter <= 10
-            InPh_colname = InPh_colname & iter
-            
-            GoTo continue
-            
-        Case vbCancel
-            Exit Sub
-    End Select
-
+'DEPRECATED
+'Exit Sub
+'Handler:
+'    Dim choice2 As Integer
+'    Dim iter As Integer
+'    choice2 = MsgBox("Il y a déjà une feuille InvalidPharmacodes en traitment." & Chr(10) & _
+'           "Écraser la feuille existante?", vbYesNoCancel)
+'
+'    Select Case choice2
+'        Case vbYes
+'            Sheets(InPh_colname).Delete
+'            GoTo continue
+'        Case vbNo
+'            iter = 1
+'            Do
+'                iter = iter + 1
+'            Loop While SheetExists(InPh_colname & iter) And iter <= 10
+'            InPh_colname = InPh_colname & iter
+'
+'            GoTo continue
+'
+'        Case vbCancel
+'            Exit Sub
+'    End Select
 End Sub
 
 
@@ -229,7 +234,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
     Next
     
     Call CreateEventsProcedure(Worksheets(DataSheetName))
-    
+    AppActivate Application.Caption
     Application.DisplayAlerts = True
     Application.ScreenUpdating = True
     
@@ -248,6 +253,8 @@ Sub MoveRowsToSheet(ByVal IndicatorCol As String, ByVal Criterion As Integer, By
     Dim DataRange As Range      'Data Range from the input sheet
     Dim Atributes As Range      'Row of attributes range
     Dim RowsToMove As Range     'Data to move to the Outputsheet
+    
+    Application.EnableEvents = False
     
     With InputSheet
         LastRow = .Cells(.Rows.Count, "A").End(xlUp).row
@@ -271,6 +278,8 @@ Sub MoveRowsToSheet(ByVal IndicatorCol As String, ByVal Criterion As Integer, By
         
     End With
     
+    Application.EnableEvents = True
+    
 Exit Sub
 Handler:
         MsgBox "Column " & IndicatorCol & " not found in sheet " & InputSheet.Name
@@ -283,6 +292,8 @@ Sub MergeSheets()
 
     Call DefGlobal
     Application.EnableEvents = False
+    
+    If Not SheetExists(InPh_colname) Then Exit Sub
     
     Dim in_LastRow As Long
     Dim in_LastCol As Long
@@ -313,7 +324,7 @@ Sub SplitSheets()
     Call DefGlobal
     Application.EnableEvents = False
     
-    If Evaluate("ISREF('" & InPh_colname & "'!A1)") Then Exit Sub
+    If SheetExists(InPh_colname) Then Exit Sub
     
     Sheets.Add(After:=Sheets(Sheets.Count)).Name = InPh_colname
     Worksheets(InPh_colname).Tab.ColorIndex = EXPORTCOLOR
@@ -322,7 +333,7 @@ Sub SplitSheets()
     Call MoveRowsToSheet(InPh_colname, 1, Worksheets(DataSheetName), Worksheets(InPh_colname))
     
     Call CreateEventsProcedure(Worksheets(InPh_colname))
-    
+    AppActivate Application.Caption
     Application.EnableEvents = True
 End Sub
 

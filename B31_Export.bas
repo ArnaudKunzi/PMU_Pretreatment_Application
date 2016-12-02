@@ -1,33 +1,25 @@
 Attribute VB_Name = "B31_Export"
-Sub Export()
+Sub ExportSeparately(control As IRibbonControl)
+    Call Export(True)
+End Sub
+
+Sub ExportTogether(control As IRibbonControl)
+    Call Export(False)
+End Sub
+
+Sub Export(separately As Boolean)
     Call DefGlobal
-    Dim DispatchFiles As Boolean
+    
+    Dim PrevSheet As Worksheet
+    Dim ExportWorkbook As Workbook
+    
     Dim SaveinSeparateSheets As Boolean
     Dim TrackChanges As Boolean
     Dim SheetsToExport As String
     
+    SaveInSameWB = PARAM_TABLE.Columns(1).Find("SaveInSameWB").Offset(0, 1).value
     
-    DispatchFiles = PARAM_TABLE.Columns(1).Find("DispatchFiles").Offset(0, 1).value
-    SaveinSeparateSheets = PARAM_TABLE.Columns(1).Find("SaveinSeparateSheets").Offset(0, 1).value
-    
-    If DispatchFiles And Not SaveinSeparateSheets Then
-        Call MergeSheets
-    ElseIf (Not DispatchFiles) And SaveinSeparateSheets Then
-        If Evaluate("ISREF('" & InPh_colname & "'!A1)") Then GoTo Handler
-continue:
-        Sheets.Add(After:=Sheets(Sheets.Count)).Name = InPh_colname
-        Worksheets(InPh_colname).Tab.ColorIndex = EXPORTCOLOR
-        Call MoveRowsToSheet("InvalidPharmacodes", 1, Worksheets(DataSheetName), Worksheets(InPh_colname))
-    End If
-    
-    
-    'If SaveinSeparateSheets Then
-    '    SheetsToExport = Array(DataSheetName, InPh_colname)
-    'Else
-    '    SheetsToExport = DataSheetName
-    'End If
-    
-    'If TrackChanges Then Call
+    If Not separately Then Call MergeSheets
     
     'List of sheets to export (those with tab colored EXPORTCOLOR)
     For Each sheet In Worksheets
@@ -41,34 +33,48 @@ continue:
     Next sheet
     
     
+    'Ask for save path
+    varResult = Application.GetSaveAsFilename(INTERNALS.ListObjects("SavePath").ListColumns(1).DataBodyRange.value)
+    'checks to make sure the user hasn't canceled the dialog
+    If varResult <> False Then
+        INTERNALS.ListObjects("SavePath").ListColumns(1).DataBodyRange.value = varResult
+    End If
     
+    
+    
+    'Move the sheets
+    If SaveInSameWB Then
+        For Each sheet In Split(SheetsToExport, "|")
+            Call RemoveEventsProcedure(Worksheets(sheet))
+            If ExportWorkbook Is Nothing Then
+                ThisWorkbook.Worksheets(sheet).Move
+                Set ExportWorkbook = ActiveWorkbook
+                Set PrevSheet = ActiveWorksheet
+            Else
+                ThisWorkbook.Worksheets(sheet).Move After:=PrevSheet
+            End If
+        Next
+        ExportWorkbook.SaveAs "Données Médicament Pré-Traitées " & "" & Year
+        ExportWorkbook.Close False
+    Else
+        For Each sheet In Split(SheetsToExport, "|")
+            Call RemoveEventsProcedure(Worksheets(sheet))
+            ThisWorkbook.Worksheets(sheet).Move
+            
+            ActiveWorkbook.SaveAs ActiveWorkbook.Worksheets(1).Name & "_" & Year
+            ActiveWorkbook.Close False
+        Next
+    End If
     
     
     Call UpdateStage("PreTreatment")
     
-Exit Sub
-Handler:
-    Dim choice2 As Integer
-    Dim iter As Integer
-    choice2 = MsgBox("Il y a déjà une feuille InvalidPharmacodes en traitment." & Chr(10) & _
-           "Écraser la feuille existante?", vbYesNoCancel)
-    Select Case choice2
-        Case vbYes
-            Sheets(InPh_colname).Delete
-            GoTo continue
-        Case vbNo
-            iter = 1
-            Do
-                iter = iter + 1
-            Loop While Evaluate("ISREF('" & InPh_colname & iter & "'!A1)") And iter <= 10
-            InPh_colname = InPh_colname & iter
-            
-            GoTo continue
-            
-        Case vbCancel
-            Exit Sub
-    End Select
-    
 End Sub
 
+
+
+Sub test()
+    Dim wb As Workbook
+    Set wb = Workbooks.Add
+End Sub
 

@@ -37,7 +37,22 @@ Sub CreateEventsProcedure(WorksheetToInject As Worksheet)
         End With
 End Sub
 
+Sub RemoveEventsProcedure(WorksheetToClean As Worksheet)
 
+Dim activeIDE As Object 'VBProject
+Set activeIDE = WorksheetToClean.Parent.VBProject
+
+Dim Element As VBComponent
+
+Dim LineCount As Integer
+For Each Element In activeIDE.VBComponents
+    If Element.Name = WorksheetToClean.Name Then    'change name if necessary
+        LineCount = Element.CodeModule.CountOfLines
+        Element.CodeModule.DeleteLines 1, LineCount
+    End If
+Next
+
+End Sub
 
 Sub SetWsName(ws As Worksheet, NewName As String)
 

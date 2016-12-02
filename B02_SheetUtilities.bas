@@ -71,12 +71,12 @@ Function IncCol(ByVal column As String, ByVal IncrementStep As Integer) As Strin
     End If
 End Function
 
-Function GetUniqueValues(ByRef Data)
+Function GetUniqueValues(ByRef DATA)
     Dim temp As Variant
     Dim obj As Object
     Set obj = CreateObject("scripting.dictionary")
-    For i = LBound(Data) To UBound(Data)
-        obj(Data(i) & "") = ""
+    For i = LBound(DATA) To UBound(DATA)
+        obj(DATA(i) & "") = ""
     Next
     GetUniqueValues = obj.keys
 End Function
@@ -93,4 +93,10 @@ Public Function NumericOnly(ByVal s As String) As String
     's2 = re.Replace(s, vbNullString)
 
     NumericOnly = re.Replace(s2, replace_hyphen)
+End Function
+
+
+
+Public Function SheetExists(worksheetName As String)
+    SheetExists = Evaluate("ISREF('" & worksheetName & "'!A1)")
 End Function

@@ -6,7 +6,7 @@ Public MyTag As String
 Public Sub Function_Clicked(control As IRibbonControl, ByRef pressed)
     
     pressed = GetKey(control.ID)
-    MsgBox control.ID & " " & pressed
+    'MsgBox control.ID & " " & pressed
 End Sub
 
 
@@ -19,7 +19,7 @@ End Sub
 
 Public Function Function_Action(control As IRibbonControl, pressed As Boolean)
     Store control.ID, pressed
-    MsgBox control.ID & " " & pressed
+    'MsgBox control.ID & " " & pressed
     
     '    Select Case control.ID
     'Case Is = "TbtnToggleSeparateByPhStatus"
@@ -53,12 +53,12 @@ Public Sub Store(control_id As String, value As Boolean)
         Case Is = "VerifyColumnsTitle"
         Case Is = "VerifyColumnsContent"
         'Case Is = "MergeFiles"
-        Case Is = "DispatchFiles"
+        Case Is = "NA"
         Case Is = "CheckPharmacodes"
         'Case Is = "TrackChanges"
         'Case Is = "AuthorizeChangesOnOpening"
         'Case Is = "SaveReadOnly"
-        Case Is = "SaveinSeparateSheets"
+        Case Is = "SaveInSameWB"
         Case Is = "TbtnToggleSeparateByPhStatus"
             'Call TbtnToggleSeparateByPhStatus(value)
         Case Is = "ShowEveryTabs"
@@ -74,13 +74,9 @@ Public Sub Store(control_id As String, value As Boolean)
 End Sub
 
 Public Function GetKey(control_id As String) As Boolean
+    Call DefGlobal
     '''write the code for getting the key back from the source which you might have used to store the value.
     '''return the correct value here
-    'Select Case control_id
-    'Case Is = "DispatchFiles"
-    '    'PARAM_TABLE.Columns(1).Find("CheckPharmacodes").Offset(0, 1).value
-    'Case Else
-    'End Select
     
     GetKey = PARAM_TABLE.Columns(1).Find(control_id).Offset(0, 1).value ' True ' or whatever you have selected previously
 End Function
@@ -135,8 +131,10 @@ End Sub
 ' Macro ON ACTION
 
 Sub TbtnToggleSeparateByPhStatus(control As IRibbonControl, pressed As Boolean)
-    Store control.ID, pressed
     Call DefGlobal
+    
+    Store control.ID, pressed
+    
     If Not PARAM_TABLE.Columns(1).Find("TbtnToggleSeparateByPhStatus").Offset(0, 1).value Then
         Call MergeSheets
     Else
