@@ -141,3 +141,10 @@ Sub TbtnToggleSeparateByPhStatus(control As IRibbonControl, pressed As Boolean)
         Call SplitSheets
     End If
 End Sub
+
+Sub AllowEdit(control As IRibbonControl, ByRef CancelDefault)
+
+  MsgBox "Yes?!", vbOKOnly, "Command Repurposing Demo"
+
+  CancelDefault = False
+End Sub

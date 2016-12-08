@@ -11,6 +11,8 @@ Private Sub Workbook_Open()
     Call DefGlobal
     Year.value = Format(Now, "yyyy") - 1
     Call A_0.SetValidation
+    'INTERNALS.Protect "mdp", UserInterFaceOnly:=True
+    ACCUEIL.Activate
     'MsgBox ""
     'Call UpdateStage("Start")
 End Sub

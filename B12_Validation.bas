@@ -12,7 +12,7 @@ Sub MainValidationLoop(ByRef FilesList)
     
         Application.ScreenUpdating = False
 
-        Set wk = Workbooks.Open(Filename:=FILE, corruptload:=xlRepairFile)
+        Set wk = Workbooks.Open(FileName:=FILE, corruptload:=xlRepairFile)
         wk.Windows(1).visible = False
         
         wk.Close SaveChanges:=False
@@ -29,17 +29,17 @@ Sub MainValidationLoop(ByRef FilesList)
 End Sub
 
 
-Function ConformableFileName(Filename As String) As Boolean
+Function ConformableFileName(FileName As String) As Boolean
                           'Filename Like "#&#_*" Or _
                           'Filename Like "#&##_*" Or _
                           'Filename Like "##&##_*" Or _
 
-    ConformableFileName = Filename Like "#_*" Or _
-                          Filename Like "##_*" Or _
-                          Filename Like "[A-Z]_*" Or _
-                          Filename Like "[A-Z][A-Z]_*" Or _
-                          Filename Like "[A-Z]#_*" Or _
-                          Filename Like "[A-Z]##_*"
+    ConformableFileName = FileName Like "#_*" Or _
+                          FileName Like "##_*" Or _
+                          FileName Like "[A-Z]_*" Or _
+                          FileName Like "[A-Z][A-Z]_*" Or _
+                          FileName Like "[A-Z]#_*" Or _
+                          FileName Like "[A-Z]##_*"
     'ConformableFileName = ConformableFileName * Not Filename Like "[!0-9,A-Z]_"
 End Function
 
@@ -165,7 +165,7 @@ Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String, Optio
             Next j
         Case "PHARMACODE"
             For j = LBound(ColumnData) To UBound(ColumnData)
-                If Not ColumnData(j) > 0 And ColumnData(j) <= 8999999 And ColumnData(j) <> 8888887 Then CheckElementsType = CheckElementsType & "," & j
+                If Not (ColumnData(j) > 0 And ColumnData(j) <= 8999999 And ColumnData(j) <> 8888887 And ColumnData(j) <> "") Then CheckElementsType = CheckElementsType & "," & j
             Next j
         Case "CHR", "NONE", ""
             CheckElementsType = ""

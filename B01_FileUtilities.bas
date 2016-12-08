@@ -43,3 +43,24 @@ End Function
 '     FILE = Dir
 '  Wend
 'End Sub
+
+Sub testopenexp()
+    OpenExplorerWithFileSelected ("L:\PMU\COMMUN_PHARMACIE\RECHERCHE\01 Travaux de recherche\ANI_EMS\EMS VD\03 Donnees\034 Donnees traitees et analyse\[Template] Données_EMS-VD_YYYY.xlsx")
+End Sub
+
+
+Sub OpenExplorerWithFileSelected(filepath$)
+
+'Test for file exists
+retval = Dir(filepath$)
+If retval <> "" Then
+    'If Exists, then open Windows Explorer and select
+    shellparm = "/select," & filepath$
+    Shell "explorer """"" & shellparm & """""", vbNormalFocus
+End If
+
+
+End Sub
+
+
+

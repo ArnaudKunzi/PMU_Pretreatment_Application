@@ -54,7 +54,7 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
         ' set ReadOnly=False
         SetAttr FILE, vbNormal
         
-        Set wk = Workbooks.Open(Filename:=FILE, corruptload:=xlRepairFile)
+        Set wk = Workbooks.Open(FileName:=FILE, corruptload:=xlRepairFile)
         'wk.Windows(1).Visible = False
         
         'remove NA's from sheet:
@@ -201,7 +201,7 @@ Function HowManySheets(ByRef FilesList) As Variant
     
         Application.ScreenUpdating = False
 
-        Set wk = Workbooks.Open(Filename:=FILE, corruptload:=xlRepairFile)
+        Set wk = Workbooks.Open(FileName:=FILE, corruptload:=xlRepairFile)
         wk.Windows(1).visible = False
         
         'just to export the columns name in a sheet. mest creat sheet TITLES first to use.
@@ -247,7 +247,7 @@ Function GetStats(FilesList)
     For Each FILE In FileList
         Application.ScreenUpdating = False
 
-        Set wk = Workbooks.Open(Filename:=FILE, corruptload:=xlRepairFile)
+        Set wk = Workbooks.Open(FileName:=FILE, corruptload:=xlRepairFile)
         wk.Windows(1).visible = False
     
     Next FILE

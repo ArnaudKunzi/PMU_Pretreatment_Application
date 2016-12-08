@@ -4,6 +4,8 @@ Sub SaveFilesList(ByRef FilesList)
     Dim Path As Range
     Dim r As Range
     
+    'INTERNALS.Unprotect "mdp"
+    
     Set table = INTERNALS.ListObjects("file_to_load")
     Set Path = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange
     
@@ -11,12 +13,13 @@ Sub SaveFilesList(ByRef FilesList)
     
     table.DataBodyRange.ClearContents
     Set r = table.Range.Rows(2).Offset(-1, 0).Resize(3)
+    
     table.Resize r
     For i = LBound(FilesList) To UBound(FilesList)
         table.ListColumns(1).DataBodyRange(i + 1) = i + 1
         table.ListColumns(2).DataBodyRange(i + 1) = Right(FilesList(i), Len(FilesList(i)) - InStrRev(FilesList(i), "\"))
     Next i
-    
+    'INTERNALS.Protect "mdp"
 End Sub
 
 'Function GetFilesList()

@@ -32,9 +32,12 @@ Sub RegisterChange(ChangeRange As Range)
                             ChangeRange(i).Comment.Shape.TextFrame.AutoSize = True
                         Next i
                     End If
+                    .Interior.ColorIndex = EDITCOLOR
+                    Call CommentStyle(ChangeRange)
                 Else
                     GoTo HandleInequalRanges
                 End If
+                
             'if we replace a single cell
             Else
                 If Not NewValues = LastValueSelected Then
@@ -48,10 +51,13 @@ Sub RegisterChange(ChangeRange As Range)
                     End If
                     'already in: Call CommentStyle(ChangeRange)
                     '.Comment.Shape.TextFrame.AutoSize = True
+                    
+                    .Interior.ColorIndex = EDITCOLOR
+                    Call CommentStyle(ChangeRange)
                 End If
+                
             End If
-            .Interior.ColorIndex = EDITCOLOR
-            Call CommentStyle(ChangeRange)
+            
     End With
         
 Exit Sub
@@ -110,7 +116,7 @@ Sub ProduceLog(control As IRibbonControl)
     i = 0
     For Each CellComment In ws.comments
         CommentsTexts(i) = Worksheets(ws.Name).Range(Mid(CellComment.Parent.Address, 2, 1) & "1").value _
-                        & " l." & CellComment.Parent.Rows.Count & ": " & CellComment.Text
+                        & " l." & CellComment.Parent.row & ": " & CellComment.Text
         i = i + 1
     Next CellComment
     

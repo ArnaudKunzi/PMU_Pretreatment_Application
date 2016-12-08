@@ -100,7 +100,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
     Dim OutputColumnOrder() As Integer
     Dim OutputColumnOrder_length As Integer
     Dim InputDataTable As Variant
-    Dim FilePath As String
+    Dim filepath As String
     Dim InputLastRow As Long
     Dim OutputLastRow As Long
     Dim OutputLastCol As Long
@@ -130,7 +130,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
         Worksheets(DataSheetName).Cells(1, INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange(i) + COffset).value = INTERNALS.ListObjects("attributes").ListColumns("DBB_name").DataBodyRange(i)
     Next i
     
-    FilePath = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange(1).value
+    filepath = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange(1).value
     files = Application.Transpose(INTERNALS.ListObjects("file_to_load").ListColumns("file_to_load").DataBodyRange)
     
     
@@ -138,7 +138,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
     For i = 0 To INTERNALS.ListObjects("file_to_load").ListColumns("file_to_load").DataBodyRange.Rows.Count - 1
         
         
-        Set input_wb = Workbooks.Open(Filename:=FilePath & files(i + 1), corruptload:=xlRepairFile)
+        Set input_wb = Workbooks.Open(FileName:=filepath & files(i + 1), corruptload:=xlRepairFile)
         
         
         'Last row of the output file
@@ -237,7 +237,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
     AppActivate Application.Caption
     Application.DisplayAlerts = True
     Application.ScreenUpdating = True
-    
+    Application.EnableEvents = True
 End Sub
 
 
