@@ -37,20 +37,29 @@ Sub CreateEventsProcedure(WorksheetToInject As Worksheet)
         End With
 End Sub
 
-Sub RemoveEventsProcedure(WorksheetToClean As Worksheet)
+Sub RemoveEventsProcedure(ByVal WorksheetToClean As Worksheet)
 
-Dim activeIDE As Object 'VBProject
-Set activeIDE = WorksheetToClean.Parent.VBProject
 
-Dim Element As VBComponent
+Dim strObjectName As String
+strObjectName = WorksheetToClean.CodeName
 
-Dim LineCount As Integer
-For Each Element In activeIDE.VBComponents
-    If Element.Name = WorksheetToClean.Name Then    'change name if necessary
-        LineCount = Element.CodeModule.CountOfLines
-        Element.CodeModule.DeleteLines 1, LineCount
-    End If
-Next
+' Remove all lines from module...
+With ThisWorkbook.VBProject.VBComponents(strObjectName).CodeModule
+    .DeleteLines 1, .CountOfLines
+End With
+
+'Dim activeIDE As Object 'VBProject
+'Set activeIDE = WorksheetToClean.Parent.VBProject
+
+'Dim Element As VBComponent
+
+'Dim LineCount As Integer
+'For Each Element In activeIDE.VBComponents
+'    If Element.Name = WorksheetToClean.Name Then    'change name if necessary
+'        LineCount = Element.CodeModule.CountOfLines
+'        Element.CodeModule.DeleteLines 1, LineCount
+'    End If
+'Next
 
 End Sub
 

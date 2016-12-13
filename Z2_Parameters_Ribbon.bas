@@ -1,4 +1,5 @@
 Attribute VB_Name = "Z2_Parameters_Ribbon"
+Public Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (lpDest As Any, lpSource As Any, ByVal cBytes&)
 Dim Rib As IRibbonUI
 Public MyTag As String
 
@@ -85,9 +86,10 @@ End Function
 'CALLBACKS ON VISIBILITY 1
 
 'Callback for customUI.onLoad
-
 Sub RibbonOnLoad(ribbon As IRibbonUI)
+    Call DefGlobal
     Set Rib = ribbon
+    INTERNALS.ListObjects("IRibbonUI").DataBodyRange.value = ObjPtr(ribbon)
 End Sub
 
 Sub GetVisible(control As IRibbonControl, ByRef visible)
@@ -105,13 +107,19 @@ End Sub
 Sub RefreshRibbon(Tag As String)
     MyTag = Tag
     If Rib Is Nothing Then
-        MsgBox "Error, Save/Restart your workbook"
-    Else
-        Rib.Invalidate
+        MsgBox "Error, recovering IRibbonUI"
+        Dim ribbonPointer As Long
+
+        ribbonPointer = INTERNALS.ListObjects("IRibbonUI").DataBodyRange.value
+
+        Call CopyMemory(Rib, ribbonPointer, 4)
+    'Else
+    '    Rib.Invalidate
     End If
+    
+    Rib.Invalidate
+    
 End Sub
-
-
 
 
 ' Macros ON VISIBILITY
@@ -125,10 +133,9 @@ End Sub
 Sub ShowOnlyCustomTabs()
 'Show every Tab, Group or Control(we use the wildgard "*")
 'You can also use "rib*" because all tags start with rib in this file
-    Call RefreshRibbon(Tag:="Custom*")
+    Call RefreshRibbon(Tag:="_cust")
 End Sub
 
-' Macro ON ACTION
 
 Sub TbtnToggleSeparateByPhStatus(control As IRibbonControl, pressed As Boolean)
     Call DefGlobal
@@ -142,9 +149,19 @@ Sub TbtnToggleSeparateByPhStatus(control As IRibbonControl, pressed As Boolean)
     End If
 End Sub
 
-Sub AllowEdit(control As IRibbonControl, ByRef CancelDefault)
+'Sub AllowEdit(control As IRibbonControl, ByRef CancelDefault)
+'
+'  MsgBox "Yes?!", vbOKOnly, "Command Repurposing Demo"
+'
+'  CancelDefault = False
+'End Sub
 
-  MsgBox "Yes?!", vbOKOnly, "Command Repurposing Demo"
 
-  CancelDefault = False
-End Sub
+'*************************************************************
+'Sub rxMenu_onAction(control As IRibbonControl)
+'  msSplitStyle = Mid$(control.ID, 7)
+'  getRibbon().InvalidateControl "rxButton"
+'  MsgBox "Control invalidated"
+'End Sub
+
+

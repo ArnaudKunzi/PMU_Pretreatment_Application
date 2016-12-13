@@ -19,7 +19,6 @@ End Sub
 
 Private Sub Worksheet_Deactivate()
     Call DeleteFromCellMenu
-
 End Sub
 
 Private Sub Worksheet_SelectionChange(ByVal Target As Range)

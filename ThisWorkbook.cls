@@ -13,7 +13,8 @@ Private Sub Workbook_Open()
     Call A_0.SetValidation
     'INTERNALS.Protect "mdp", UserInterFaceOnly:=True
     ACCUEIL.Activate
-    'MsgBox ""
+    
+    Call OpenGit
     'Call UpdateStage("Start")
 End Sub
 
@@ -62,17 +63,14 @@ Public Sub ExportAllComponents()
 End Sub
 
 Sub OpenGit()
-'execute with ctrl+g
 'opening git:
     Dim x As Variant
     Dim Path As String
-
     Path = "C:\Users\akunzi\Desktop\PortableGit\git-bash.exe"
 
     x = Shell(Path, vbNormalFocus)
-    
-    'Application.Wait Now + TimeValue("00:00:03") ' waits 3 seconds
-    'AppActivate x
-    'SendKeys "setdir_p"
-    
+    Application.Wait Now + TimeValue("00:00:02")
+    AppActivate Title:="MINGW64" ', Wait:=True
+    SendKeys String:="set_path~", Wait:=True
+    SendKeys String:="git status~", Wait:=True
 End Sub

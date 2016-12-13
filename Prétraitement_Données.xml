@@ -1,0 +1,255 @@
+<customUI onLoad="ribbonOnLoad" xmlns="http://schemas.microsoft.com/office/2006/01/customui">
+    <ribbon startFromScratch="true">
+        <tabs>
+		
+<!-- Default tabs beginning-->
+		<tab id="CustomHomeTab" label="Home" insertAfterMso="TabHome" getVisible="GetVisible" tag="ribhome_def">
+
+			<group idMso="GroupClipboard" />
+			<group idMso="GroupFont" />
+			<group idMso="GroupAlignmentExcel" />
+			<group idMso="GroupNumber" />
+			<group idMso="GroupStyles" />
+			<group idMso="GroupCells" />
+			<group idMso="GroupEditingExcel" />
+		</tab>	
+		
+		<tab id="CustomInsertTab" label="Insert" insertAfterMso="TabInsert" getVisible="GetVisible" tag="ribinsert_def" >	
+			<group idMso="GroupInsertTablesExcel" />
+			<group idMso="GroupInsertIllustrations" />
+			<group idMso="GroupInsertChartsExcel" />
+			<group idMso="GroupInsertLinks" />
+			<group idMso="GroupInsertText" />
+		</tab>	
+		
+		<tab id="CustomPageLayoutTab" label="Page Layout" insertAfterMso="TabPageLayoutExcel" getVisible="GetVisible" tag="ribpagelayout_def">	
+			<group idMso="GroupThemesExcel" />
+			<group idMso="GroupPageSetup" />
+			<group idMso="GroupPageLayoutScaleToFit" />
+			<group idMso="GroupPageLayoutSheetOptions" />
+			<group idMso="GroupArrange" />
+		</tab>	
+		
+		<tab id="CustomFormulasTab" label="Formulas" insertAfterMso="TabFormulas" getVisible="GetVisible" tag="ribformulas_def">	
+			<group idMso="GroupFunctionLibrary" />
+			<group idMso="GroupNamedCells" />
+			<group idMso="GroupFormulaAuditing" />
+			<group idMso="GroupCalculation" />
+		</tab>	
+		
+		<tab id="CustomDataTab" label="Data" insertAfterMso="TabData" getVisible="GetVisible" tag="ribdata_def">	
+			<group idMso="GroupGetExternalData" />
+			<group idMso="GroupConnections" />
+			<group idMso="GroupSortFilter" />
+			<group idMso="GroupDataTools" />
+			<group idMso="GroupOutline" />
+		</tab>	
+		
+		<tab id="CustomReviewTab" label="Review" insertAfterMso="TabReview" getVisible="GetVisible" tag="ribreview_def">	
+			<group idMso="GroupProofing" />
+			<group idMso="GroupComments" />
+			<group idMso="GroupChangesExcel" />
+		</tab>	
+		
+		<tab id="CustomViewTab" label="View" insertAfterMso="TabView" getVisible="GetVisible" tag="ribview_def">	
+			<group idMso="GroupWorkbookViews" />
+			<group idMso="GroupViewShowHide" />
+			<group idMso="GroupZoom" />
+			<group idMso="GroupWindow" />
+			<group idMso="GroupMacros" />
+		</tab>	
+		
+		<tab id="CustomDeveloperTab" label="Developer" insertAfterMso="TabDeveloper" getVisible="GetVisible" tag="ribdeveloper_def">	
+			<group idMso="GroupCode" />
+			<group idMso="GroupControls" />
+			<group idMso="GroupXml" />
+			<group idMso="GroupModify" />
+		</tab>	
+
+	<!-- Default tabs end -->
+			
+		<tab id="MAIN" label="Validateur" visible="true"  tag="Custom_MAIN_cust">
+			<!-- First group -->
+			<group id = "group11" label="Chargement" >
+
+				<button id="LoadFiles" 
+				label="Charger les fichiers" 
+				screentip="Charger les fichiers" 
+				supertip="Charger les fichiers bruts médicaments renseignés par les pharmaciens." 
+				imageMso="FileOpen" onAction="LoadFiles" size="large" tag="val_chargp_1234_cust" />
+
+				<button id="Refresh" 
+				label="Actualiser" 
+				screentip="Actualiser le chargement" 
+				supertip="Rafraîchir le chargerment des fichiers bruts médicaments renseignés par les pharmaciens." 
+				imageMso="RecurrenceEdit" 
+				onAction="Refresh" 
+				size="large" 
+				tag="val_chargp_234_cust" />
+
+				<separator id="Sep111"/>	
+				
+				<button id="StartPreTreatment" 
+				label="Lancer le pré-traitement" 
+				screentip="Lancer le pré-traitement" 
+				supertip="Le pré-traitement verifie la conformité des fichiers médicaments avant l'upload dans la base de donnée, et souligne les problèmes éventuels nécéssitant un traitement manuel." 
+				imageMso="FileCompatibilityChecker" 
+				onAction="StartPreTreatment" 
+				size="large" 
+				tag="val_chargp_234_cust" />
+
+			</group>
+			<!--Second group -->
+			<group id = "group12" label="Pré-traitement" >
+				
+				<toggleButton id="TbtnToggleSeparateByPhStatus" 
+				label="Séparer les données Invalides"
+				screentip="Séparer les données Invalides" 
+				supertip="Séparer sur une feuille dédiée les entrées dont les pharmacodes sont invalides"
+				size="large" 
+				onAction="TbtnToggleSeparateByPhStatus"
+				getPressed="Function_Clicked"
+				imageMso="TableSplitTable"
+				tag="val_pregp_34_cust" />
+
+				<button id="ProduceLog" 
+				label="Journal" 
+				screentip="Produire un journal" 
+				supertip="Produire un journal des éditions manuelles des données de la feuille de calcul visible" 
+				imageMso="ReadingViewShowPrintedPage" onAction="ProduceLog" size="large" 
+				tag="val_pregp_34_cust" />
+
+			</group>
+			<!-- Third group -->
+			<group id = "group13" label="Export" >
+
+				<button id="ExportSeparately" 
+				label="Exporter séparément" 
+				screentip="Exporter séparément" 
+				supertip="Exporter le résultat du pré-traitement en trois fichiers selon le status de validation: Données validées, Données Invalides, Données à compléter (Pharmacode)" 
+				imageMso="PivotTableShowPages" 
+				onAction="ExportSeparately" 
+				size="large" 
+				tag="val_expgp_34_cust" />
+				
+				<button id="ExportTogether" 
+				label="Exporter en un fichier" 
+				screentip="Exporter en un seul fichier" 
+				supertip="Exporter le résultat du pré-traitement en un seul fichiers avec un indicateur de status de validation: Données validées, Données Invalides, Données à compléter (Pharmacode)" 
+				imageMso="PivotTableLayoutGrandTotals" 
+				onAction="ExportTogether" 
+				size="large" 
+				tag="val_expgp_34_cust" />
+				
+			</group>
+			
+			<!-- <group id = "group14" label="Instructions" >
+			<labelControl id="Instructions" getLabel="GetInstructionLabel" ControlSize ="RibbonControlSizeLarge" />
+			
+			</group> -->
+
+		</tab>
+		<tab id="CUSTOM" label="Outils" visible="true" tag="Custom_TOOLS_cust">
+
+			<group id = "group01" label="Doublons" >
+				<button idMso="ConditionalFormattingHighlightDuplicateValues" size="large"  />
+				<button idMso="RemoveDuplicates" size="large"  />
+			</group>
+			<group id = "group02" label="Selection et filtres" >
+				<menu idMso="ConditionalFormattingMenu" size="large" />
+				<menu idMso="SortFilterMenu" size="large" />
+				<menu idMso="SelectMenuExcel" size="large" />
+			</group>
+			<group idMso="GroupFont" visible="true"  />
+			<group idMso="GroupNumber" visible="true" />
+			<group idMso="GroupInsertTablesExcel" visible="true" />
+			<group id="group00" label="Sauver/retour">
+				<control idMso="Undo" imageMso="Undo" size="large" label="Undo"/>
+				<gallery idMso="Redo" imageMso="Redo" size="large" label="Redo"/>
+				<button idMso="FileSaveAs" size="large"  />
+			</group>
+			<group id = "group03" label="Avancé" >
+				<button idMso="VisualBasic" size="large"  />
+			</group>
+
+		</tab>
+		<tab id="CONTROLS" label="Paramètres" visible="true"  tag="Custom_CONTROLS_cust">
+			<!-- First group -->
+			<group id = "group21" label="Actions du pré-traitement" >
+
+				<checkBox 
+				id="VerifyNbSheets"
+				label="Vérifier le nombre de feuilles"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+
+				<checkBox 
+				id="VerifyColumnsTitle"
+				label="Vérifier les noms de colonnes"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+
+				<checkBox 
+				id="VerifyColumnsContent"
+				label="Vérifier les contenus des colonnes"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+
+				<checkBox 
+				id="TrackChanges"
+				label="Suivre les modifications"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+
+				<checkBox 
+				id="CheckPharmacodes"
+				label="Vérifier les pharmacodes"
+				supertip="Vérifie que les valeurs de la colonne pharmacode soient valides et créer une colonne indicatrice 'InvalidPharmacode'"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+
+				<checkBox 
+				id="NA"
+				label="NA"
+				screentip="NA"
+				supertip="NA"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+				
+				<!-- how to disable elements:  https://social.msdn.microsoft.com/Forums/en-US/4b600dc7-4482-4af0-86f0-963724923b11/vba-excel-ribbon-enabledisable-buttons-and-other-controls?forum=isvvba -->
+
+			</group>
+			<group id = "group22" label="Options du pré-traitement" >
+
+				<checkBox 
+				id="AuthorizeChangesOnOpening"
+				label="Désactiver l'ouverture en lecture seule"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+
+				<checkBox 
+				id="SaveReadOnly"
+				label="Sauver les fichiers validés en lecture seule"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+
+				<checkBox 
+				id="SaveInSameWB"
+				label="Sauver les fichiers séparés dans le même Workbook"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+
+			</group>
+			<group id = "group23" label="Options de l'application" >
+				<checkBox 
+				id="ShowEveryTabs"
+				label="Montrer tous les onglets du ruban"
+				getPressed="Function_Clicked"
+				onAction="Function_Action"/>
+						
+			</group>
+		</tab>
+		
+        </tabs>
+    </ribbon>
+</customUI>
