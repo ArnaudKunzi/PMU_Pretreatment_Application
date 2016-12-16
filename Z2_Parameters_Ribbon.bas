@@ -107,14 +107,9 @@ End Sub
 Sub RefreshRibbon(Tag As String)
     MyTag = Tag
     If Rib Is Nothing Then
-        MsgBox "Error, recovering IRibbonUI"
         Dim ribbonPointer As Long
-
         ribbonPointer = INTERNALS.ListObjects("IRibbonUI").DataBodyRange.value
-
         Call CopyMemory(Rib, ribbonPointer, 4)
-    'Else
-    '    Rib.Invalidate
     End If
     
     Rib.Invalidate

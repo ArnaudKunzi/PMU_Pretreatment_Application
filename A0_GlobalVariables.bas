@@ -10,7 +10,7 @@ Global LogSheetName As String
 
 Global LastValueSelected As Variant
 Global LastCommentsSelected As Variant
-
+Global LastEditedCell As Range
 Global EDITCOLOR As Integer
 Global EXPORTCOLOR As Integer
 

@@ -4,7 +4,7 @@ Sub RegisterChange(ChangeRange As Range)
     Call DefGlobal
     Dim NewValues As Variant
     Dim OldComments As Variant
-    Dim rly As Integer
+    Dim rly As VbMsgBoxResult
     
     If ChangeRange.Count > 10000 Then GoTo HandleTooManyPaste
     
@@ -62,13 +62,16 @@ Sub RegisterChange(ChangeRange As Range)
         
 Exit Sub
 HandleInequalRanges:
-    With Application
-        .EnableEvents = False
-        .Undo
-        .EnableEvents = True
-     End With
-    MsgBox "Pour raison de sécurité, l'application n'autorise pas les collages sans" & _
-    " sélection explicite de la plage de destination. Le collage a été annulé.", vbCritical
+    Dim choice
+    rly = MsgBox("Pour raison de sécurité, l'application n'autorise pas les collages sans" & _
+           " sélection explicite de la plage de destination. Nous recommendons d'annuler le collage.", vbYesNo)
+    If rly = vbYes Then
+        With Application
+            .EnableEvents = False
+            .Undo
+            .EnableEvents = True
+         End With
+    End If
     Exit Sub
 HandleTooManyPaste:
     With Application
@@ -248,3 +251,28 @@ Abort:
      Application.EnableEvents = True
 End Sub
 
+
+Sub ColorLabelling(ByRef Target As Range)
+
+    Call DefGlobal
+    
+    Dim RangeToCheck As Range
+    Dim ws As Worksheet
+    Dim hOffset As Integer
+    
+    hOffset = 5
+    
+    Set ws = Target.Parent
+    Set RangeToCheck = ws.Range(ws.Cells(Target.row, hOffset + 1), ws.Cells(Target.row, ws.Cells(1, 1).End(xlToRight).column))
+    
+    If WorksheetFunction.CountA(RangeToCheck) = 0 Then
+        RangeToCheck.Cells.Interior.ColorIndex = 3 'red
+    ElseIf Not RangeToCheck.Find("") Is Nothing Then
+        'MsgBox "Finissez de compléter l'entrée."
+        'RangeToCheck.Select
+        RangeToCheck.Cells.Interior.ColorIndex = 45 'orange
+    Else
+        RangeToCheck.Cells.Interior.ColorIndex = EDITCOLOR
+    End If
+    
+End Sub

@@ -233,7 +233,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
         
     Next
     
-    Call CreateEventsProcedure(Worksheets(DataSheetName))
+    Call CreateEventsForPreTreatment(Worksheets(DataSheetName))
     AppActivate Application.Caption
     Application.DisplayAlerts = True
     Application.ScreenUpdating = True
@@ -332,7 +332,7 @@ Sub SplitSheets()
         
     Call MoveRowsToSheet(InPh_colname, 1, Worksheets(DataSheetName), Worksheets(InPh_colname))
     
-    Call CreateEventsProcedure(Worksheets(InPh_colname))
+    Call CreateEventsForPreTreatment(Worksheets(InPh_colname))
     AppActivate Application.Caption
     Application.EnableEvents = True
 End Sub

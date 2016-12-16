@@ -69,7 +69,7 @@ Sub OpenGit()
     Path = "C:\Users\akunzi\Desktop\PortableGit\git-bash.exe"
 
     x = Shell(Path, vbNormalFocus)
-    Application.Wait Now + TimeValue("00:00:02")
+    Application.Wait Now + TimeValue("00:00:03")
     AppActivate Title:="MINGW64" ', Wait:=True
     SendKeys String:="set_path~", Wait:=True
     SendKeys String:="git status~", Wait:=True

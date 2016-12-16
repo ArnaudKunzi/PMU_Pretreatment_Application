@@ -23,6 +23,7 @@ Private Sub Worksheet_Deactivate()
 End Sub
 
 Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+    Debug.Print "last cell was: " & ActiveCell.Address
     If Target.Count > 10000 Then Exit Sub
     LastValueSelected = Application.Transpose(Target.value)
     LastCommentsSelected = GetComments(Target)
