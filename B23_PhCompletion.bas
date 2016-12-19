@@ -1,26 +1,30 @@
 Attribute VB_Name = "B23_PhCompletion"
-Sub GETUV()
+
+
+Sub GetPHARMINDEX(control As IRibbonControl)
     Call DefGlobal
-    Call Extract_Unique_Vals(Worksheets(InPh_colname))
     
-End Sub
-
-Sub COMPLETEUV()
-    Call DefGlobal
+    'code to import PHARMINDEX
+    
+    'Complete fields with new info from PHARMINDEX
     Call Completion_DB_To_Unique_Vals(Worksheets("EntriesToComplete"), Worksheets("DB_PHARMINDEX_Extract"))
-End Sub
-
-Sub INJECTUV()
-    Call DefGlobal
-    Call Completion_DB_To_Unique_Vals(Worksheets(InPh_colname), Worksheets("EntriesToComplete"), True)
-    Call MergeSheets
 End Sub
 
 Sub CommitEdits(control As IRibbonControl)
     Call DefGlobal
-    MsgBox "cool man"
+    
+    If Not CorrectlyFilled(Worksheets("EntriesToComplete")) Then If Not MsgBox("Un ou plusieurs champs ne sont pas renseignés (rouge ou blanc)." & vbNewLine & "Continuer?", vbYesNo) Then Exit Sub
+    'Call VerifyCorrectlyFilled(Worksheets("EntriesToComplete"))
+    
+    Call Completion_DB_To_Unique_Vals(Worksheets(InPh_colname), Worksheets("EntriesToComplete"), True)
+    Call MergeSheets
+    ActiveWorkbook.Worksheets(DataSheetName).visible = True
+    ActiveWorkbook.Worksheets(DataSheetName).Select
+    Call CleanNewPharmacodes(Worksheets("EntriesToComplete"))
+    
 End Sub
     
+
 Sub Extract_Unique_Vals(ws As Worksheet)
     'creates a list of unique rows with problematic pharmacode to process
     
@@ -73,12 +77,12 @@ Sub Completion_DB_To_Unique_Vals(UV_ws As Worksheet, DB_ws As Worksheet, Optiona
     Dim MatchIndex As Long
     Dim MatchPos As String
     Dim Strlength As String
-    Dim hOffset As Integer
+    Dim HOffset As Integer
     
     Application.EnableEvents = False
     Application.ScreenUpdating = False
     
-    hOffset = 5
+    HOffset = 5
     UV_designations = Application.Transpose(UV_ws.UsedRange.Rows(1).Find("designation").Offset(1, 0).Resize(UV_ws.UsedRange.Rows.Count - 1, 1))
     DB_designations = Application.Transpose(DB_ws.UsedRange.Rows(1).Find("designation").Offset(1, 0).Resize(DB_ws.UsedRange.Rows.Count - 1, 1))
     
@@ -109,10 +113,10 @@ Sub Completion_DB_To_Unique_Vals(UV_ws As Worksheet, DB_ws As Worksheet, Optiona
                     If Strlength >= MatchPos Then
                         MatchIndex = j + 1
                         'report values
-                        UV_ws.Range(UV_ws.Cells(Index, hOffset + 1), UV_ws.Cells(Index, hOffset + DB_ws.UsedRange.Columns.Count)) = _
+                        UV_ws.Range(UV_ws.Cells(Index, HOffset + 1), UV_ws.Cells(Index, HOffset + DB_ws.UsedRange.Columns.Count)) = _
                                                 DB_ws.Range("A" & MatchIndex & ":" & IncCol("A", DB_ws.UsedRange.Columns.Count) & MatchIndex).value
                         'mark as filled
-                        UV_ws.Range(UV_ws.Cells(Index, hOffset + 1), UV_ws.Cells(Index, hOffset + DB_ws.UsedRange.Columns.Count)).Cells.Interior.ColorIndex = 4
+                        UV_ws.Range(UV_ws.Cells(Index, HOffset + 1), UV_ws.Cells(Index, HOffset + DB_ws.UsedRange.Columns.Count)).Cells.Interior.ColorIndex = 4
                         UV_ws.Rows(Index).EntireRow.Hidden = True
                         Exit For
                     End If
@@ -124,4 +128,40 @@ Sub Completion_DB_To_Unique_Vals(UV_ws As Worksheet, DB_ws As Worksheet, Optiona
     Application.EnableEvents = True
     Application.ScreenUpdating = True
     
+End Sub
+
+Function CorrectlyFilled(ws As Worksheet) As Boolean
+    CorrectlyFilled = True
+    With ws
+        For Each cell In .UsedRange.Offset(PHAUNI_SH.VOffset, PHAUNI_SH.HOffset).Resize(.UsedRange.Rows.Count - PHAUNI_SH.VOffset, .UsedRange.Columns.Count - PHAUNI_SH.HOffset)
+            If cell.Interior.ColorIndex = 3 Or cell.Interior.ColorIndex = xlNone Or cell.Interior.ColorIndex = 45 Then
+                CorrectlyFilled = False
+                Exit Function
+            End If
+        Next cell
+    End With
+End Function
+
+
+Sub CleanNewPharmacodes(ws As Worksheet)
+    
+    Dim lastRow As Long
+    
+    Application.EnableEvents = False
+    Application.ScreenUpdating = False
+    
+    'Remove events from sheet
+    Call RemoveEventsProcedure(ws)
+    
+    'Remove known values of PHARMINDEX
+    lastRow = ws.UsedRange.Rows(ws.UsedRange.Rows.Count).row
+    For iCntr = lastRow To 1 Step -1
+        If Rows(iCntr).Hidden = True Then Rows(iCntr).EntireRow.Delete
+    Next
+    
+    'Remove formats
+    ws.Cells.ClearFormats
+    
+    Application.EnableEvents = True
+    Application.ScreenUpdating = True
 End Sub

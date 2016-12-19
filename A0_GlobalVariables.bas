@@ -14,6 +14,18 @@ Global LastEditedCell As Range
 Global EDITCOLOR As Integer
 Global EXPORTCOLOR As Integer
 
+Global DATA_SH As GlbSheet
+Global PHARMA_SH As GlbSheet
+Global PHAUNI_SH As GlbSheet
+Global REPORT_SH As GlbSheet
+
+Public Type GlbSheet
+    Name As String
+    VOffset As Integer
+    HOffset As Integer
+End Type
+
+
 Sub DefGlobal()
     Set Year = A_0.Range("E7")
     Set Canton = A_0.Range("E9")
@@ -26,6 +38,23 @@ Sub DefGlobal()
     
     EDITCOLOR = 8
     EXPORTCOLOR = 23
+    
+    REPORT_SH.Name = "RAPPORT"
+    REPORT_SH.VOffset = 1
+    REPORT_SH.HOffset = 3
+    
+    DATA_SH.Name = "DATA"
+    DATA_SH.VOffset = 1
+    DATA_SH.HOffset = 3
+    
+    PHARMA_SH.Name = "invalid_pharmacodes"
+    PHARMA_SH.VOffset = 1
+    PHARMA_SH.HOffset = 3
+    
+    PHAUNI_SH.Name = "Pharmacodes à compléter"
+    PHAUNI_SH.VOffset = 1
+    PHAUNI_SH.HOffset = 5
+    
 End Sub
 
 

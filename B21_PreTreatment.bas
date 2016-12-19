@@ -4,6 +4,9 @@ Sub StartPreTreatment(control As IRibbonControl)
     
     Dim StatusColumn As String
     
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    
     'Check if RAPPORT sheet exists, if not, create it.
     If Worksheets("RAPPORT") Is Nothing Then Call Refresh(Nothing)
            
@@ -54,9 +57,14 @@ retry:
     
     Call SplitSheets
     Call Extract_Unique_Vals(Worksheets(InPh_colname))
-    
+    ActiveWorkbook.Worksheets(InPh_colname).visible = False
+    ActiveWorkbook.Worksheets(DataSheetName).visible = False
     
     Call UpdateStage("Pretreatment")
+    
+    
+    Application.ScreenUpdating = True
+    Application.DisplayAlerts = True
     
 'DEPRECATED
 'Exit Sub
@@ -250,7 +258,7 @@ End Sub
 
 Sub MoveRowsToSheet(ByVal IndicatorCol As String, ByVal Criterion As Integer, ByRef InputSheet As Worksheet, ByRef OutputSheet As Worksheet)
     
-    Dim LastRow As Long         'Last row with data in InputSheet
+    Dim lastRow As Long         'Last row with data in InputSheet
     Dim LastCol As Long         'Last column with data in InputSheet
 
     Dim IndCol As Long          'number of the column IndicatorCol
@@ -262,10 +270,10 @@ Sub MoveRowsToSheet(ByVal IndicatorCol As String, ByVal Criterion As Integer, By
     Application.EnableEvents = False
     
     With InputSheet
-        LastRow = .Cells(.Rows.Count, "A").End(xlUp).row
+        lastRow = .Cells(.Rows.Count, "A").End(xlUp).row
         LastCol = .Cells(1, .Columns.Count).End(xlToLeft).column
         Set Atributes = .Range(.Cells(1, 1), .Cells(1, LastCol))
-        Set DataRange = .Range(.Cells(2, 1), .Cells(LastRow, LastCol))
+        Set DataRange = .Range(.Cells(2, 1), .Cells(lastRow, LastCol))
         
         On Error GoTo Handler
         IndCol = .Cells.Rows(1).Find(IndicatorCol).column

@@ -93,7 +93,7 @@ Sub ProduceLog(control As IRibbonControl)
     Dim ws As Worksheet
     Dim CommentsTexts() As String
     Dim i As Long
-    Dim LastRow As Long
+    Dim lastRow As Long
     
 
     Set ws = ActiveSheet
@@ -258,12 +258,12 @@ Sub ColorLabelling(ByRef Target As Range)
     
     Dim RangeToCheck As Range
     Dim ws As Worksheet
-    Dim hOffset As Integer
+    Dim HOffset As Integer
     
-    hOffset = 5
+    HOffset = 5
     
     Set ws = Target.Parent
-    Set RangeToCheck = ws.Range(ws.Cells(Target.row, hOffset + 1), ws.Cells(Target.row, ws.Cells(1, 1).End(xlToRight).column))
+    Set RangeToCheck = ws.Range(ws.Cells(Target.row, HOffset + 1), ws.Cells(Target.row, ws.Cells(1, 1).End(xlToRight).column))
     
     If WorksheetFunction.CountA(RangeToCheck) = 0 Then
         RangeToCheck.Cells.Interior.ColorIndex = 3 'red

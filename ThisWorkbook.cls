@@ -67,7 +67,8 @@ Sub OpenGit()
     Dim x As Variant
     Dim Path As String
     Path = "C:\Users\akunzi\Desktop\PortableGit\git-bash.exe"
-
+    
+    Application.Wait Now + TimeValue("00:00:05")
     x = Shell(Path, vbNormalFocus)
     Application.Wait Now + TimeValue("00:00:03")
     AppActivate Title:="MINGW64" ', Wait:=True
