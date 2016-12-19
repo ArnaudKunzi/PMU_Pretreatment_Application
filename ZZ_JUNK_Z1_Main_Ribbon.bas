@@ -38,17 +38,17 @@ End Sub
 ''If DDItemCount tells Excel there are 10 items in the drop down
 ''Excel calls this sub 10 times with an increased "index" argument each time.
 ''We use "index" to know which item to return to Excel.
-Sub DDListItem(control As IRibbonControl, index As Integer, ByRef returnedVal)
-    returnedVal = ListItemsRg.Cells(index + 1).value ''index is 0-based, our list is 1-based so we add 1.
+Sub DDListItem(control As IRibbonControl, Index As Integer, ByRef returnedVal)
+    returnedVal = ListItemsRg.Cells(Index + 1).value ''index is 0-based, our list is 1-based so we add 1.
 End Sub
 
 ''Drop down change handler.
 ''Called when a drop down item is selected.
-Sub DDOnAction(control As IRibbonControl, ID As String, index As Integer)
+Sub DDOnAction(control As IRibbonControl, ID As String, Index As Integer)
     ''All we do is note the index number of the item selected.
     ''We use this in sub DDItemSelectedIndex below to reselect the current
     ''item, if possible, after an invalidate.
-    IndexOfSelectedItem = index
+    IndexOfSelectedItem = Index
 End Sub
 
 ''Returns index of item to display.

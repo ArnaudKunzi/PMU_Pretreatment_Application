@@ -64,8 +64,12 @@ Sub Export(separately As Boolean)
         For Each sheet In Split(SheetsToExport, "|")
             ThisWorkbook.Activate
             Call RemoveEventsProcedure(Worksheets(sheet))
+            'Remove Formatting from sheet
+            ThisWorkbook.Worksheets(sheet).Cells.ClearFormats
+            
             If ExportWorkbook Is Nothing Then
                 Debug.Print "1 " & sheet
+                'Move sheet
                 ThisWorkbook.Worksheets(sheet).Move
                 Set ExportWorkbook = ActiveWorkbook
                 

@@ -144,6 +144,9 @@ Sub TbtnToggleSeparateByPhStatus(control As IRibbonControl, pressed As Boolean)
     End If
 End Sub
 
+
+
+
 'Sub AllowEdit(control As IRibbonControl, ByRef CancelDefault)
 '
 '  MsgBox "Yes?!", vbOKOnly, "Command Repurposing Demo"

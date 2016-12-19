@@ -1,6 +1,7 @@
 Attribute VB_Name = "B21_PreTreatment"
 Sub StartPreTreatment(control As IRibbonControl)
-
+    Call DefGlobal
+    
     Dim StatusColumn As String
     
     'Check if RAPPORT sheet exists, if not, create it.
@@ -24,7 +25,7 @@ retry:
         
     End If
     
-    Call DefGlobal
+    
     Call TransferColumns(InPh_colname)
     
 '   DEPRECATED
@@ -49,7 +50,11 @@ retry:
     'something like [back][filters][]
     
     
-    Call AddToCellMenu
+    'Call AddToCellMenu
+    
+    Call SplitSheets
+    Call Extract_Unique_Vals(Worksheets(InPh_colname))
+    
     
     Call UpdateStage("Pretreatment")
     
@@ -196,7 +201,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
             If OutputColumnOrder(column + 1) <> 0 Then
                 DestinationColumn = IncCol("A", column + COffset)
                 Set DestinationRange = output_wb.Worksheets(DataSheetName).Range(DestinationColumn & OutputLastRow + ROffset & ":" & DestinationColumn & OutputLastRow + ROffset + InputLastRow - 2)
-                DestinationRange = Application.Transpose(Application.index(InputDataTable, OutputColumnOrder(column + 1)))
+                DestinationRange = Application.Transpose(Application.Index(InputDataTable, OutputColumnOrder(column + 1)))
             
            'if column is a PHARMACODE column and pharmacode detection is enabled, flag rows with invalid pharmacodes
                 
@@ -204,7 +209,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
                     OutputLastCol = COffset + Application.Max(INTERNALS.ListObjects("AttributeTypeAndPlacement").ListColumns("DBB_col").DataBodyRange)
                     
                     output_wb.Worksheets(DataSheetName).Cells(1, OutputLastCol + 1).value = InPh_colname
-                    IncorrectPharmacodes = Split(CheckElementsType(Application.index(InputDataTable, OutputColumnOrder(column + 1)), "PHARMACODE"), ",")
+                    IncorrectPharmacodes = Split(CheckElementsType(Application.Index(InputDataTable, OutputColumnOrder(column + 1)), "PHARMACODE"), ",")
                     For k = LBound(IncorrectPharmacodes) + 1 To UBound(IncorrectPharmacodes) - 1
                         output_wb.Worksheets(DataSheetName).Cells(OutputLastRow + ROffset, OutputLastCol + 1).Offset(IncorrectPharmacodes(k) - 1, 0) = 1
                     Next k
