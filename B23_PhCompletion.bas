@@ -7,20 +7,20 @@ Sub GetPHARMINDEX(control As IRibbonControl)
     'code to import PHARMINDEX
     
     'Complete fields with new info from PHARMINDEX
-    Call Completion_DB_To_Unique_Vals(Worksheets("EntriesToComplete"), Worksheets("DB_PHARMINDEX_Extract"))
+    Call Completion_DB_To_Unique_Vals(Worksheets(PHAUNI_SH.Name), Worksheets("DB_PHARMINDEX_Extract"))
 End Sub
 
 Sub CommitEdits(control As IRibbonControl)
     Call DefGlobal
     
-    If Not CorrectlyFilled(Worksheets("EntriesToComplete")) Then If Not MsgBox("Un ou plusieurs champs ne sont pas renseignés (rouge ou blanc)." & vbNewLine & "Continuer?", vbYesNo) Then Exit Sub
-    'Call VerifyCorrectlyFilled(Worksheets("EntriesToComplete"))
+    If Not CorrectlyFilled(Worksheets(PHAUNI_SH.Name)) Then If MsgBox("Un ou plusieurs champs ne sont pas renseignés (rouge ou blanc)." & vbNewLine & "Continuer?", vbYesNo) = vbNo Then Exit Sub
+    'Call VerifyCorrectlyFilled(Worksheets(PHAUNI_SH.Name))
     
-    Call Completion_DB_To_Unique_Vals(Worksheets(InPh_colname), Worksheets("EntriesToComplete"), True)
+    Call Completion_DB_To_Unique_Vals(Worksheets(PHARMA_SH.Name), Worksheets(PHAUNI_SH.Name), True)
     Call MergeSheets
-    ActiveWorkbook.Worksheets(DataSheetName).visible = True
-    ActiveWorkbook.Worksheets(DataSheetName).Select
-    Call CleanNewPharmacodes(Worksheets("EntriesToComplete"))
+    ActiveWorkbook.Worksheets(DATA_SH.Name).visible = True
+    ActiveWorkbook.Worksheets(DATA_SH.Name).Select
+    Call CleanNewPharmacodes(Worksheets(PHAUNI_SH.Name))
     
 End Sub
     
@@ -37,7 +37,7 @@ Sub Extract_Unique_Vals(ws As Worksheet)
     
     ws.Copy After:=Worksheets(ThisWorkbook.Worksheets.Count)
     Set ws_uniquevals = ActiveSheet
-    ws_uniquevals.Name = "EntriesToComplete"
+    ws_uniquevals.Name = PHAUNI_SH.Name
     
     'Remove old events from sheet
     Call RemoveEventsProcedure(ws_uniquevals)
@@ -88,7 +88,7 @@ Sub Completion_DB_To_Unique_Vals(UV_ws As Worksheet, DB_ws As Worksheet, Optiona
     
     All_DB_designations = Join(DB_designations, "|")
     For i = LBound(UV_designations) To UBound(UV_designations)
-        MatchPos = InStr(All_DB_designations, UV_designations(i))
+        MatchPos = InStr(1, All_DB_designations, UV_designations(i), vbTextCompare)
         If MatchPos > 0 Then
             Index = i + 1
             Strlength = 0

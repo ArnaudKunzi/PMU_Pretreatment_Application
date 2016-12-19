@@ -4,9 +4,6 @@ Global Canton As Range
 Global Status As Range
 Global PARAM_TABLE As Range
 Global STAGE As Range
-Global InPh_colname As String
-Global DataSheetName  As String
-Global LogSheetName As String
 
 Global LastValueSelected As Variant
 Global LastCommentsSelected As Variant
@@ -18,6 +15,7 @@ Global DATA_SH As GlbSheet
 Global PHARMA_SH As GlbSheet
 Global PHAUNI_SH As GlbSheet
 Global REPORT_SH As GlbSheet
+Global LOG_SH As GlbSheet
 
 Public Type GlbSheet
     Name As String
@@ -32,9 +30,7 @@ Sub DefGlobal()
     Set Status = INTERNALS.ListObjects("status").ListColumns("style").DataBodyRange
     Set PARAM_TABLE = INTERNALS.ListObjects("Parameters").DataBodyRange
     Set STAGE = INTERNALS.ListObjects("stage").ListColumns(1).DataBodyRange
-    InPh_colname = "InvalidPharmacodes"
-    DataSheetName = "DATA"
-    LogSheetName = "LOG_" & Year
+    
     
     EDITCOLOR = 8
     EXPORTCOLOR = 23
@@ -51,9 +47,11 @@ Sub DefGlobal()
     PHARMA_SH.VOffset = 1
     PHARMA_SH.HOffset = 3
     
-    PHAUNI_SH.Name = "Pharmacodes à compléter"
+    PHAUNI_SH.Name = "Pharmacodes_a_completer"
     PHAUNI_SH.VOffset = 1
     PHAUNI_SH.HOffset = 5
+    
+    LOG_SH.Name = "LOG_" & Year
     
 End Sub
 

@@ -29,16 +29,16 @@ retry:
     End If
     
     
-    Call TransferColumns(InPh_colname)
+    Call TransferColumns(PHARMA_SH.Name)
     
 '   DEPRECATED
 '    If PARAM_TABLE.Columns(1).Find("DispatchFiles").Offset(0, 1).value Then
 '
-'        If SheetExists(InPh_colname) Then GoTo Handler
+'        If SheetExists(PHARMA_SH.Name) Then GoTo Handler
 'continue:
-'        Sheets.Add(After:=Sheets(Sheets.Count)).Name = InPh_colname
-'        Worksheets(InPh_colname).Tab.ColorIndex = EXPORTCOLOR
-'        Call SetWsName(Worksheets(InPh_colname), InPh_colname)
+'        Sheets.Add(After:=Sheets(Sheets.Count)).Name = PHARMA_SH.Name
+'        Worksheets(PHARMA_SH.Name).Tab.ColorIndex = EXPORTCOLOR
+'        Call SetWsName(Worksheets(PHARMA_SH.Name), PHARMA_SH.Name)
 '
 '        PARAM_TABLE.Columns(1).Find("TbtnToggleSeparateByPhStatus").Offset(0, 1).value = True
 '        Call SplitSheets
@@ -56,9 +56,9 @@ retry:
     'Call AddToCellMenu
     
     Call SplitSheets
-    Call Extract_Unique_Vals(Worksheets(InPh_colname))
-    ActiveWorkbook.Worksheets(InPh_colname).visible = False
-    ActiveWorkbook.Worksheets(DataSheetName).visible = False
+    Call Extract_Unique_Vals(Worksheets(PHARMA_SH.Name))
+    ActiveWorkbook.Worksheets(PHARMA_SH.Name).visible = False
+    ActiveWorkbook.Worksheets(DATA_SH.Name).visible = False
     
     Call UpdateStage("Pretreatment")
     
@@ -76,13 +76,13 @@ retry:
 '
 '    Select Case choice2
 '        Case vbYes
-'            Sheets(InPh_colname).Delete
+'            Sheets(PHARMA_SH.Name).Delete
 '            GoTo continue
 '        Case vbNo
 '            iter = 1
 '            Do
 '                iter = iter + 1
-'            Loop While SheetExists(InPh_colname & iter) And iter <= 10
+'            Loop While SheetExists(PHARMA_SH.Name & iter) And iter <= 10
 '            InPh_colname = InPh_colname & iter
 '
 '            GoTo continue
@@ -129,18 +129,18 @@ Sub TransferColumns(ByVal InPh_colname As String)
     COffset = 3
     ROffset = 1
     On Error Resume Next
-    Sheets(DataSheetName).Delete
+    Sheets(DATA_SH.Name).Delete
     On Error GoTo 0
     
-    Sheets.Add(After:=Sheets(Sheets.Count)).Name = DataSheetName
-    Worksheets(DataSheetName).Tab.ColorIndex = EXPORTCOLOR
-    Call SetWsName(Worksheets(DataSheetName), DataSheetName)
+    Sheets.Add(After:=Sheets(Sheets.Count)).Name = DATA_SH.Name
+    Worksheets(DATA_SH.Name).Tab.ColorIndex = EXPORTCOLOR
+    Call SetWsName(Worksheets(DATA_SH.Name), DATA_SH.Name)
     
     ColumnOrders = Application.Transpose(INTERNALS.ListObjects("file_to_load").ListColumns("reordering").DataBodyRange)
     
     'Name the columns:
     For i = 1 To INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange.Rows.Count
-        Worksheets(DataSheetName).Cells(1, INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange(i) + COffset).value = INTERNALS.ListObjects("attributes").ListColumns("DBB_name").DataBodyRange(i)
+        Worksheets(DATA_SH.Name).Cells(1, INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange(i) + COffset).value = INTERNALS.ListObjects("attributes").ListColumns("DBB_name").DataBodyRange(i)
     Next i
     
     filepath = INTERNALS.ListObjects("path").ListColumns("path").DataBodyRange(1).value
@@ -155,7 +155,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
         
         
         'Last row of the output file
-        With output_wb.Worksheets(DataSheetName)
+        With output_wb.Worksheets(DATA_SH.Name)
         OutputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).row, _
                                   .Cells(.Rows.Count, "C").End(xlUp).row, _
                                   .Cells(.Rows.Count, "E").End(xlUp).row)
@@ -208,7 +208,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
         For column = LBound(CurrentFileColumnOrder) To UBound(CurrentFileColumnOrder)
             If OutputColumnOrder(column + 1) <> 0 Then
                 DestinationColumn = IncCol("A", column + COffset)
-                Set DestinationRange = output_wb.Worksheets(DataSheetName).Range(DestinationColumn & OutputLastRow + ROffset & ":" & DestinationColumn & OutputLastRow + ROffset + InputLastRow - 2)
+                Set DestinationRange = output_wb.Worksheets(DATA_SH.Name).Range(DestinationColumn & OutputLastRow + ROffset & ":" & DestinationColumn & OutputLastRow + ROffset + InputLastRow - 2)
                 DestinationRange = Application.Transpose(Application.Index(InputDataTable, OutputColumnOrder(column + 1)))
             
            'if column is a PHARMACODE column and pharmacode detection is enabled, flag rows with invalid pharmacodes
@@ -216,18 +216,18 @@ Sub TransferColumns(ByVal InPh_colname As String)
                 If (column + 1) = PharmacodeColumn And PharmacodeDetectionEnabled Then
                     OutputLastCol = COffset + Application.Max(INTERNALS.ListObjects("AttributeTypeAndPlacement").ListColumns("DBB_col").DataBodyRange)
                     
-                    output_wb.Worksheets(DataSheetName).Cells(1, OutputLastCol + 1).value = InPh_colname
+                    output_wb.Worksheets(DATA_SH.Name).Cells(1, OutputLastCol + 1).value = InPh_colname
                     IncorrectPharmacodes = Split(CheckElementsType(Application.Index(InputDataTable, OutputColumnOrder(column + 1)), "PHARMACODE"), ",")
                     For k = LBound(IncorrectPharmacodes) + 1 To UBound(IncorrectPharmacodes) - 1
-                        output_wb.Worksheets(DataSheetName).Cells(OutputLastRow + ROffset, OutputLastCol + 1).Offset(IncorrectPharmacodes(k) - 1, 0) = 1
+                        output_wb.Worksheets(DATA_SH.Name).Cells(OutputLastRow + ROffset, OutputLastCol + 1).Offset(IncorrectPharmacodes(k) - 1, 0) = 1
                     Next k
-                    output_wb.Worksheets(DataSheetName).Range(IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset & ":" & IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset + InputLastRow - 2).SpecialCells(xlCellTypeBlanks).value = 0
+                    output_wb.Worksheets(DATA_SH.Name).Range(IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset & ":" & IncCol("A", OutputLastCol - 1) & OutputLastRow + ROffset + InputLastRow - 2).SpecialCells(xlCellTypeBlanks).value = 0
                     Set IncorrectPharmacodes = Nothing
                 End If
             End If
         Next column
         
-        With output_wb.Worksheets(DataSheetName)
+        With output_wb.Worksheets(DATA_SH.Name)
             .Range("A1").value = "YEAR_OF_ANALYSIS"
             .Range("B1").value = "EMS_CODE"
             .Range("C1").value = "PHARMACIST"
@@ -246,7 +246,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
         
     Next
     
-    Call CreateEventsForPreTreatment(Worksheets(DataSheetName))
+    Call CreateEventsForPreTreatment(Worksheets(DATA_SH.Name))
     AppActivate Application.Caption
     Application.DisplayAlerts = True
     Application.ScreenUpdating = True
@@ -306,7 +306,7 @@ Sub MergeSheets()
     Call DefGlobal
     Application.EnableEvents = False
     
-    If Not SheetExists(InPh_colname) Then Exit Sub
+    If Not SheetExists(PHARMA_SH.Name) Then Exit Sub
     
     Dim in_LastRow As Long
     Dim in_LastCol As Long
@@ -314,8 +314,8 @@ Sub MergeSheets()
     Dim in_ws As Worksheet
     Dim out_ws As Worksheet
     
-    Set in_ws = Worksheets(InPh_colname)
-    Set out_ws = Worksheets(DataSheetName)
+    Set in_ws = Worksheets(PHARMA_SH.Name)
+    Set out_ws = Worksheets(DATA_SH.Name)
     
     in_LastRow = in_ws.Cells(in_ws.Rows.Count, "A").End(xlUp).row
     in_LastCol = in_ws.Cells(1, in_ws.Columns.Count).End(xlToLeft).column
@@ -337,15 +337,15 @@ Sub SplitSheets()
     Call DefGlobal
     Application.EnableEvents = False
     
-    If SheetExists(InPh_colname) Then Exit Sub
+    If SheetExists(PHARMA_SH.Name) Then Exit Sub
     
-    Sheets.Add(After:=Sheets(Sheets.Count)).Name = InPh_colname
-    Worksheets(InPh_colname).Tab.ColorIndex = EXPORTCOLOR
-    Call SetWsName(Worksheets(InPh_colname), InPh_colname)
+    Sheets.Add(After:=Sheets(Sheets.Count)).Name = PHARMA_SH.Name
+    Worksheets(PHARMA_SH.Name).Tab.ColorIndex = EXPORTCOLOR
+    Call SetWsName(Worksheets(PHARMA_SH.Name), PHARMA_SH.Name)
         
-    Call MoveRowsToSheet(InPh_colname, 1, Worksheets(DataSheetName), Worksheets(InPh_colname))
+    Call MoveRowsToSheet(PHARMA_SH.Name, 1, Worksheets(DATA_SH.Name), Worksheets(PHARMA_SH.Name))
     
-    Call CreateEventsForPreTreatment(Worksheets(InPh_colname))
+    Call CreateEventsForPreTreatment(Worksheets(PHARMA_SH.Name))
     AppActivate Application.Caption
     Application.EnableEvents = True
 End Sub

@@ -98,7 +98,7 @@ Sub ProduceLog(control As IRibbonControl)
 
     Set ws = ActiveSheet
     
-    If Not (InStr(ws.CodeName, DataSheetName) <> 0 Or ws.CodeName = InPh_colname) Then Exit Sub
+    If Not (InStr(ws.CodeName, DATA_SH.Name) <> 0 Or ws.CodeName = PHARMA_SH.Name) Then Exit Sub
     
     If ws.comments.Count = 0 Then
         MsgBox "Rien à journaliser", vbExclamation
