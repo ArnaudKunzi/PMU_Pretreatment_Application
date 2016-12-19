@@ -164,8 +164,28 @@ Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String, Optio
                 If Not IsDate(ColumnData(j)) Then CheckElementsType = CheckElementsType & "," & j
             Next j
         Case "PHARMACODE"
+            Dim vx As MSScriptControl.ScriptControl
+            Set vx = New MSScriptControl.ScriptControl
+
+            Dim restriction As String
+            Dim restrictedvalues As Variant
+            
+            restrictedvalues = INTERNALS.ListObjects("PharmacodeRestrictedValues").ListColumns(1).DataBodyRange.SpecialCells(xlCellTypeConstants).Resize(INTERNALS.ListObjects("PharmacodeRestrictedValues").ListColumns(1).DataBodyRange.SpecialCells(xlCellTypeConstants).Cells.Count, 2).value
+            restriction = Join2D(restrictedvalues, " ", " Or ")
+            restriction = "val " & Replace(restriction, "Or", "Or val")
+
+            With vx
+                .Language = "VBScript"
+                .AddCode "function stub(val): stub=" & restriction & ": end function"
+            End With
+            
             For j = LBound(ColumnData) To UBound(ColumnData)
-                If Not (ColumnData(j) > 0 And ColumnData(j) <= 8999999 And ColumnData(j) <> 8888887 And ColumnData(j) <> "") Then CheckElementsType = CheckElementsType & "," & j
+                'If Not (ColumnData(j) > 0 And ColumnData(j) <= 8999999 And ColumnData(j) <> 8888887 And ColumnData(j) <> "") Then CheckElementsType = CheckElementsType & "," & j
+                If ColumnData(j) = "" Then
+                    CheckElementsType = CheckElementsType & "," & j
+                Else
+                    If vx.Run("stub", CLng(ColumnData(j))) Then CheckElementsType = CheckElementsType & "," & j
+                End If
             Next j
         Case "CHR", "NONE", ""
             CheckElementsType = ""
@@ -205,3 +225,26 @@ End Function
 'Sub test()
 '    Call CheckForSpecialCharacters(Workbooks(2).Worksheets(1))
 'End Sub
+
+
+Public Function Join2D(ByVal vArray As Variant, Optional ByVal sWordDelim As String = " ", Optional ByVal sLineDelim As String = vbNewLine) As String
+    
+    Dim i As Long, j As Long
+    Dim aReturn() As String
+    Dim aLine() As String
+    
+    ReDim aReturn(LBound(vArray, 1) To UBound(vArray, 1))
+    ReDim aLine(LBound(vArray, 2) To UBound(vArray, 2))
+    
+    For i = LBound(vArray, 1) To UBound(vArray, 1)
+        For j = LBound(vArray, 2) To UBound(vArray, 2)
+            'Put the current line into a 1d array
+            aLine(j) = vArray(i, j)
+        Next j
+        'Join the current line into a 1d array
+        aReturn(i) = Join(aLine, sWordDelim)
+    Next i
+    
+    Join2D = Join(aReturn, sLineDelim)
+    
+End Function

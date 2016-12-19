@@ -204,8 +204,8 @@ Sub RestoreFirstValue()
     Dim FirstValue As Variant
     On Error GoTo Abort
     Application.EnableEvents = False
-     For Each C In Selection
-        With C
+     For Each c In Selection
+        With c
             If .Interior.ColorIndex = EDITCOLOR Then
                 commentcontent = .Comment.Text
                 commentcontent = Left(commentcontent, InStr(commentcontent, vbNewLine) - 1)
@@ -215,7 +215,7 @@ Sub RestoreFirstValue()
                 .Interior.ColorIndex = xlNone
             End If
         End With
-    Next C
+    Next c
 Abort:
      Application.EnableEvents = True
 End Sub
@@ -227,8 +227,8 @@ Sub RevertToLastValue()
     Dim temparray As Variant
     'On Error GoTo Abort
     Application.EnableEvents = False
-    For Each C In Selection
-        With C
+    For Each c In Selection
+        With c
             If .Interior.ColorIndex = EDITCOLOR Then
                 commentcontent = .Comment.Text
                 temparray = Split(commentcontent, vbNewLine)
@@ -240,13 +240,13 @@ Sub RevertToLastValue()
                     ReDim Preserve temparray(UBound(temparray) - 1)
                     commentcontent = Join(temparray, vbNewLine)
                     .AddComment commentcontent
-                    Call CommentStyle(Range(C.Address))
+                    Call CommentStyle(Range(c.Address))
                 Else
                     .Interior.ColorIndex = xlNone
                 End If
             End If
         End With
-    Next C
+    Next c
 Abort:
      Application.EnableEvents = True
 End Sub
