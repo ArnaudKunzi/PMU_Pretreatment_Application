@@ -258,12 +258,9 @@ Sub ColorLabelling(ByRef Target As Range)
     
     Dim RangeToCheck As Range
     Dim ws As Worksheet
-    Dim HOffset As Integer
-    
-    HOffset = 5
     
     Set ws = Target.Parent
-    Set RangeToCheck = ws.Range(ws.Cells(Target.row, HOffset + 1), ws.Cells(Target.row, ws.Cells(1, 1).End(xlToRight).column))
+    Set RangeToCheck = ws.Range(ws.Cells(Target.row, PHAUNI_SH.HOffset + 1), ws.Cells(Target.row, ws.Cells(1, 1).End(xlToRight).column))
     
     If WorksheetFunction.CountA(RangeToCheck) = 0 Then
         RangeToCheck.Cells.Interior.ColorIndex = 3 'red

@@ -37,7 +37,7 @@ Sub DefGlobal()
     
     REPORT_SH.Name = "RAPPORT"
     REPORT_SH.VOffset = 1
-    REPORT_SH.HOffset = 3
+    REPORT_SH.HOffset = 0
     
     DATA_SH.Name = "DATA"
     DATA_SH.VOffset = 1

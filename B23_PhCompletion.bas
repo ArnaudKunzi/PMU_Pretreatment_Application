@@ -77,12 +77,10 @@ Sub Completion_DB_To_Unique_Vals(UV_ws As Worksheet, DB_ws As Worksheet, Optiona
     Dim MatchIndex As Long
     Dim MatchPos As String
     Dim Strlength As String
-    Dim HOffset As Integer
-    
+
     Application.EnableEvents = False
     Application.ScreenUpdating = False
-    
-    HOffset = 5
+
     UV_designations = Application.Transpose(UV_ws.UsedRange.Rows(1).Find("designation").Offset(1, 0).Resize(UV_ws.UsedRange.Rows.Count - 1, 1))
     DB_designations = Application.Transpose(DB_ws.UsedRange.Rows(1).Find("designation").Offset(1, 0).Resize(DB_ws.UsedRange.Rows.Count - 1, 1))
     
@@ -113,10 +111,10 @@ Sub Completion_DB_To_Unique_Vals(UV_ws As Worksheet, DB_ws As Worksheet, Optiona
                     If Strlength >= MatchPos Then
                         MatchIndex = j + 1
                         'report values
-                        UV_ws.Range(UV_ws.Cells(Index, HOffset + 1), UV_ws.Cells(Index, HOffset + DB_ws.UsedRange.Columns.Count)) = _
+                        UV_ws.Range(UV_ws.Cells(Index, PHAUNI_SH.HOffset + 1), UV_ws.Cells(Index, PHAUNI_SH.HOffset + DB_ws.UsedRange.Columns.Count)) = _
                                                 DB_ws.Range("A" & MatchIndex & ":" & IncCol("A", DB_ws.UsedRange.Columns.Count) & MatchIndex).value
                         'mark as filled
-                        UV_ws.Range(UV_ws.Cells(Index, HOffset + 1), UV_ws.Cells(Index, HOffset + DB_ws.UsedRange.Columns.Count)).Cells.Interior.ColorIndex = 4
+                        UV_ws.Range(UV_ws.Cells(Index, PHAUNI_SH.HOffset + 1), UV_ws.Cells(Index, PHAUNI_SH.HOffset + DB_ws.UsedRange.Columns.Count)).Cells.Interior.ColorIndex = 4
                         UV_ws.Rows(Index).EntireRow.Hidden = True
                         Exit For
                     End If

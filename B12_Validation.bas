@@ -142,7 +142,7 @@ Function CheckPharmacodes(ByRef ColumnData, ByVal ExpectedType As String, row As
     INTERNALS.ListObjects("file_to_load").ListColumns("invalid_pharmacodes").DataBodyRange(row).value = CheckPharmacodes
 End Function
 
-Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String, Optional n_mode As Boolean) As String
+Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String, Optional n_mode As Boolean = False) As String
     'CheckElementsType returns a string of the indexes of the list that are not of the expected type
     'we do not return the values because the separator (here we chose ",") could be hidden in one of the values
     
