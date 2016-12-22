@@ -1,4 +1,9 @@
 Attribute VB_Name = "A1_Main"
+Sub Start(control As IRibbonControl)
+    MsgBox "YOUHOUUUUUUU!"
+    Call UpdateStage(2)
+End Sub
+
 
 Sub PrepareOverviewSheet(FilesListSring As String)
     
@@ -13,11 +18,11 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         
     Application.DisplayAlerts = False
     On Error Resume Next
-    Sheets("RAPPORT").Delete
+    Sheets(REPORT_SH.Name).Delete
     Application.DisplayAlerts = True
     On Error GoTo 0
-    Sheets.Add(After:=Sheets(Sheets.Count)).Name = "RAPPORT"
-    Call SetWsName(Worksheets("RAPPORT"), "A_1")
+    Sheets.Add(After:=Sheets(Sheets.Count)).Name = REPORT_SH.Name
+    Call SetWsName(Worksheets(REPORT_SH.Name), "A_1")
     
     nb_sheets = HowManySheets(FilesList)
     
@@ -25,7 +30,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     
     Application.ScreenUpdating = False
     
-    With Worksheets("RAPPORT")
+    With Worksheets(REPORT_SH.Name)
         .Cells.Font.Size = "8"
         .Columns("A:B").Group
         .Outline.ShowLevels ColumnLevels:=1
@@ -160,7 +165,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     
     'RedoRib
     
-    Call UpdateStage("PreTreatment")
+    Call UpdateStage(3)
     
     Application.ScreenUpdating = True
     
@@ -168,8 +173,28 @@ Sub PrepareOverviewSheet(FilesListSring As String)
 
 End Sub
 
-Sub UpdateStage(NewStage As String)
-    STAGE.value = NewStage
+Sub UpdateStage(NewStage As Integer)
+    If NewStage > 0 And NewStage < 6 Then
+        STAGE.value = NewStage
+    End If
     'Call GetInstructionLabel(Nothing, NewStage)  '(control As IRibbonControl, ByRef returnedVal)
+    
+    Select Case NewStage
+        Case 1:
+            DisplayTag = "*VG_1*"
+        Case 2:
+            DisplayTag = "*VG_*2*"
+        Case 3:
+            DisplayTag = "*VG_*3*"
+        Case 4:
+            DisplayTag = "*VG_*4*"
+        Case 5:
+            DisplayTag = "*VG_*5*"
+        Case Else
+            DisplayTag = "*VG_*"
+    End Select
+        
+    Call RefreshRibbon(DisplayTag)
+    'Call RefreshButton(DisplayTag)
 End Sub
 

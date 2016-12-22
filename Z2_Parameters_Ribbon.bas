@@ -54,7 +54,12 @@ Public Sub Store(control_id As String, value As Boolean)
         Case Is = "VerifyColumnsTitle"
         Case Is = "VerifyColumnsContent"
         'Case Is = "MergeFiles"
-        Case Is = "NA"
+        Case Is = "AllowAllButtons"
+            If value Then
+                Call UpdateStage(-1)
+            Else
+                Call UpdateStage(STAGE.value)
+            End If
         Case Is = "CheckPharmacodes"
         'Case Is = "TrackChanges"
         'Case Is = "AuthorizeChangesOnOpening"
@@ -82,6 +87,18 @@ Public Function GetKey(control_id As String) As Boolean
     GetKey = PARAM_TABLE.Columns(1).Find(control_id).Offset(0, 1).value ' True ' or whatever you have selected previously
 End Function
 
+Sub GetEnabledMacro(control As IRibbonControl, ByRef Enabled)
+    If MyTag = "Enable" Then
+        Enabled = True
+    Else
+        If control.Tag Like MyTag And control.Tag Like DisplayTag Then
+            Enabled = True
+        Else
+            Enabled = False
+        End If
+    End If
+    
+End Sub
 
 'CALLBACKS ON VISIBILITY 1
 
@@ -90,18 +107,37 @@ Sub RibbonOnLoad(ribbon As IRibbonUI)
     Call DefGlobal
     Set Rib = ribbon
     INTERNALS.ListObjects("IRibbonUI").DataBodyRange.value = ObjPtr(ribbon)
+    
+    Call UpdateStage(1)
 End Sub
 
 Sub GetVisible(control As IRibbonControl, ByRef visible)
-    If MyTag = "show" Then
-        visible = True
-    Else
-        If control.Tag Like MyTag Then
+    
+    If control.Tag Like MyTag Then
+        'visible = True
+        
+        'If MyTag Like "*VG*" Then
+            'If PARAM_TABLE.Columns(1).Find("ShowEveryTabs").Offset(0, 1).value Then
+            '    visible = True
+            'Else
+            '    visible = False
+            'End If
+        'Else
             visible = True
+        'End If
+        
+    Else
+        If MyTag Like "*VG*" Then
+            If PARAM_TABLE.Columns(1).Find("ShowEveryTabs").Offset(0, 1).value Then
+                visible = True
+            Else
+                visible = False
+            End If
         Else
             visible = False
         End If
     End If
+
 End Sub
 
 Sub RefreshRibbon(Tag As String)
@@ -117,18 +153,22 @@ Sub RefreshRibbon(Tag As String)
 End Sub
 
 
+'Sub RefreshButton(Tag As String)
+    'Rib.InvalidateControl (controlID)
+'End Sub
+
+
+
 ' Macros ON VISIBILITY
 
 Sub ShowAllTabs()
-'Show every Tab, Group or Control(we use the wildgard "*")
-'You can also use "rib*" because all tags start with rib in this file
+'Show every Tab, Group or Control(wildgard "*")
     Call RefreshRibbon(Tag:="*")
 End Sub
 
 Sub ShowOnlyCustomTabs()
-'Show every Tab, Group or Control(we use the wildgard "*")
-'You can also use "rib*" because all tags start with rib in this file
-    Call RefreshRibbon(Tag:="_cust")
+'Show  Tab, Group or Control(wildgard "*")
+    Call RefreshRibbon(Tag:="*C_*")
 End Sub
 
 

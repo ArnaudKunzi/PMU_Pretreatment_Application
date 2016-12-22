@@ -8,13 +8,13 @@ Sub StartPreTreatment(control As IRibbonControl)
     Application.DisplayAlerts = False
     
     'Check if RAPPORT sheet exists, if not, create it.
-    If Worksheets("RAPPORT") Is Nothing Then Call Refresh(Nothing)
+    If Worksheets(REPORT_SH.Name) Is Nothing Then Call Refresh(Nothing)
            
     'find the column "Status"
-    StatusColumn = IncCol("A", Worksheets("RAPPORT").Range("1:1").Find("Status").column - 1)
+    StatusColumn = IncCol("A", Worksheets(REPORT_SH.Name).Range("1:1").Find("Status").column - 1)
     
 retry:
-    If Not Worksheets("RAPPORT").Range(StatusColumn & ":" & StatusColumn).Find("WARNING") Is Nothing Then
+    If Not Worksheets(REPORT_SH.Name).Range(StatusColumn & ":" & StatusColumn).Find("WARNING") Is Nothing Then
         Dim Choice1 As Variant
             Choice1 = MsgBox("les status des fichiers médicaments n'ont pas été résolus. Merci de les résoudres puis d'actualiser le rapport avant de réessayer.", vbAbortRetryIgnore, "Status invalides")
         If Choice1 = 3 Then  'abort
@@ -60,7 +60,7 @@ retry:
     ActiveWorkbook.Worksheets(PHARMA_SH.Name).visible = False
     ActiveWorkbook.Worksheets(DATA_SH.Name).visible = False
     
-    Call UpdateStage("Pretreatment")
+    Call UpdateStage(3)
     
     
     Application.ScreenUpdating = True

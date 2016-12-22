@@ -9,13 +9,14 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Private Sub Workbook_Open()
     Call DefGlobal
-    Year.value = Format(Now, "yyyy") - 1
+    
     Call A_0.SetValidation
     'INTERNALS.Protect "mdp", UserInterFaceOnly:=True
-    ACCUEIL.Activate
-    
+    'ACCUEIL.Activate
+    'DisplayTag = "*"
     Call OpenGit
-    'Call UpdateStage("Start")
+    
+
 End Sub
 
 'Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Source As Range)

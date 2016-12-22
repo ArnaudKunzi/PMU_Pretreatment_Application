@@ -3,7 +3,7 @@
         <tabs>
 		
 <!-- Default tabs beginning-->
-		<tab id="CustomHomeTab" label="Home" insertAfterMso="TabHome" getVisible="GetVisible" tag="ribhome_def">
+		<tab id="HomeTab" label="Accueil" insertAfterMso="TabHome" getVisible="GetVisible" tag="ribhome_def">
 
 			<group idMso="GroupClipboard" />
 			<group idMso="GroupFont" />
@@ -14,7 +14,7 @@
 			<group idMso="GroupEditingExcel" />
 		</tab>	
 		
-		<tab id="CustomInsertTab" label="Insert" insertAfterMso="TabInsert" getVisible="GetVisible" tag="ribinsert_def" >	
+		<tab id="InsertTab" label="Insertion" insertAfterMso="TabInsert" getVisible="GetVisible" tag="ribinsert_def" >	
 			<group idMso="GroupInsertTablesExcel" />
 			<group idMso="GroupInsertIllustrations" />
 			<group idMso="GroupInsertChartsExcel" />
@@ -22,7 +22,7 @@
 			<group idMso="GroupInsertText" />
 		</tab>	
 		
-		<tab id="CustomPageLayoutTab" label="Page Layout" insertAfterMso="TabPageLayoutExcel" getVisible="GetVisible" tag="ribpagelayout_def">	
+		<tab id="PageLayoutTab" label="Mise en page" insertAfterMso="TabPageLayoutExcel" getVisible="GetVisible" tag="ribpagelayout_def">	
 			<group idMso="GroupThemesExcel" />
 			<group idMso="GroupPageSetup" />
 			<group idMso="GroupPageLayoutScaleToFit" />
@@ -30,14 +30,14 @@
 			<group idMso="GroupArrange" />
 		</tab>	
 		
-		<tab id="CustomFormulasTab" label="Formulas" insertAfterMso="TabFormulas" getVisible="GetVisible" tag="ribformulas_def">	
+		<tab id="FormulasTab" label="Formules" insertAfterMso="TabFormulas" getVisible="GetVisible" tag="ribformulas_def">	
 			<group idMso="GroupFunctionLibrary" />
 			<group idMso="GroupNamedCells" />
 			<group idMso="GroupFormulaAuditing" />
 			<group idMso="GroupCalculation" />
 		</tab>	
 		
-		<tab id="CustomDataTab" label="Data" insertAfterMso="TabData" getVisible="GetVisible" tag="ribdata_def">	
+		<tab id="DataTab" label="Données" insertAfterMso="TabData" getVisible="GetVisible" tag="ribdata_def">	
 			<group idMso="GroupGetExternalData" />
 			<group idMso="GroupConnections" />
 			<group idMso="GroupSortFilter" />
@@ -45,13 +45,13 @@
 			<group idMso="GroupOutline" />
 		</tab>	
 		
-		<tab id="CustomReviewTab" label="Review" insertAfterMso="TabReview" getVisible="GetVisible" tag="ribreview_def">	
+		<tab id="ReviewTab" label="Révision" insertAfterMso="TabReview" getVisible="GetVisible" tag="ribreview_def">	
 			<group idMso="GroupProofing" />
 			<group idMso="GroupComments" />
 			<group idMso="GroupChangesExcel" />
 		</tab>	
 		
-		<tab id="CustomViewTab" label="View" insertAfterMso="TabView" getVisible="GetVisible" tag="ribview_def">	
+		<tab id="ViewTab" label="Affichage" insertAfterMso="TabView" getVisible="GetVisible" tag="ribview_def">	
 			<group idMso="GroupWorkbookViews" />
 			<group idMso="GroupViewShowHide" />
 			<group idMso="GroupZoom" />
@@ -59,7 +59,7 @@
 			<group idMso="GroupMacros" />
 		</tab>	
 		
-		<tab id="CustomDeveloperTab" label="Developer" insertAfterMso="TabDeveloper" getVisible="GetVisible" tag="ribdeveloper_def">	
+		<tab id="DeveloperTab" label="Développeur" insertAfterMso="TabDeveloper" getVisible="GetVisible" tag="ribdeveloper_def">	
 			<group idMso="GroupCode" />
 			<group idMso="GroupControls" />
 			<group idMso="GroupXml" />
@@ -68,15 +68,25 @@
 
 	<!-- Default tabs end -->
 			
-		<tab id="MAIN" label="Validateur" visible="true"  tag="Custom_MAIN_cust">
+		<tab id="MAIN" label="Validateur" visible="true"  tag="C_MAIN">
 			<!-- First group -->
 			<group id = "group11" label="Chargement" >
+			
+				<button id="start" 
+				label="Start/Restart" 
+				screentip="Commencer le prétraitement" 
+				supertip=" " 
+				imageMso="GoLeftToRight" onAction="Start" size="large" 
+				tag="C_VG_1"  
+				getEnabled="GetEnabledMacro" />
 
 				<button id="LoadFiles" 
 				label="Charger les fichiers" 
 				screentip="Charger les fichiers" 
 				supertip="Charger les fichiers bruts médicaments renseignés par les pharmaciens." 
-				imageMso="FileOpen" onAction="LoadFiles" size="large" tag="val_chargp_1234_cust" />
+				imageMso="FileOpen" onAction="LoadFiles" size="large" 
+				tag="C_VG_2_3" 
+				getEnabled="GetEnabledMacro" />
 
 				<button id="Refresh" 
 				label="Actualiser" 
@@ -85,7 +95,9 @@
 				imageMso="RecurrenceEdit" 
 				onAction="Refresh" 
 				size="large" 
-				tag="val_chargp_234_cust" />
+				tag="C_VG_3"  
+				getEnabled="GetEnabledMacro" />
+
 
 				<separator id="Sep111"/>	
 				
@@ -96,13 +108,15 @@
 				imageMso="FileCompatibilityChecker" 
 				onAction="StartPreTreatment" 
 				size="large" 
-				tag="val_chargp_234_cust" />
+				tag="C_VG_3"  
+				getEnabled="GetEnabledMacro" />
+
 
 			</group>
 			<!--Second group -->
 			<group id = "group12" label="Pré-traitement" >
 				
-				<toggleButton id="TbtnToggleSeparateByPhStatus" 
+				<!-- <toggleButton id="TbtnToggleSeparateByPhStatus" 
 				label="Séparer les données Invalides"
 				screentip="Séparer les données Invalides" 
 				supertip="Séparer sur une feuille dédiée les entrées dont les pharmacodes sont invalides"
@@ -110,14 +124,38 @@
 				onAction="TbtnToggleSeparateByPhStatus"
 				getPressed="Function_Clicked"
 				imageMso="TableSplitTable"
-				tag="val_pregp_34_cust" />
+				tag="VG_3"  
+				getEnabled="GetEnabledMacro" /> -->
+
+				
+				<button id="GetPHARMINDEX" 
+				label="Importer PharmIndex" 
+				screentip="Importer les Pharmacodes personalisés de PharmIndex" 
+				supertip="Importer les Pharmacodes personalisés de PharmIndex" 
+				imageMso="DatabaseCopyDatabaseFile" onAction="GetPHARMINDEX" size="large" 
+				tag="C_VG_4"  
+				getEnabled="GetEnabledMacro" />
+
+
+
+				<button id="CommitEdits" 
+				label="Soumettre les Pharmacodes" 
+				screentip="Soumettre les Pharmacodes" 
+				supertip="Insère les pharmacodes personnalisés dans les données pré-traitées" 
+				imageMso="CellsInsertDialog" onAction="CommitEdits" size="large" 
+				tag="C_VG_4"  
+				getEnabled="GetEnabledMacro" />
+
+
 
 				<button id="ProduceLog" 
 				label="Journal" 
 				screentip="Produire un journal" 
 				supertip="Produire un journal des éditions manuelles des données de la feuille de calcul visible" 
 				imageMso="ReadingViewShowPrintedPage" onAction="ProduceLog" size="large" 
-				tag="val_pregp_34_cust" />
+				tag="C_VG_5"  
+				getEnabled="GetEnabledMacro" />
+
 
 			</group>
 			<!-- Third group -->
@@ -130,7 +168,9 @@
 				imageMso="PivotTableShowPages" 
 				onAction="ExportSeparately" 
 				size="large" 
-				tag="val_expgp_34_cust" />
+				tag="C_VG_5"  
+				getEnabled="GetEnabledMacro" />
+
 				
 				<button id="ExportTogether" 
 				label="Exporter en un fichier" 
@@ -139,7 +179,9 @@
 				imageMso="PivotTableLayoutGrandTotals" 
 				onAction="ExportTogether" 
 				size="large" 
-				tag="val_expgp_34_cust" />
+				tag="C_VG_5"  
+				getEnabled="GetEnabledMacro" />
+
 				
 			</group>
 			
@@ -149,7 +191,7 @@
 			</group> -->
 
 		</tab>
-		<tab id="CUSTOM" label="Outils" visible="true" tag="Custom_TOOLS_cust">
+		<tab id="CUSTOM" label="Outils" visible="true" tag="C_TOOLS">
 
 			<group id = "group01" label="Doublons" >
 				<button idMso="ConditionalFormattingHighlightDuplicateValues" size="large"  />
@@ -173,7 +215,7 @@
 			</group>
 
 		</tab>
-		<tab id="CONTROLS" label="Paramètres" visible="true"  tag="Custom_CONTROLS_cust">
+		<tab id="CONTROLS" label="Paramètres" visible="true"  tag="C_CONTROLS">
 			<!-- First group -->
 			<group id = "group21" label="Actions du pré-traitement" >
 
@@ -209,14 +251,13 @@
 				onAction="Function_Action"/>
 
 				<checkBox 
-				id="NA"
-				label="NA"
-				screentip="NA"
-				supertip="NA"
+				id="AllowAllButtons"
+				label="Débloquer les boutons"
+				screentip="Débloquer les boutons"
+				supertip="Débloque tous les boutons du ruban 'Validation'"
 				getPressed="Function_Clicked"
 				onAction="Function_Action"/>
-				
-				<!-- how to disable elements:  https://social.msdn.microsoft.com/Forums/en-US/4b600dc7-4482-4af0-86f0-963724923b11/vba-excel-ribbon-enabledisable-buttons-and-other-controls?forum=isvvba -->
+
 
 			</group>
 			<group id = "group22" label="Options du pré-traitement" >

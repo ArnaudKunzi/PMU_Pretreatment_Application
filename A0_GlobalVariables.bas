@@ -1,4 +1,6 @@
 Attribute VB_Name = "A0_GlobalVariables"
+Global DisplayTag As String
+
 Global Year As Range
 Global Canton As Range
 Global Status As Range
@@ -26,6 +28,7 @@ End Type
 
 Sub DefGlobal()
     Set Year = A_0.Range("E7")
+    Year.value = Format(Now, "yyyy") - 1
     Set Canton = A_0.Range("E9")
     Set Status = INTERNALS.ListObjects("status").ListColumns("style").DataBodyRange
     Set PARAM_TABLE = INTERNALS.ListObjects("Parameters").DataBodyRange

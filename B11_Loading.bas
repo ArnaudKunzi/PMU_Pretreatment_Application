@@ -17,7 +17,7 @@ Sub LoadFiles(control As IRibbonControl)
         'FilesList = Split(FilesListString, "|")
 
     End If
-    Call UpdateStage("Load")
+    Call UpdateStage(2)
 End Sub
 
 Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
@@ -169,7 +169,7 @@ Sub Refresh(control As IRibbonControl)
         
     End If
     
-    Call UpdateStage("Load")
+    Call UpdateStage(2)
     
 End Sub
 

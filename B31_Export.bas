@@ -105,6 +105,6 @@ Sub Export(separately As Boolean)
     
     OpenExplorerWithFileSelected (sPath & Application.PathSeparator & FileName & ".xlsx")
     
-    Call UpdateStage("PreTreatment")
+    Call UpdateStage(3)
     
 End Sub
