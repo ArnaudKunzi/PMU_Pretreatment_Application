@@ -10,11 +10,10 @@ Attribute VB_Exposed = True
 Private Sub Workbook_Open()
     Call DefGlobal
     
-    Call A_0.SetValidation
     'INTERNALS.Protect "mdp", UserInterFaceOnly:=True
-    'ACCUEIL.Activate
+    ACCUEIL.Activate
     'DisplayTag = "*"
-    Call OpenGit
+    'Call OpenGit
     
 
 End Sub

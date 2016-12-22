@@ -6,9 +6,12 @@ End Sub
 
 
 Sub PrepareOverviewSheet(FilesListSring As String)
-    
+    Call DefGlobal
     Dim FilesList As Variant
         FilesList = Split(FilesListSring, "|")
+        
+    Dim ws As Worksheet
+        
     Dim counter As Integer
     Dim nb_sheets As Variant
             
@@ -21,7 +24,11 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     Sheets(REPORT_SH.Name).Delete
     Application.DisplayAlerts = True
     On Error GoTo 0
-    Sheets.Add(After:=Sheets(Sheets.Count)).Name = REPORT_SH.Name
+    
+    Set ws = Sheets.Add(After:=Sheets(Sheets.Count))
+    ws.Name = REPORT_SH.Name
+    Debug.Print ws.VBProject.VBComponents(ws.Name).Properties("Codename")
+    
     Call SetWsName(Worksheets(REPORT_SH.Name), "A_1")
     
     nb_sheets = HowManySheets(FilesList)
@@ -159,13 +166,18 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         lcol = .Cells(1, .Columns.Count).End(xlToLeft).column
         lrow = .Cells(.Rows.Count, "A").End(xlUp).row
         
-        .Range(Cells(1, lcol + 1), Cells(.Rows.Count, .Columns.Count)).EntireColumn.Hidden = True
-        .Range(Cells(lrow + 1, 1), Cells(.Rows.Count, .Columns.Count)).EntireRow.Hidden = True
+        
+        'Debug.Print .Range(Cells(1, lcol + 1), Cells(.Rows.Count, .Columns.Count)).Address
+        '.Range(Cells(1, lcol + 1), Cells(.Rows.Count, .Columns.Count)).EntireColumn.Hidden = True
+        
+        '.Range(Cells(lrow + 1, 1), Cells(.Rows.Count, .Columns.Count)).EntireRow.Hidden = True
+        
+           
+        ActiveWindow.SplitColumn = 0
+        ActiveWindow.SplitRow = 1
+        ActiveWindow.FreezePanes = True
+        
     End With
-    
-    'RedoRib
-    
-    Call UpdateStage(3)
     
     Application.ScreenUpdating = True
     
@@ -174,6 +186,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
 End Sub
 
 Sub UpdateStage(NewStage As Integer)
+    Call DefGlobal
     If NewStage > 0 And NewStage < 6 Then
         STAGE.value = NewStage
     End If

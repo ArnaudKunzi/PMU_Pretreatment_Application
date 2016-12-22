@@ -82,8 +82,10 @@ Sub RemoveEventsProcedure(ByVal WorksheetToClean As Worksheet)
 
 End Sub
 
-Sub SetWsName(ws As Worksheet, NewName As String)
+Sub SetWsName(ByVal ws As Worksheet, NewName As String)
 
+    ws.Name = ThisWorkbook.VBProject.VBComponents(ws.Name).Properties("Codename")
     ws.Parent.VBProject.VBComponents(ws.CodeName).Name = NewName
-
+    
+    
 End Sub

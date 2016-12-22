@@ -42,7 +42,6 @@ Private Sub UserForm_Initialize()
         .AddItem "VAUD"
         .AddItem "FRIBOURG"
         .ListIndex = 0
-        '.default = True
         
     End With
     
