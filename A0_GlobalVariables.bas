@@ -27,9 +27,8 @@ End Type
 
 
 Sub DefGlobal()
-    Set Year = A_0.Range("E7")
-    Year.value = Format(Now, "yyyy") - 1
-    Set Canton = A_0.Range("E9")
+    Set Year = INTERNALS.ListObjects("Variables_danalyse").ListColumns(2).DataBodyRange(2)
+    Set Canton = INTERNALS.ListObjects("Variables_danalyse").ListColumns(2).DataBodyRange(1)
     Set Status = INTERNALS.ListObjects("status").ListColumns("style").DataBodyRange
     Set PARAM_TABLE = INTERNALS.ListObjects("Parameters").DataBodyRange
     Set STAGE = INTERNALS.ListObjects("stage").ListColumns(1).DataBodyRange

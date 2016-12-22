@@ -1,7 +1,7 @@
 Attribute VB_Name = "A1_Main"
 Sub Start(control As IRibbonControl)
-    MsgBox "YOUHOUUUUUUU!"
-    Call UpdateStage(2)
+    Call DefGlobal
+    StartForm.Show
 End Sub
 
 
