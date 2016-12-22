@@ -3,10 +3,20 @@ Public Function SelectFile(Many As Boolean)
     Dim FileDialog As Office.FileDialog
     Set FileDialog = Application.FileDialog(msoFileDialogOpen)
     Dim FILE As String
+    Dim DirectoryPath As String
+    
+    DirectoryPath = INTERNALS.ListObjects("path").ListColumns(1).DataBodyRange(1).value
+    DirectoryPath = Replace(DirectoryPath, "$", INTERNALS.ListObjects("cantons").ListColumns(1).DataBodyRange.Find(Canton.value).Offset(0, 1).value)
+    DirectoryPath = Replace(DirectoryPath, "%", Year.value)
+    If Dir(DirectoryPath, vbDirectory) = "" Then DirectoryPath = Replace(DirectoryPath, "MEDICAMENTS_" & Year.value & "\", "")
     
     With FileDialog
         .Title = "Select file"
-        .InitialFileName = "L:\PMU\COMMUN_PHARMACIE\RECHERCHE\01 Travaux de recherche\ANI_EMS\EMS " & Canton.value & "\03 Donnees\033 Donnees brutes\" & Year.value & "\"
+        '.InitialFileName = "L:\PMU\COMMUN_PHARMACIE\RECHERCHE\01 Travaux de recherche\ANI_EMS\EMS " & Canton.value & "\03 Donnees\033 Donnees brutes\" & Year.value & "\"
+        .InitialFileName = DirectoryPath
+        
+        
+        
         If Many Then
             .AllowMultiSelect = True
         Else
