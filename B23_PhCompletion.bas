@@ -21,7 +21,7 @@ Sub CommitEdits(control As IRibbonControl)
     ActiveWorkbook.Worksheets(DATA_SH.Name).visible = True
     ActiveWorkbook.Worksheets(DATA_SH.Name).Select
     Call CleanNewPharmacodes(Worksheets(PHAUNI_SH.Name))
-    
+    Call UpdateStage(5)
 End Sub
     
 

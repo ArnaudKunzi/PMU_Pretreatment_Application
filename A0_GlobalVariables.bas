@@ -1,5 +1,5 @@
 Attribute VB_Name = "A0_GlobalVariables"
-Global DisplayTag As String
+Global DisplayTag As Range
 
 Global Year As Range
 Global Canton As Range
@@ -32,7 +32,7 @@ Sub DefGlobal()
     Set Status = INTERNALS.ListObjects("status").ListColumns("style").DataBodyRange
     Set PARAM_TABLE = INTERNALS.ListObjects("Parameters").DataBodyRange
     Set STAGE = INTERNALS.ListObjects("stage").ListColumns(1).DataBodyRange
-    
+    Set DisplayTag = INTERNALS.ListObjects("DisplayTag").ListColumns(1).DataBodyRange
     
     EDITCOLOR = 8
     EXPORTCOLOR = 23
@@ -54,6 +54,13 @@ Sub DefGlobal()
     PHAUNI_SH.HOffset = 5
     
     LOG_SH.Name = "LOG_" & Year
+    
+    'Reload ribbon
+    'If Rib Is Nothing Then
+    '    Dim ribbonPointer As Long
+    '    ribbonPointer = INTERNALS.ListObjects("IRibbonUI").DataBodyRange.value
+    '    Call CopyMemory(Rib, ribbonPointer, 4)
+    'End If
     
 End Sub
 

@@ -1,6 +1,6 @@
 Attribute VB_Name = "Z2_Parameters_Ribbon"
 Public Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (lpDest As Any, lpSource As Any, ByVal cBytes&)
-Dim Rib As IRibbonUI
+Public Rib As IRibbonUI
 Public MyTag As String
 
 
@@ -20,6 +20,7 @@ End Sub
 
 Public Function Function_Action(control As IRibbonControl, pressed As Boolean)
     Store control.ID, pressed
+    
     'MsgBox control.ID & " " & pressed
     
     '    Select Case control.ID
@@ -55,6 +56,7 @@ Public Sub Store(control_id As String, value As Boolean)
         Case Is = "VerifyColumnsContent"
         'Case Is = "MergeFiles"
         Case Is = "AllowAllButtons"
+            Debug.Print "AllowAllButtons"
             If value Then
                 Call UpdateStage(-1)
             Else
@@ -70,8 +72,10 @@ Public Sub Store(control_id As String, value As Boolean)
         Case Is = "ShowEveryTabs"
             If value Then
                 Call ShowAllTabs
+                'Call UpdateStage(STAGE.value)
             Else
                 Call ShowOnlyCustomTabs
+                'Call UpdateStage(STAGE.value)
             End If
         Case Else
             MsgBox "Feature not implemented yet"
@@ -87,18 +91,6 @@ Public Function GetKey(control_id As String) As Boolean
     GetKey = PARAM_TABLE.Columns(1).Find(control_id).Offset(0, 1).value ' True ' or whatever you have selected previously
 End Function
 
-Sub GetEnabledMacro(control As IRibbonControl, ByRef Enabled)
-    If MyTag = "Enable" Then
-        Enabled = True
-    Else
-        If control.Tag Like MyTag And control.Tag Like DisplayTag Then
-            Enabled = True
-        Else
-            Enabled = False
-        End If
-    End If
-    
-End Sub
 
 'CALLBACKS ON VISIBILITY 1
 
@@ -112,32 +104,40 @@ Sub RibbonOnLoad(ribbon As IRibbonUI)
 End Sub
 
 Sub GetVisible(control As IRibbonControl, ByRef visible)
-    
     If control.Tag Like MyTag Then
-        'visible = True
-        
-        'If MyTag Like "*VG*" Then
-            'If PARAM_TABLE.Columns(1).Find("ShowEveryTabs").Offset(0, 1).value Then
-            '    visible = True
-            'Else
-            '    visible = False
-            'End If
-        'Else
-            visible = True
-        'End If
-        
-    Else
-        If MyTag Like "*VG*" Then
-            If PARAM_TABLE.Columns(1).Find("ShowEveryTabs").Offset(0, 1).value Then
-                visible = True
-            Else
-                visible = False
-            End If
-        Else
-            visible = False
-        End If
-    End If
 
+            visible = True
+     
+    'ElseIf Len(control.Tag) > 0 Then
+        
+    '    If MyTag Like "*VG*" Or Len(MyTag) = 0 Then
+    '        If PARAM_TABLE.Columns(1).Find("ShowEveryTabs").Offset(0, 1).value Then
+    '            visible = True
+    '        Else
+    '            visible = False
+    '        End If
+    '    Else
+    '        visible = False
+    '    End If
+    Else
+        visible = False
+    End If
+    
+End Sub
+
+Sub GetEnabledMacro(control As IRibbonControl, ByRef Enabled)
+    Call DefGlobal
+
+    'If MyTag = "Enable" Then
+    '    Enabled = True
+    'Else
+        'If control.Tag Like MyTag And control.Tag Like DisplayTag.value Then
+        If control.Tag Like DisplayTag.value Then
+            Enabled = True
+        Else
+            Enabled = False
+        End If
+    'End If
 End Sub
 
 Sub RefreshRibbon(Tag As String)
@@ -149,12 +149,12 @@ Sub RefreshRibbon(Tag As String)
     End If
     
     Rib.Invalidate
-    
+
 End Sub
 
 
-'Sub RefreshButton(Tag As String)
-    'Rib.InvalidateControl (controlID)
+'Sub RefreshButton(controlID As String)
+'    Rib.InvalidateControl controlID
 'End Sub
 
 

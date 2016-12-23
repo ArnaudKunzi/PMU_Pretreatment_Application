@@ -15,7 +15,6 @@ Private Sub Workbook_Open()
     'DisplayTag = "*"
     'Call OpenGit
     
-
 End Sub
 
 'Private Sub Workbook_SheetChange(ByVal Sh As Object, ByVal Source As Range)

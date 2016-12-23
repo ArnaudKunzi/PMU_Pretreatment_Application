@@ -57,11 +57,11 @@ retry:
     
     Call SplitSheets
     Call Extract_Unique_Vals(Worksheets(PHARMA_SH.Name))
+    
     ActiveWorkbook.Worksheets(PHARMA_SH.Name).visible = False
     ActiveWorkbook.Worksheets(DATA_SH.Name).visible = False
-    
-    Call UpdateStage(3)
-    
+
+    Call UpdateStage(4)
     
     Application.ScreenUpdating = True
     Application.DisplayAlerts = True
@@ -102,6 +102,8 @@ Sub TransferColumns(ByVal InPh_colname As String)
     Dim input_wb As Workbook
     Dim output_wb As Workbook
     
+    Dim output_ws As Worksheet
+    
     Dim InpRangetxt As String
     Dim OutRangetxt As String
     
@@ -132,9 +134,12 @@ Sub TransferColumns(ByVal InPh_colname As String)
     Sheets(DATA_SH.Name).Delete
     On Error GoTo 0
     
-    Sheets.Add(After:=Sheets(Sheets.Count)).Name = DATA_SH.Name
-    Worksheets(DATA_SH.Name).Tab.ColorIndex = EXPORTCOLOR
+    Set output_ws = Sheets.Add(After:=Sheets(Sheets.Count))
+    'dummy = ThisWorkbook.VBProject.VBComponents(output_ws.Name).Properties("Codename")
+    output_ws.Name = DATA_SH.Name
+    
     Call SetWsName(Worksheets(DATA_SH.Name), DATA_SH.Name)
+    Worksheets(DATA_SH.Name).Tab.ColorIndex = EXPORTCOLOR
     
     ColumnOrders = Application.Transpose(INTERNALS.ListObjects("file_to_load").ListColumns("reordering").DataBodyRange)
     

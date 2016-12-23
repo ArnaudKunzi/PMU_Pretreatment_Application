@@ -26,9 +26,9 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     On Error GoTo 0
     
     Set ws = Sheets.Add(After:=Sheets(Sheets.Count))
-    ws.Name = REPORT_SH.Name
-    Debug.Print ws.VBProject.VBComponents(ws.Name).Properties("Codename")
     
+    dummy = ThisWorkbook.VBProject.VBComponents(ws.Name).Properties("Codename")
+    ws.Name = REPORT_SH.Name
     Call SetWsName(Worksheets(REPORT_SH.Name), "A_1")
     
     nb_sheets = HowManySheets(FilesList)
@@ -194,20 +194,21 @@ Sub UpdateStage(NewStage As Integer)
     
     Select Case NewStage
         Case 1:
-            DisplayTag = "*VG_1*"
+            DisplayTag.value = "*VG_1*"
         Case 2:
-            DisplayTag = "*VG_*2*"
+            DisplayTag.value = "*VG_*2*"
         Case 3:
-            DisplayTag = "*VG_*3*"
+            DisplayTag.value = "*VG_*3*"
         Case 4:
-            DisplayTag = "*VG_*4*"
+            DisplayTag.value = "*VG_*4*"
         Case 5:
-            DisplayTag = "*VG_*5*"
+            DisplayTag.value = "*VG_*5*"
         Case Else
-            DisplayTag = "*VG_*"
+            DisplayTag.value = "*VG_*"
     End Select
         
-    Call RefreshRibbon(DisplayTag)
-    'Call RefreshButton(DisplayTag)
+    
+    Call RefreshRibbon(DisplayTag.value)
+    
 End Sub
 
