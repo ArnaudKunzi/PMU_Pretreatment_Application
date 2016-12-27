@@ -153,7 +153,7 @@ Function CheckElementsType(ByRef ColumnData, ByVal ExpectedType As String, Optio
         Case "NUM"
             CheckElementsType = ""
             For j = LBound(ColumnData) To UBound(ColumnData)
-                If Not IsNumeric(ColumnData(j)) Then CheckElementsType = CheckElementsType & "," & j
+                If ColumnData(j) <> "" And Not IsNumeric(ColumnData(j)) Then CheckElementsType = CheckElementsType & "," & j
             Next j
         Case "CHR_NON_NUM"
             CheckElementsType = ""

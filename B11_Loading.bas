@@ -93,12 +93,14 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
                             ColumnOrder(i - 1) = CStr(Lookup_colnum(curr_col_num))
                         
                             'Debug.Print Vnames(i) & " " & ColumnOrder(i - 1)
-                            'On vérifie le type des données de la colonne
-                            curr_col_nrows = wk.Worksheets(1).Cells(wk.Worksheets(1).Rows.Count, VnamesRange(i).column).End(xlUp).row
-                            DATA = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
-                            TypeViolation = CheckType(DATA, Lookup_expectedtype, Lookup_expectedtype(curr_col_num), counter)
-                            If Len(TypeViolation) > 0 Then
-                                StrTypeViolation = StrTypeViolation & "Col. " & Vnames(i) & ": l. " & TypeViolation & Chr(10)
+                            'On vérifie le type des données de la colonne:
+                            curr_col_nrows = wk.Worksheets(1).Cells(wk.Worksheets(1).Rows.Count, VnamesRange(i).column).End(xlUp).row 'number of row in current column
+                            If curr_col_nrows > 1 Then 'if curr_col_nrows < 2 that mean that only the first row attribute is filled and that the column is empty
+                                DATA = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
+                                TypeViolation = CheckType(DATA, Lookup_expectedtype, Lookup_expectedtype(curr_col_num), counter)
+                                If Len(TypeViolation) > 0 Then
+                                    StrTypeViolation = StrTypeViolation & "Col. " & Vnames(i) & ": l. " & TypeViolation & Chr(10)
+                                End If
                             End If
                         End If
                     End If

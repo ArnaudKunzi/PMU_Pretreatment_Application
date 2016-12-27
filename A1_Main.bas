@@ -18,8 +18,10 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     Dim CondStatusOK As Boolean
         
     Call SaveFilesList(FilesList)
-        
+    
+    Application.ScreenUpdating = False
     Application.DisplayAlerts = False
+    
     On Error Resume Next
     Sheets(REPORT_SH.Name).Delete
     Application.DisplayAlerts = True
@@ -27,15 +29,13 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     
     Set ws = Sheets.Add(After:=Sheets(Sheets.Count))
     
-    dummy = ThisWorkbook.VBProject.VBComponents(ws.Name).Properties("Codename")
+    'dummy = ThisWorkbook.VBProject.VBComponents(ws.Name).Properties("Codename")
     ws.Name = REPORT_SH.Name
     Call SetWsName(Worksheets(REPORT_SH.Name), "A_1")
     
     nb_sheets = HowManySheets(FilesList)
     
     Call MainLoadingLoop(FilesList, nb_sheets)
-    
-    Application.ScreenUpdating = False
     
     With Worksheets(REPORT_SH.Name)
         .Cells.Font.Size = "8"
@@ -172,7 +172,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         
         '.Range(Cells(lrow + 1, 1), Cells(.Rows.Count, .Columns.Count)).EntireRow.Hidden = True
         
-           
+        .Range("A1").Select
         ActiveWindow.SplitColumn = 0
         ActiveWindow.SplitRow = 1
         ActiveWindow.FreezePanes = True
