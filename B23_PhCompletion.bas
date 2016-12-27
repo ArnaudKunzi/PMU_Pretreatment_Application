@@ -3,11 +3,19 @@ Attribute VB_Name = "B23_PhCompletion"
 
 Sub GetPHARMINDEX(control As IRibbonControl)
     Call DefGlobal
-    
+    Dim FileName As String
+    Dim wb As Workbook
+    Dim ws As Worksheet
     'code to import PHARMINDEX
-    
+    FileName = SelectFile(Many:=False, Target:="PharmIndex")
+    If FileName = "" Then Exit Sub
+    Set wb = Workbooks.Open(FileName:=FileName, corruptload:=xlRepairFile)
+    wb.Worksheets.Copy After:=ThisWorkbook.Worksheets(ThisWorkbook.Worksheets.Count)
+    wb.Close
+    Set ws = ThisWorkbook.Worksheets(ThisWorkbook.Worksheets.Count)
+    ws.Name = PHAUNI_SH.Name
     'Complete fields with new info from PHARMINDEX
-    Call Completion_DB_To_Unique_Vals(Worksheets(PHAUNI_SH.Name), Worksheets("DB_PHARMINDEX_Extract"))
+    Call Completion_DB_To_Unique_Vals(Worksheets(PHAUNI_SH.Name), Worksheets(ws.Name))
 End Sub
 
 Sub CommitEdits(control As IRibbonControl)
@@ -62,6 +70,8 @@ Sub Extract_Unique_Vals(ws As Worksheet)
     
     'sort values by designation
     ws_uniquevals.UsedRange.Sort Key1:=ws_uniquevals.Range("1:1").Find(What:="designation").Offset(1, 0), Order1:=xlAscending, Header:=xlYes
+    
+    ws_uniquevals.Range("A1").AutoFilter
     
     Application.EnableEvents = True
     Application.ScreenUpdating = True

@@ -84,9 +84,6 @@ HandleTooManyPaste:
     Exit Sub
 End Sub
 
-Sub test()
-    Call ProduceLog(Worksheets("InvalidPharmacodes"))
-End Sub
 
 Sub ProduceLog(control As IRibbonControl)
     Call DefGlobal
@@ -98,22 +95,22 @@ Sub ProduceLog(control As IRibbonControl)
 
     Set ws = ActiveSheet
     
-    If Not (InStr(ws.CodeName, DATA_SH.Name) <> 0 Or ws.CodeName = PHARMA_SH.Name) Then Exit Sub
+    If Not (InStr(ws.Name, DATA_SH.Name) <> 0 Or ws.Name = PHARMA_SH.Name) Then Exit Sub
     
     If ws.comments.Count = 0 Then
         MsgBox "Rien à journaliser", vbExclamation
         Exit Sub
     End If
     
-    If Not SheetExists("LOG_" & Year) Then
-        Sheets.Add(After:=Sheets(Sheets.Count)).Name = LogSheetName
-        Worksheets(LogSheetName).Tab.ColorIndex = EXPORTCOLOR
-        Call SetWsName(Worksheets(LogSheetName), "LOG_EDITS")
+    If Not SheetExists(LOG_SH.Name) Then
+        Sheets.Add(After:=Sheets(Sheets.Count)).Name = LOG_SH.Name
+        Worksheets(LOG_SH.Name).Tab.ColorIndex = EXPORTCOLOR
+        Call SetWsName(Worksheets(LOG_SH.Name), LOG_SH.Name)
     Else
-        Worksheets(LogSheetName).Cells.Clear
+        Worksheets(LOG_SH.Name).Cells.Clear
     End If
     
-    Worksheets(LogSheetName).Range("A1").value = "LOG FEUILLE " & ws.Name
+    Worksheets(LOG_SH.Name).Range("A1").value = "LOG FEUILLE " & ws.Name
     
     ReDim CommentsTexts(ws.comments.Count - 1)
     i = 0
@@ -139,7 +136,7 @@ Sub ProduceLog(control As IRibbonControl)
          Next b
       Next a
     
-    With Worksheets(LogSheetName)
+    With Worksheets(LOG_SH.Name)
     
         'LastRow = .Cells(.Rows.Count, "A").End(xlUp).row
         .Range("A" & 2).Resize(ws.comments.Count, 1) = Application.Transpose(CommentsTexts)
@@ -154,9 +151,7 @@ Sub ProduceLog(control As IRibbonControl)
     
 End Sub
 
-Sub testc()
-    Call CommentStyle(Worksheets("InvalidPharmacodes"))
-End Sub
+
 
 Sub CommentStyle(ByRef rangewithcomment As Range) 'ByRef ws As Worksheet)
     
@@ -181,9 +176,6 @@ NextIteration:
 
 End Sub
 
-Sub test3()
-    Debug.Print GetComments(Worksheets("InvalidPharmacodes").Range("C1:C1"))
-End Sub
 
 Function GetComments(Target As Range)
     Call DefGlobal

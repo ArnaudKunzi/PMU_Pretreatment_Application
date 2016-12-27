@@ -5,7 +5,7 @@ Sub LoadFiles(control As IRibbonControl)
     Call DefGlobal
     
     If (Len(Year.value) <> 0 And Len(Canton) <> 0) Then
-        FilesListString = SelectFile(True)
+        FilesListString = SelectFile(True, "RawMedFiles")
     Else
         MsgBox "année d'analyse et/ou canton à analyser non renseigné.", vbCritical
         Exit Sub
@@ -57,7 +57,7 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
         SetAttr FILE, vbNormal
         
         Set wk = Workbooks.Open(FileName:=FILE, corruptload:=xlRepairFile)
-        'wk.Windows(1).Visible = False
+        wk.Windows(1).visible = False
         
         'remove NA's from sheet:
         On Error Resume Next

@@ -1,15 +1,19 @@
 Attribute VB_Name = "B01_FileUtilities"
-Public Function SelectFile(Many As Boolean)
+Public Function SelectFile(Many As Boolean, Target As String)
     Dim FileDialog As Office.FileDialog
     Set FileDialog = Application.FileDialog(msoFileDialogOpen)
     Dim FILE As String
     Dim DirectoryPath As String
     
-    DirectoryPath = INTERNALS.ListObjects("path").ListColumns(1).DataBodyRange(1).value
-    DirectoryPath = Replace(DirectoryPath, "$", INTERNALS.ListObjects("cantons").ListColumns(1).DataBodyRange.Find(Canton.value).Offset(0, 1).value)
-    DirectoryPath = Replace(DirectoryPath, "%", Year.value)
-    If Dir(DirectoryPath, vbDirectory) = "" Then DirectoryPath = Replace(DirectoryPath, "MEDICAMENTS_" & Year.value & "\", "")
-    
+    If Target = "RawMedFiles" Then
+        DirectoryPath = INTERNALS.ListObjects("path").ListColumns(1).DataBodyRange(1).value
+        DirectoryPath = Replace(DirectoryPath, "$", INTERNALS.ListObjects("cantons").ListColumns(1).DataBodyRange.Find(Canton.value).Offset(0, 1).value)
+        DirectoryPath = Replace(DirectoryPath, "%", Year.value)
+        If Dir(DirectoryPath, vbDirectory) = "" Then DirectoryPath = Replace(DirectoryPath, "MEDICAMENTS_" & Year.value & "\", "")
+    ElseIf Target = "PharmIndex" Then
+        DirectoryPath = INTERNALS.ListObjects("path").ListColumns(1).DataBodyRange(2).value
+    End If
+        
     With FileDialog
         .Title = "Select file"
         '.InitialFileName = "L:\PMU\COMMUN_PHARMACIE\RECHERCHE\01 Travaux de recherche\ANI_EMS\EMS " & Canton.value & "\03 Donnees\033 Donnees brutes\" & Year.value & "\"

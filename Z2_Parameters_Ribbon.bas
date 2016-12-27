@@ -56,7 +56,6 @@ Public Sub Store(control_id As String, value As Boolean)
         Case Is = "VerifyColumnsContent"
         'Case Is = "MergeFiles"
         Case Is = "AllowAllButtons"
-            Debug.Print "AllowAllButtons"
             If value Then
                 Call UpdateStage(-1)
             Else
