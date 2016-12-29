@@ -209,7 +209,7 @@ Function CheckForSpecialCharacters(sh As Worksheet)
     Dim r As Range
     Dim rangetoscoop As Range
     Set rangetoscoop = sh.Range(sh.Cells(2, 1), _
-                        sh.Cells(sh.Cells(sh.Rows.Count, 1).End(xlUp).row, _
+                        sh.Cells(sh.Cells(sh.rows.Count, 1).End(xlUp).row, _
                         sh.Cells(1, sh.Columns.Count).End(xlToLeft).column))
     For Each r In rangetoscoop
         If r.value Like "*[!0-9,a-z,A-Z,.,/]*" Then

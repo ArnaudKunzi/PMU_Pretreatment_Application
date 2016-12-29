@@ -14,3 +14,10 @@ Attribute VB_Exposed = True
     '    RedoRib
     'End If
 'End Sub
+
+
+Private Sub Worksheet_Deactivate()
+
+    Me.visible = xlSheetVeryHidden
+    
+End Sub

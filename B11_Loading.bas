@@ -94,7 +94,7 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
                         
                             'Debug.Print Vnames(i) & " " & ColumnOrder(i - 1)
                             'On vérifie le type des données de la colonne:
-                            curr_col_nrows = wk.Worksheets(1).Cells(wk.Worksheets(1).Rows.Count, VnamesRange(i).column).End(xlUp).row 'number of row in current column
+                            curr_col_nrows = wk.Worksheets(1).Cells(wk.Worksheets(1).rows.Count, VnamesRange(i).column).End(xlUp).row 'number of row in current column
                             If curr_col_nrows > 1 Then 'if curr_col_nrows < 2 that mean that only the first row attribute is filled and that the column is empty
                                 DATA = Application.Transpose(VnamesRange(i).Offset(1, 0).Resize(RowSize:=curr_col_nrows - 1))
                                 TypeViolation = CheckType(DATA, Lookup_expectedtype, Lookup_expectedtype(curr_col_num), counter)
@@ -194,7 +194,7 @@ Function HowManySheets(ByRef FilesList) As Variant
     
     Set table = INTERNALS.ListObjects("have_several_tabs")
     table.DataBodyRange.ClearContents
-    Set r = table.Range.Rows(2).Offset(-1, 0).Resize(3)
+    Set r = table.Range.rows(2).Offset(-1, 0).Resize(3)
     table.Resize r
     
     Dim counter As Integer

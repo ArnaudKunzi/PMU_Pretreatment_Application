@@ -144,7 +144,7 @@ Sub ProduceLog(control As IRibbonControl)
         '.Range("C" & 2).Resize(ws.Comments.Count, 1) = 2
         .Range("A:D").WrapText = False
         .Columns.AutoFit
-        .Rows.AutoFit
+        .rows.AutoFit
         .Range("A:D").WrapText = True
         
     End With

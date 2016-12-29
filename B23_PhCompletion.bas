@@ -91,8 +91,8 @@ Sub Completion_DB_To_Unique_Vals(UV_ws As Worksheet, DB_ws As Worksheet, Optiona
     Application.EnableEvents = False
     Application.ScreenUpdating = False
 
-    UV_designations = Application.Transpose(UV_ws.UsedRange.Rows(1).Find("designation").Offset(1, 0).Resize(UV_ws.UsedRange.Rows.Count - 1, 1))
-    DB_designations = Application.Transpose(DB_ws.UsedRange.Rows(1).Find("designation").Offset(1, 0).Resize(DB_ws.UsedRange.Rows.Count - 1, 1))
+    UV_designations = Application.Transpose(UV_ws.UsedRange.rows(1).Find("designation").Offset(1, 0).Resize(UV_ws.UsedRange.rows.Count - 1, 1))
+    DB_designations = Application.Transpose(DB_ws.UsedRange.rows(1).Find("designation").Offset(1, 0).Resize(DB_ws.UsedRange.rows.Count - 1, 1))
     
     All_DB_designations = Join(DB_designations, "|")
     For i = LBound(UV_designations) To UBound(UV_designations)
@@ -125,7 +125,7 @@ Sub Completion_DB_To_Unique_Vals(UV_ws As Worksheet, DB_ws As Worksheet, Optiona
                                                 DB_ws.Range("A" & MatchIndex & ":" & IncCol("A", DB_ws.UsedRange.Columns.Count) & MatchIndex).value
                         'mark as filled
                         UV_ws.Range(UV_ws.Cells(Index, PHAUNI_SH.HOffset + 1), UV_ws.Cells(Index, PHAUNI_SH.HOffset + DB_ws.UsedRange.Columns.Count)).Cells.Interior.ColorIndex = 4
-                        UV_ws.Rows(Index).EntireRow.Hidden = True
+                        UV_ws.rows(Index).EntireRow.Hidden = True
                         Exit For
                     End If
                 Next j
@@ -141,7 +141,7 @@ End Sub
 Function CorrectlyFilled(ws As Worksheet) As Boolean
     CorrectlyFilled = True
     With ws
-        For Each cell In .UsedRange.Offset(PHAUNI_SH.VOffset, PHAUNI_SH.HOffset).Resize(.UsedRange.Rows.Count - PHAUNI_SH.VOffset, .UsedRange.Columns.Count - PHAUNI_SH.HOffset)
+        For Each cell In .UsedRange.Offset(PHAUNI_SH.VOffset, PHAUNI_SH.HOffset).Resize(.UsedRange.rows.Count - PHAUNI_SH.VOffset, .UsedRange.Columns.Count - PHAUNI_SH.HOffset)
             If cell.Interior.ColorIndex = 3 Or cell.Interior.ColorIndex = xlNone Or cell.Interior.ColorIndex = 45 Then
                 CorrectlyFilled = False
                 Exit Function
@@ -162,9 +162,9 @@ Sub CleanNewPharmacodes(ws As Worksheet)
     Call RemoveEventsProcedure(ws)
     
     'Remove known values of PHARMINDEX
-    lastRow = ws.UsedRange.Rows(ws.UsedRange.Rows.Count).row
+    lastRow = ws.UsedRange.rows(ws.UsedRange.rows.Count).row
     For iCntr = lastRow To 1 Step -1
-        If Rows(iCntr).Hidden = True Then Rows(iCntr).EntireRow.Delete
+        If rows(iCntr).Hidden = True Then rows(iCntr).EntireRow.Delete
     Next
     
     'Remove formats

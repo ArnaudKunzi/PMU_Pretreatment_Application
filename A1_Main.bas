@@ -32,7 +32,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     'dummy = ThisWorkbook.VBProject.VBComponents(ws.Name).Properties("Codename")
     ws.Name = REPORT_SH.Name
     Call SetWsName(Worksheets(REPORT_SH.Name), "A_1")
-    
+    Call CreateEventsForReport(Worksheets(REPORT_SH.Name))
     nb_sheets = HowManySheets(FilesList)
     
     Call MainLoadingLoop(FilesList, nb_sheets)
@@ -164,7 +164,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         .Range("A1").CurrentRegion.Borders.LineStyle = xlContinuous
         
         lcol = .Cells(1, .Columns.Count).End(xlToLeft).column
-        lrow = .Cells(.Rows.Count, "A").End(xlUp).row
+        lrow = .Cells(.rows.Count, "A").End(xlUp).row
         
         
         'Debug.Print .Range(Cells(1, lcol + 1), Cells(.Rows.Count, .Columns.Count)).Address

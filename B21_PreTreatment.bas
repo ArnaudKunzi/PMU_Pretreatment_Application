@@ -144,7 +144,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
     ColumnOrders = Application.Transpose(INTERNALS.ListObjects("file_to_load").ListColumns("reordering").DataBodyRange)
     
     'Name the columns:
-    For i = 1 To INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange.Rows.Count
+    For i = 1 To INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange.rows.Count
         Worksheets(DATA_SH.Name).Cells(1, INTERNALS.ListObjects("attributes").ListColumns("DBB_col").DataBodyRange(i) + COffset).value = INTERNALS.ListObjects("attributes").ListColumns("DBB_name").DataBodyRange(i)
     Next i
     
@@ -153,7 +153,7 @@ Sub TransferColumns(ByVal InPh_colname As String)
     
     
     
-    For i = 0 To INTERNALS.ListObjects("file_to_load").ListColumns("file_to_load").DataBodyRange.Rows.Count - 1
+    For i = 0 To INTERNALS.ListObjects("file_to_load").ListColumns("file_to_load").DataBodyRange.rows.Count - 1
         
         
         Set input_wb = Workbooks.Open(FileName:=filepath & files(i + 1), corruptload:=xlRepairFile)
@@ -161,15 +161,15 @@ Sub TransferColumns(ByVal InPh_colname As String)
         
         'Last row of the output file
         With output_wb.Worksheets(DATA_SH.Name)
-        OutputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).row, _
-                                  .Cells(.Rows.Count, "C").End(xlUp).row, _
-                                  .Cells(.Rows.Count, "E").End(xlUp).row)
+        OutputLastRow = Application.Max(.Cells(.rows.Count, "A").End(xlUp).row, _
+                                  .Cells(.rows.Count, "C").End(xlUp).row, _
+                                  .Cells(.rows.Count, "E").End(xlUp).row)
         End With
         'Last row of the input file
         With input_wb.Worksheets(1)
-        InputLastRow = Application.Max(.Cells(.Rows.Count, "A").End(xlUp).row, _
-                                   .Cells(.Rows.Count, "C").End(xlUp).row, _
-                                   .Cells(.Rows.Count, "E").End(xlUp).row)
+        InputLastRow = Application.Max(.Cells(.rows.Count, "A").End(xlUp).row, _
+                                   .Cells(.rows.Count, "C").End(xlUp).row, _
+                                   .Cells(.rows.Count, "E").End(xlUp).row)
                                    
         End With
         'Il faut maintenant intervertir les index et les valeurs de ColumnOrders
@@ -275,13 +275,13 @@ Sub MoveRowsToSheet(ByVal IndicatorCol As String, ByVal Criterion As Integer, By
     Application.EnableEvents = False
     
     With InputSheet
-        lastRow = .Cells(.Rows.Count, "A").End(xlUp).row
+        lastRow = .Cells(.rows.Count, "A").End(xlUp).row
         LastCol = .Cells(1, .Columns.Count).End(xlToLeft).column
         Set Atributes = .Range(.Cells(1, 1), .Cells(1, LastCol))
         Set DataRange = .Range(.Cells(2, 1), .Cells(lastRow, LastCol))
         
         On Error GoTo Handler
-        IndCol = .Cells.Rows(1).Find(IndicatorCol).column
+        IndCol = .Cells.rows(1).Find(IndicatorCol).column
 
         .Range("A:" & IncCol("A", LastCol)).AutoFilter field:=IndCol, Criteria1:=Criterion
         
@@ -322,9 +322,9 @@ Sub MergeSheets()
     Set in_ws = Worksheets(PHARMA_SH.Name)
     Set out_ws = Worksheets(DATA_SH.Name)
     
-    in_LastRow = in_ws.Cells(in_ws.Rows.Count, "A").End(xlUp).row
+    in_LastRow = in_ws.Cells(in_ws.rows.Count, "A").End(xlUp).row
     in_LastCol = in_ws.Cells(1, in_ws.Columns.Count).End(xlToLeft).column
-    out_LastRow = out_ws.Cells(out_ws.Rows.Count, "A").End(xlUp).row
+    out_LastRow = out_ws.Cells(out_ws.rows.Count, "A").End(xlUp).row
     
     in_ws.Range(in_ws.Cells(2, 1), in_ws.Cells(in_LastRow, in_LastCol)).Cut out_ws.Range("A" & out_LastRow + 1)
     

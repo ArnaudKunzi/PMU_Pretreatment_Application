@@ -28,7 +28,7 @@ End Sub
 Sub DDItemCount(control As IRibbonControl, ByRef returnedVal)
     With INTERNALS.ListObjects("have_several_tabs").ListColumns("have_several_tabs")
         Set ListItemsRg = .DataBodyRange
-        ItemCount = ListItemsRg.Rows.Count
+        ItemCount = ListItemsRg.rows.Count
         returnedVal = ItemCount
     End With
 End Sub

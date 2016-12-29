@@ -12,7 +12,7 @@ Sub SaveFilesList(ByRef FilesList)
     Path(1).value = Left(FilesList(0), InStrRev(FilesList(0), "\"))
     
     table.DataBodyRange.ClearContents
-    Set r = table.Range.Rows(2).Offset(-1, 0).Resize(3)
+    Set r = table.Range.rows(2).Offset(-1, 0).Resize(3)
     
     table.Resize r
     For i = LBound(FilesList) To UBound(FilesList)
