@@ -15,7 +15,6 @@ Sub LoadFiles(control As IRibbonControl)
     If Len(FilesListString) <> 0 Then
         Call PrepareOverviewSheet(FilesListString)
         'FilesList = Split(FilesListString, "|")
-
     End If
     
     Call UpdateStage(3)
@@ -139,7 +138,10 @@ Sub MainLoadingLoop(ByRef FilesList, ByRef nb_sheets)
         
         'calcul de la progression de la tâche:
         pctCompl = (counter + 1) / (UBound(FilesList) + 1)
-        Application.StatusBar = "Progression chargement: étape (2/2) " & (counter + 1) & " of " & UBound(FilesList) + 1 & ": " & Format(pctCompl, "percent")
+        Call Progression.UpdateProgressBar((pctCompl / 2) + 0.5)
+        'Application.StatusBar = "Progression chargement: étape (2/2) " & (counter + 1) & " of " & UBound(FilesList) + 1 & ": " & Format(pctCompl, "percent")
+        
+        
         
         Application.ScreenUpdating = True
         counter = counter + 1
@@ -236,7 +238,9 @@ Function HowManySheets(ByRef FilesList) As Variant
         Set wk = Nothing
         
         pctCompl = (counter + 1) / (UBound(FilesList) + 1)
-        Application.StatusBar = "Progression chargement:  étape (1/2) " & (counter + 1) & " of " & UBound(FilesList) + 1 & ": " & Format(pctCompl, "percent")
+        'Application.StatusBar = "Progression chargement:  étape (1/2) " & (counter + 1) & " of " & UBound(FilesList) + 1 & ": " & Format(pctCompl, "percent")
+        Call Progression.UpdateProgressBar(pctCompl / 2)
+            
             
         Application.ScreenUpdating = True
         

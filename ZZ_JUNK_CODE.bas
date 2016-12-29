@@ -1,5 +1,24 @@
 Attribute VB_Name = "ZZ_JUNK_CODE"
 
+Sub test()
+    
+    Application.Wait Now + TimeValue("00:00:01")
+    Call Progression.UpdateProgressBar(0.2)
+    Application.Wait Now + TimeValue("00:00:01")
+    Call Progression.UpdateProgressBar(0.5)
+    Application.Wait Now + TimeValue("00:00:01")
+    Call Progression.UpdateProgressBar(0.7)
+    Application.Wait Now + TimeValue("00:00:01")
+    Call Progression.UpdateProgressBar(0.9)
+    Unload Progression
+End Sub
+
+Sub test2()
+    UFORM_PAR_SUBNAME = "'Prétraitement_Données.xlsb'!ZZ_JUNK_CODE.test"
+    
+    Progression.Show vbModeless
+    Call test
+End Sub
 
 
 Sub notasub()

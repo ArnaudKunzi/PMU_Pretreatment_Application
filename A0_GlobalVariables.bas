@@ -19,6 +19,8 @@ Global PHAUNI_SH As GlbSheet
 Global REPORT_SH As GlbSheet
 Global LOG_SH As GlbSheet
 
+
+
 Public Type GlbSheet
     Name As String
     VOffset As Integer
@@ -33,6 +35,7 @@ Sub DefGlobal()
     Set PARAM_TABLE = INTERNALS.ListObjects("Parameters").DataBodyRange
     Set STAGE = INTERNALS.ListObjects("stage").ListColumns(1).DataBodyRange
     Set DisplayTag = INTERNALS.ListObjects("DisplayTag").ListColumns(1).DataBodyRange
+    
     
     EDITCOLOR = 8
     EXPORTCOLOR = 23

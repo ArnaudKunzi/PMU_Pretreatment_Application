@@ -23,8 +23,9 @@ Sub CommitEdits(control As IRibbonControl)
     
     If Not CorrectlyFilled(Worksheets(PHAUNI_SH.Name)) Then If MsgBox("Un ou plusieurs champs ne sont pas renseignés (rouge ou blanc)." & vbNewLine & "Continuer?", vbYesNo) = vbNo Then Exit Sub
     'Call VerifyCorrectlyFilled(Worksheets(PHAUNI_SH.Name))
-    
+    Progression.Show vbModeless
     Call Completion_DB_To_Unique_Vals(Worksheets(PHARMA_SH.Name), Worksheets(PHAUNI_SH.Name), True)
+    Unload Progression
     Call MergeSheets
     ActiveWorkbook.Worksheets(DATA_SH.Name).visible = True
     ActiveWorkbook.Worksheets(DATA_SH.Name).Select
@@ -55,11 +56,13 @@ Sub Extract_Unique_Vals(ws As Worksheet)
     'Remove unneeded columns
     ColsToKeep = Join(Array("YEAR_OF_ANALYSIS", "EMS_CODE", "PHARMACIST", "pharmacode", "designation"), "|")
     Set DelRange = Nothing
+
     For Each column In ws_uniquevals.UsedRange.Columns
         If InStr(ColsToKeep, column.Cells(1).value) = 0 Then
             If DelRange Is Nothing Then Set DelRange = column.EntireColumn Else Set DelRange = Union(DelRange, column.EntireColumn)
         End If
     Next
+    
     DelRange.EntireColumn.Delete
     
     'Keep only unique values
@@ -73,6 +76,9 @@ Sub Extract_Unique_Vals(ws As Worksheet)
     
     ws_uniquevals.Range("A1").AutoFilter
     
+    
+    Call Progression.UpdateProgressBar(1)
+        
     Application.EnableEvents = True
     Application.ScreenUpdating = True
 End Sub
@@ -131,6 +137,8 @@ Sub Completion_DB_To_Unique_Vals(UV_ws As Worksheet, DB_ws As Worksheet, Optiona
                 Next j
             End If
         End If
+        pctCompl = (i + 1) / (UBound(UV_designations) + 1)
+        Call Progression.UpdateProgressBar((pctCompl / 1) + 0)
     Next i
     
     Application.EnableEvents = True

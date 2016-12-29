@@ -7,6 +7,8 @@ Sub StartPreTreatment(control As IRibbonControl)
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
     
+    Progression.Show vbModeless
+    
     'Check if RAPPORT sheet exists, if not, create it.
     If Worksheets(REPORT_SH.Name) Is Nothing Then Call Refresh(Nothing)
            
@@ -31,65 +33,18 @@ retry:
     
     Call TransferColumns(PHARMA_SH.Name)
     
-'   DEPRECATED
-'    If PARAM_TABLE.Columns(1).Find("DispatchFiles").Offset(0, 1).value Then
-'
-'        If SheetExists(PHARMA_SH.Name) Then GoTo Handler
-'continue:
-'        Sheets.Add(After:=Sheets(Sheets.Count)).Name = PHARMA_SH.Name
-'        Worksheets(PHARMA_SH.Name).Tab.ColorIndex = EXPORTCOLOR
-'        Call SetWsName(Worksheets(PHARMA_SH.Name), PHARMA_SH.Name)
-'
-'        PARAM_TABLE.Columns(1).Find("TbtnToggleSeparateByPhStatus").Offset(0, 1).value = True
-'        Call SplitSheets
-'        Call ShowOnlyCustomTabs
-'
-'
-'    End If
-
-    
-    
-    'Change the ribbon focus and ribbon configuration?
-    'something like [back][filters][]
-    
-    
-    'Call AddToCellMenu
-    
     Call SplitSheets
     Call Extract_Unique_Vals(Worksheets(PHARMA_SH.Name))
     
     ActiveWorkbook.Worksheets(PHARMA_SH.Name).visible = False
     ActiveWorkbook.Worksheets(DATA_SH.Name).visible = False
-
+    
+    Unload Progression
     Call UpdateStage(4)
     
     Application.ScreenUpdating = True
     Application.DisplayAlerts = True
     
-'DEPRECATED
-'Exit Sub
-'Handler:
-'    Dim choice2 As Integer
-'    Dim iter As Integer
-'    choice2 = MsgBox("Il y a déjà une feuille InvalidPharmacodes en traitment." & Chr(10) & _
-'           "Écraser la feuille existante?", vbYesNoCancel)
-'
-'    Select Case choice2
-'        Case vbYes
-'            Sheets(PHARMA_SH.Name).Delete
-'            GoTo continue
-'        Case vbNo
-'            iter = 1
-'            Do
-'                iter = iter + 1
-'            Loop While SheetExists(PHARMA_SH.Name & iter) And iter <= 10
-'            InPh_colname = InPh_colname & iter
-'
-'            GoTo continue
-'
-'        Case vbCancel
-'            Exit Sub
-'    End Select
 End Sub
 
 
@@ -126,6 +81,8 @@ Sub TransferColumns(ByVal InPh_colname As String)
     Dim PharmacodeColumn As Long
     Dim PharmacodeDetectionEnabled As Boolean
     Dim IncorrectPharmacodes As Variant
+    
+    Dim pctCompl As Double
     
     Set output_wb = ActiveWorkbook
     COffset = 3
@@ -247,8 +204,8 @@ Sub TransferColumns(ByVal InPh_colname As String)
         input_wb.Close SaveChanges:=False
         Set input_wb = Nothing
         
-        
-        
+        pctCompl = i / (INTERNALS.ListObjects("file_to_load").ListColumns("file_to_load").DataBodyRange.rows.Count - 1)
+        Call Progression.UpdateProgressBar((pctCompl / 2))
     Next
     
     Call CreateEventsForPreTreatment(Worksheets(DATA_SH.Name))
@@ -339,6 +296,7 @@ End Sub
 
 Sub SplitSheets()
 
+     
     Call DefGlobal
     Application.EnableEvents = False
     
@@ -353,5 +311,9 @@ Sub SplitSheets()
     Call CreateEventsForPreTreatment(Worksheets(PHARMA_SH.Name))
     AppActivate Application.Caption
     Application.EnableEvents = True
+    
+
+    Call Progression.UpdateProgressBar(0.75)
+    
 End Sub
 

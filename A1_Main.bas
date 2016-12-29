@@ -19,6 +19,8 @@ Sub PrepareOverviewSheet(FilesListSring As String)
         
     Call SaveFilesList(FilesList)
     
+    Progression.Show vbModeless
+    
     Application.ScreenUpdating = False
     Application.DisplayAlerts = False
     
@@ -180,7 +182,7 @@ Sub PrepareOverviewSheet(FilesListSring As String)
     End With
     
     Application.ScreenUpdating = True
-    
+    Unload Progression
     Application.StatusBar = "Chargement terminé"
 
 End Sub
